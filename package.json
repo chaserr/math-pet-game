@@ -1,0 +1,12 @@
+{
+  "name": "math-pet-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "数字积木大冒险 - 纯前端 + Supabase",
+  "scripts": {
+    "dev": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "preview": "npm --prefix client run preview",
+    "install:all": "npm --prefix client install"
+  }
+}

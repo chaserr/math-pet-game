@@ -1,0 +1,79 @@
+{
+  "pet_id": "cat_001",
+  "pet_name": "猫咪",
+  "runtime_pet_id": "cat",
+  "growth_stages": [
+    {
+      "stage": 0,
+      "name": "幼年",
+      "display_name": "小奶猫",
+      "model": "cat_baby",
+      "icon": "icon_cat_baby",
+      "animation": ["idle_baby", "sleep_baby", "eat_baby"],
+      "unlock_condition": "default",
+      "description": "刚被领养的小猫咪，胆小又粘人。",
+      "assets": {
+        "portrait": "/pets/cat/0.png",
+        "model": "/pets/cat/models/cat_baby.png",
+        "icon": "/pets/cat/icons/icon_cat_baby.png",
+        "badge": "/pets/cat/badges/stage_paw_0.png",
+        "label": "/pets/cat/labels/stage_label_0.png",
+        "effect": "/pets/cat/effects/evolve_stage_0.png"
+      }
+    },
+    {
+      "stage": 1,
+      "name": "成长",
+      "display_name": "活泼猫",
+      "model": "cat_growing",
+      "icon": "icon_cat_growing",
+      "animation": ["idle_growing", "run_growing", "play_growing"],
+      "unlock_condition": "intimacy >= 100",
+      "description": "开始熟悉主人，喜欢探索和玩耍。",
+      "assets": {
+        "portrait": "/pets/cat/1.png",
+        "model": "/pets/cat/models/cat_growing.png",
+        "icon": "/pets/cat/icons/icon_cat_growing.png",
+        "badge": "/pets/cat/badges/stage_paw_1.png",
+        "label": "/pets/cat/labels/stage_label_1.png",
+        "effect": "/pets/cat/effects/evolve_stage_1.png"
+      }
+    },
+    {
+      "stage": 2,
+      "name": "强壮",
+      "display_name": "战斗猫",
+      "model": "cat_strong",
+      "icon": "icon_cat_strong",
+      "animation": ["idle_strong", "attack_strong", "guard_strong"],
+      "unlock_condition": "level >= 20",
+      "description": "身体变得强壮，可以陪伴主人完成冒险。",
+      "assets": {
+        "portrait": "/pets/cat/2.png",
+        "model": "/pets/cat/models/cat_strong.png",
+        "icon": "/pets/cat/icons/icon_cat_strong.png",
+        "badge": "/pets/cat/badges/stage_paw_2.png",
+        "label": "/pets/cat/labels/stage_label_2.png",
+        "effect": "/pets/cat/effects/evolve_stage_2.png"
+      }
+    },
+    {
+      "stage": 3,
+      "name": "完全体",
+      "display_name": "灵猫",
+      "model": "cat_final",
+      "icon": "icon_cat_final",
+      "animation": ["idle_final", "skill_final", "special_final"],
+      "unlock_condition": "level >= 40 && item: evolution_stone",
+      "description": "猫咪的最终形态，拥有独特气质和特殊能力。",
+      "assets": {
+        "portrait": "/pets/cat/3.png",
+        "model": "/pets/cat/models/cat_final.png",
+        "icon": "/pets/cat/icons/icon_cat_final.png",
+        "badge": "/pets/cat/badges/stage_paw_3.png",
+        "label": "/pets/cat/labels/stage_label_3.png",
+        "effect": "/pets/cat/effects/evolve_stage_3.png"
+      }
+    }
+  ]
+}
