@@ -180,26 +180,51 @@ watch(moduleId, () => {
   grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
   max-width: 720px; width: 100%; margin: 0 auto;
 }
+/* 关卡：圆润饱满的蓝色按钮 */
 .lv {
   position: relative;
   aspect-ratio: 1 / 1;
-  background: #fffdf6; color: var(--ink);
-  border: 3px solid #f0d99a; border-radius: 14px;
+  background: radial-gradient(circle at 35% 28%, #b6e4ff 0%, #6dc6ff 38%, #3a92e0 72%, #2f7fcc 100%);
+  color: #fff;
+  border: 3px solid #2b78c0;
+  border-radius: 50%;
   font-family: inherit; font-weight: 900; font-size: 18px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 0 var(--shadow); cursor: pointer; transition: all 0.12s;
+  box-shadow:
+    0 6px 0 #1f5e9a,
+    inset 0 -8px 12px rgba(20,60,120,0.25),
+    inset 0 6px 10px rgba(255,255,255,0.45);
+  text-shadow: 0 1px 0 rgba(20,60,120,0.4);
+  cursor: pointer; transition: transform 0.12s, filter 0.12s, box-shadow 0.12s;
+  -webkit-tap-highlight-color: transparent;
 }
-.lv.enum { font-size: 15px; }
-.lv:hover { transform: translateY(-2px); background: #fff8e8; }
-.lv:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--shadow); }
-/* 已通关：灰显但仍可点击重玩 */
+.lv.enum { font-size: 14px; }
+.lv:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.06); }
+.lv:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 2px 0 #1f5e9a,
+    inset 0 -4px 6px rgba(20,60,120,0.18),
+    inset 0 4px 6px rgba(255,255,255,0.35);
+}
+/* 已通关：低饱和蓝灰，仍可点击重玩 */
 .lv.cleared {
-  background: #ece7df; color: #a89f92; border-color: #d8d0c4;
-  box-shadow: 0 3px 0 #c9c0b2;
+  background: radial-gradient(circle at 35% 28%, #e5ecf2 0%, #c0cdd9 50%, #98a8b6 100%);
+  color: #6c7783;
+  border-color: #8a98a6;
+  box-shadow:
+    0 4px 0 #74808d,
+    inset 0 -6px 10px rgba(80,100,120,0.18),
+    inset 0 5px 8px rgba(255,255,255,0.4);
+  text-shadow: none;
 }
 .lv-label { line-height: 1.1; }
 .lv-check {
-  position: absolute; top: 3px; right: 5px; font-size: 12px; color: #54b85a;
+  position: absolute; top: 3px; right: 4px;
+  width: 18px; height: 18px; font-size: 11px; color: #fff;
+  background: #54b85a; border-radius: 50%;
+  box-shadow: 0 1px 0 #2f8a3f;
+  display: flex; align-items: center; justify-content: center;
 }
 
 /* 分页 */

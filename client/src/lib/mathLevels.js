@@ -13,22 +13,48 @@ const OP_WORD = { '+': '相加', '-': '相减', '×': '相乘', '÷': '相除' }
 // 数位名（下标 = 10 的幂次）：个=0，十=1 …… 十亿=9
 export const PLACE_NAMES = ['个', '十', '百', '千', '万', '十万', '百万', '千万', '亿', '十亿'];
 
-// ===== 10 以内穷举 =====
+// ===== 10 以内枚举 =====
+// 结构固定：9 关 × 9 题 = 81 道，按"被固定的那个操作数"分关。
+//   + : 第 k 关 = k+1, k+2, ..., k+9
+//   × : 第 k 关 = k×1, k×2, ..., k×9
+//   ÷ : 第 k 关（除数 k） = (k·1)÷k, (k·2)÷k, ..., (k·9)÷k → 商 1..9
+//   - : 第 k 关（减数 k） = k-k, (k+1)-k, ..., (k+8)-k → 差 0..8
+export const ENUM_LEVELS = 9;
+export const ENUM_PER_LEVEL = 9;
+
 const _enumCache = {};
 export function enumWithin10(op) {
   if (_enumCache[op]) return _enumCache[op];
   const out = [];
   if (op === '+') {
     for (let a = 1; a <= 9; a++) for (let b = 1; b <= 9; b++) out.push({ operands: [a, b], op, answer: a + b, label: `${a}+${b}` });
-  } else if (op === '-') {
-    for (let a = 1; a <= 9; a++) for (let b = 1; b <= a; b++) out.push({ operands: [a, b], op, answer: a - b, label: `${a}-${b}` });
   } else if (op === '×') {
     for (let a = 1; a <= 9; a++) for (let b = 1; b <= 9; b++) out.push({ operands: [a, b], op, answer: a * b, label: `${a}×${b}` });
-  } else { // ÷：来自乘法表反推
+  } else if (op === '÷') {
     for (let d = 1; d <= 9; d++) for (let q = 1; q <= 9; q++) out.push({ operands: [d * q, d], op, answer: q, label: `${d * q}÷${d}` });
+  } else { // -
+    for (let s = 1; s <= 9; s++) for (let i = 0; i < 9; i++) {
+      const m = s + i;
+      out.push({ operands: [m, s], op, answer: m - s, label: `${m}-${s}` });
+    }
   }
   _enumCache[op] = out;
   return out;
+}
+
+/** 第 stage(1..9) 关的第 qIdx(0..8) 道题 */
+export function enumWithin10Fact(op, stage, qIdx) {
+  const list = enumWithin10(op);
+  const idx = (Math.max(1, stage) - 1) * ENUM_PER_LEVEL + (qIdx % ENUM_PER_LEVEL);
+  return list[idx % list.length];
+}
+
+/** 关卡按钮的代表性标签（10 以内） */
+export function enumLevelLabel(op, stage) {
+  if (op === '+') return `${stage}+?`;
+  if (op === '×') return `${stage}×?`;
+  if (op === '÷') return `?÷${stage}`;
+  return `?−${stage}`;
 }
 
 // ===== 分类定义 =====
@@ -38,7 +64,7 @@ function arithCategories(moduleId) {
   const op = OP_OF[moduleId];
   const word = OP_WORD[op]; // 相加/相减/相乘/相除
   return [
-    { id: 'within10', name: '10以内', desc: `逐个列出 全部${word}口算`, kind: 'enum', op, perLevel: 1, count: enumWithin10(op).length },
+    { id: 'within10', name: '10以内', desc: `${word} 9 关 × 9 题（穷举到 9）`, kind: 'enum', op, perLevel: ENUM_PER_LEVEL, count: ENUM_LEVELS },
     { id: 'within100', name: '100以内', desc: `100 以内${word}`, kind: 'range', op, max: 100, perLevel: 5, count: GEN },
     { id: 'n2', name: `两个数${word}`, desc: `两个数${word}`, kind: 'multi', op, operands: 2, perLevel: 5, count: GEN },
     { id: 'n3', name: `三个数${word}`, desc: `三个数${word}`, kind: 'multi', op, operands: 3, perLevel: 5, count: GEN },
@@ -99,10 +125,6 @@ export function categoryPerLevel(subjectId, moduleId, categoryId) {
 // 关卡按钮上的标签：穷举类显示算式，其余显示关号
 export function levelLabel(subjectId, moduleId, categoryId, stage) {
   const cat = findCategory(subjectId, moduleId, categoryId);
-  if (cat && cat.kind === 'enum') {
-    const list = enumWithin10(cat.op);
-    const item = list[(stage - 1) % list.length];
-    return item ? item.label : String(stage);
-  }
+  if (cat && cat.kind === 'enum') return enumLevelLabel(cat.op, stage);
   return String(stage);
 }

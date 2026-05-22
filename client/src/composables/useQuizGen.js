@@ -8,7 +8,7 @@
 //   'placeholder'  占位（敬请期待）
 
 import { decomposeAdd, decomposeSub } from '../lib/decompose.js';
-import { OP_OF, PLACE_NAMES, enumWithin10, findCategory } from '../lib/mathLevels.js';
+import { OP_OF, PLACE_NAMES, enumWithin10Fact, findCategory } from '../lib/mathLevels.js';
 
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function shuffle(arr) {
@@ -22,10 +22,9 @@ function shuffle(arr) {
 const sum = (arr) => arr.reduce((s, x) => s + x, 0);
 const product = (arr) => arr.reduce((s, x) => s * x, 1);
 
-// ============ 10 以内穷举：每关固定一道算式 ============
-function genEnum(op, stage) {
-  const list = enumWithin10(op);
-  const item = list[(stage - 1) % list.length];
+// ============ 10 以内穷举：第 stage 关的第 qIdx 道固定算式 ============
+function genEnum(op, stage, qIdx) {
+  const item = enumWithin10Fact(op, stage, qIdx);
   return buildArithTile(item.operands, op, item.answer);
 }
 
@@ -199,7 +198,7 @@ function genPlaceholder(subjectId, moduleId) {
 }
 
 // ============ 入口 ============
-export function genQuestion(subjectId, moduleId, categoryId, stage) {
+export function genQuestion(subjectId, moduleId, categoryId, stage, qIdx = 0) {
   const s = Math.max(1, Math.floor(stage || 1));
   if (subjectId === 'math') {
     if (moduleId === 'place') {
@@ -208,7 +207,7 @@ export function genQuestion(subjectId, moduleId, categoryId, stage) {
     const op = OP_OF[moduleId];
     if (op) {
       const cat = findCategory('math', moduleId, categoryId);
-      if (cat.kind === 'enum') return genEnum(op, s);
+      if (cat.kind === 'enum') return genEnum(op, s, qIdx);
       if (cat.kind === 'range') return genRange(op, cat);
       if (cat.kind === 'multi') return genMulti(op, cat);
       return genRange(op, cat);

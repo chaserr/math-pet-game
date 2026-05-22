@@ -596,7 +596,7 @@ function qLabel() {
   return x.exprText || x.numberText || '';
 }
 function loadQuestion() {
-  const data = genQuestion(subjectId.value, moduleId.value, category.value, stage.value);
+  const data = genQuestion(subjectId.value, moduleId.value, category.value, stage.value, index.value);
   q.value = data;
   hint.value = data.mode === 'tile-fill' ? '把数字积木拖到方框里吧！'
             : data.mode === 'multi-step' ? '按提示一步步填空'
