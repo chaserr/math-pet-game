@@ -38,8 +38,8 @@
     <table>
       <thead><tr><th>moduleId</th><th>名称</th><th>分类数</th><th>引导模式</th></tr></thead>
       <tbody>
-        <tr><td><code>add</code></td><td>➕ 加法</td><td>5（within10 / within100 / n2 / n3 / n4）</td><td>within100 启用拆分（凑十法）</td></tr>
-        <tr><td><code>sub</code></td><td>➖ 减法</td><td>5</td><td>within100 启用拆分（连减法）</td></tr>
+        <tr><td><code>add</code></td><td>➕ 加法</td><td>5（within10 / within100 / n2 / n3 / n4）</td><td>全部拖拽（凑十法转<a href="decompose-skill.html">教学卡</a> trickId=<code>make-ten</code>）</td></tr>
+        <tr><td><code>sub</code></td><td>➖ 减法</td><td>5</td><td>within100 仍走 multi-step 连减法引导；其余拖拽</td></tr>
         <tr><td><code>mul</code></td><td>✖️ 乘法</td><td>5</td><td>仅拖拽（tile-fill）</td></tr>
         <tr><td><code>div</code></td><td>➗ 除法</td><td>5</td><td>仅拖拽（整除）</td></tr>
         <tr><td><code>place</code></td><td>🔢 数位认知</td><td>8（d3 ~ d10）</td><td>tile-fill place 布局，标签 个/十/百/千…</td></tr>
@@ -72,7 +72,7 @@
       <tbody>
         <tr><td><code>tile-fill</code></td><td><code>arith</code></td><td>数学 within10 / n2-n4 / 乘除全部</td><td>等式 + 答案积木拖拽到空槽</td></tr>
         <tr><td><code>tile-fill</code></td><td><code>place</code> <span class="tag major">v1.4</span></td><td>数学 place 模块</td><td>大数字 + 个/十/百/千… 数位格子</td></tr>
-        <tr><td><code>multi-step</code></td><td>—</td><td>数学加减 within100</td><td>分步引导填空 + 数字键盘</td></tr>
+        <tr><td><code>multi-step</code></td><td>—</td><td>数学减法 within100（凑十法已转教学卡）</td><td>分步引导填空 + 数字键盘</td></tr>
         <tr><td><code>choice</code></td><td>—</td><td>语文识字 + 英语字母</td><td>四选一大按钮</td></tr>
         <tr><td><code>placeholder</code></td><td>—</td><td>所有占位模块</td><td>🚧 敬请期待页</td></tr>
       </tbody>

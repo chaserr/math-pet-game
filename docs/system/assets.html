@@ -23,13 +23,25 @@
   <main class="content">
     <h1>资源体系</h1>
     <h2>猫咪成长资源</h2>
+    <p>v2 已重新生成 4 阶段猫咪进化资源，并同步 <code>/pets/cat/cat_001.growth.json</code>。预览图：<code>/pets/cat/references/cat_evolution_v2_contact_sheet.png</code>。</p>
     <table>
-      <thead><tr><th>阶段</th><th>icon (圆头像)</th><th>portrait (立绘)</th></tr></thead>
+      <thead><tr><th>阶段</th><th>portrait</th><th>model</th><th>icon</th><th>辅助资源</th></tr></thead>
       <tbody>
-        <tr><td>0 幼年（小奶猫）</td><td><code>/pets/cat/icons/icon_cat_baby.png</code></td><td><code>/pets/cat/0.png</code></td></tr>
-        <tr><td>1 成长（活泼猫）</td><td><code>/pets/cat/icons/icon_cat_growing.png</code></td><td><code>/pets/cat/1.png</code></td></tr>
-        <tr><td>2 强壮（战斗猫）</td><td><code>/pets/cat/icons/icon_cat_strong.png</code></td><td><code>/pets/cat/2.png</code></td></tr>
-        <tr><td>3 完全体（灵猫）</td><td><code>/pets/cat/icons/icon_cat_final.png</code></td><td><code>/pets/cat/3.png</code></td></tr>
+        <tr><td>0 幼年（小奶猫）</td><td><code>/pets/cat/0.png</code></td><td><code>/pets/cat/models/cat_baby.png</code></td><td><code>/pets/cat/icons/icon_cat_baby.png</code></td><td><code>badges/stage_paw_0.png</code> · <code>labels/stage_label_0.png</code> · <code>effects/evolve_stage_0.png</code></td></tr>
+        <tr><td>1 成长（活泼猫）</td><td><code>/pets/cat/1.png</code></td><td><code>/pets/cat/models/cat_growing.png</code></td><td><code>/pets/cat/icons/icon_cat_growing.png</code></td><td><code>badges/stage_paw_1.png</code> · <code>labels/stage_label_1.png</code> · <code>effects/evolve_stage_1.png</code></td></tr>
+        <tr><td>2 强壮（战斗猫）</td><td><code>/pets/cat/2.png</code></td><td><code>/pets/cat/models/cat_strong.png</code></td><td><code>/pets/cat/icons/icon_cat_strong.png</code></td><td><code>badges/stage_paw_2.png</code> · <code>labels/stage_label_2.png</code> · <code>effects/evolve_stage_2.png</code></td></tr>
+        <tr><td>3 完全体（灵猫）</td><td><code>/pets/cat/3.png</code></td><td><code>/pets/cat/models/cat_final.png</code></td><td><code>/pets/cat/icons/icon_cat_final.png</code></td><td><code>badges/stage_paw_3.png</code> · <code>labels/stage_label_3.png</code> · <code>effects/evolve_stage_3.png</code></td></tr>
+      </tbody>
+    </table>
+    <h2>小绵羊成长资源</h2>
+    <p>v1.6 新增 4 阶段小绵羊进化资源，并同步 <code>/pets/sheep/sheep_001.growth.json</code>。每阶段包含 portrait / model / icon / badge / label / effect 六类资源。预览图：<code>/pets/sheep/references/sheep_evolution_contact_sheet.png</code>。</p>
+    <table>
+      <thead><tr><th>阶段</th><th>portrait</th><th>model</th><th>icon</th><th>辅助资源</th></tr></thead>
+      <tbody>
+        <tr><td>0 幼年（卷卷羊羔）</td><td><code>/pets/sheep/0.png</code></td><td><code>/pets/sheep/models/sheep_baby.png</code></td><td><code>/pets/sheep/icons/icon_sheep_baby.png</code></td><td><code>badges/stage_wool_0.png</code> · <code>labels/stage_label_0.png</code> · <code>effects/evolve_stage_0.png</code></td></tr>
+        <tr><td>1 成长（云朵绵羊）</td><td><code>/pets/sheep/1.png</code></td><td><code>/pets/sheep/models/sheep_growing.png</code></td><td><code>/pets/sheep/icons/icon_sheep_growing.png</code></td><td><code>badges/stage_wool_1.png</code> · <code>labels/stage_label_1.png</code> · <code>effects/evolve_stage_1.png</code></td></tr>
+        <tr><td>2 强壮（守护绵羊）</td><td><code>/pets/sheep/2.png</code></td><td><code>/pets/sheep/models/sheep_strong.png</code></td><td><code>/pets/sheep/icons/icon_sheep_strong.png</code></td><td><code>badges/stage_wool_2.png</code> · <code>labels/stage_label_2.png</code> · <code>effects/evolve_stage_2.png</code></td></tr>
+        <tr><td>3 完全体（星绒灵羊）</td><td><code>/pets/sheep/3.png</code></td><td><code>/pets/sheep/models/sheep_final.png</code></td><td><code>/pets/sheep/icons/icon_sheep_final.png</code></td><td><code>badges/stage_wool_3.png</code> · <code>labels/stage_label_3.png</code> · <code>effects/evolve_stage_3.png</code></td></tr>
       </tbody>
     </table>
     <h2>头像抠图工艺（Python + Pillow）</h2>
@@ -46,7 +58,7 @@ mask = mask.filter(GaussianBlur(radius=3))
     <p>当前覆盖：🐱猫 🐶狗 🐰兔 🐤鸡 🦊狐 🐼熊 🐧鹅 🐉龙 🐟鱼 🌳树 🌸花 🍎果 🌙月 ☀️日 ⭐星 🏠家 🚗车 ✈️飞 🚢船 📖书 ✏️笔 💡灯 🎵音 🔥火 💧水 ⛅云 🌧雨 🌈虹 🪨石 🍌蕉 🍇葡 🍉瓜 🥕萝 🌻葵 🌹玫 🍀草 🥚蛋 🍞面 🍚饭 🍵茶 🥛奶 🧊冰 👁目 👂耳 👃鼻 👄口 🖐手 🦶足</p>
     <h2>英语字母</h2>
     <p>26 字母 A-Z 大小写循环。stage 奇偶决定问大写或小写。</p>
-    <div class="warn">其余 7 只宠物（狗/兔/鸡/狐狸/熊猫/企鹅/龙）的 4 阶段头像未提供，当前靠 PetIcon 的 PetSprite fallback 显示 SVG 版本。</div>
+    <div class="warn">当前猫咪、乌龟、小绵羊已有完整 4 阶段 PNG 资源；狗/兔/鸡/狐狸/熊猫/企鹅/龙/山羊仍靠 PetIcon 的 PetSprite fallback 显示 SVG 版本。</div>
   </main>
 </div>
 <footer class="page-foot">

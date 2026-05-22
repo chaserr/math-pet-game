@@ -29,9 +29,9 @@
       <b>状态</b>：未提出，先记录。
     </div>
     <div class="warn">
-      <b>I-002 · 仅猫咪有 PetIcon 资源</b><br>
-      其余 7 只宠物（狗/兔/鸡/狐狸/熊猫/企鹅/龙）的 4 阶段头像未提供。<br>
-      <b>修复方向</b>：用户提供原图后用回合 #2 的 Python 工艺批量处理。
+      <b>I-002 · 部分宠物仍缺少完整 PNG 成长资源</b><br>
+      当前猫咪、乌龟、小绵羊已有 4 阶段资源；狗/兔/鸡/狐狸/熊猫/企鹅/龙/山羊仍靠 SVG fallback。<br>
+      <b>修复方向</b>：按 <code>/pets/sheep/sheep_001.growth.json</code> 的结构继续补齐每只宠物的 portrait/model/icon/badge/label/effect。
     </div>
     <div class="warn">
       <b>I-003 · 语文/英语 6 个占位模块</b><br>

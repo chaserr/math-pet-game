@@ -24,6 +24,58 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 12 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #12</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.6.2 · 加法 within100 转拖拽 · 凑十法转教学卡 · 结算流程优化</span>
+        <span class="tag feat">feat</span><span class="tag refactor">refactor</span>
+      </header>
+      <h4>用户原话（多条）</h4>
+      <div class="quote">
+        "每个关卡完成之后提示框里会有100分，同时也能获得100积分。"<br><br>
+        "一关结束后也没法获得积分，也无法根据当前用户选择展示的宠物随机掉落零食了，另外未通关也要获得积分，具体你看着，另外一轮结束后弹框有点慢。"<br><br>
+        "100以内的关卡里也要是拖拽的玩法，凑十法可以作为解题技巧出现。<br>不对，不是100以内的关卡，是数学加法里100以内这个选项的关卡里的玩法。"
+      </div>
+      <h4>决策</h4>
+      <ul>
+        <li><b>积分规则简化</b>：通关 = 100；未通关 = 20 起步 + 10 × 答对（封顶 90，留住 100 的稀缺感）。删除按位数 × streak × 满轮奖励的旧规则。</li>
+        <li><b>结算改为乐观更新</b>：弹框不再 await supabase。本地立刻算分、记录通关、显示积分增量与口粮掉落；后台 fire-and-forget 持久化，成功就用服务端积分覆盖本地；失败 <code>console.warn</code> 不阻塞 UI。解决 supabase 不通时弹框慢 / 没积分 / 没掉落的问题。</li>
+        <li><b>口粮按展示宠物掉</b>：<code>auth.pets</code> 新字段（HomeView 写入），结算时取 <code>auth.pets[0]</code> 的 <code>foodId</code> 作为掉落源。份数：全对 3 / 通关 2 / 至少 1 题对 1 / 全错 0。</li>
+        <li><b>加法 within100 转拖拽</b>：<code>genRange</code> 加法分支去掉 <code>answer >= 10</code> 时返回 multi-step 的逻辑，一律 <code>buildArithTile</code>。<b>凑十法</b>不再自动 multi-step 而是作为教学卡（<code>trickId=make-ten</code>，已存在）供玩家主动进入学习。</li>
+        <li><b>减法 within100 保留 multi-step</b>：破十连减法仍然走分步引导；这是用户的明确范围限定（"是数学加法里 100 以内"）。</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        改（代码）：<code>client/src/lib/gameLogic.js</code>（新计分 + <code>rollFoodDropsLocal</code>）· <code>client/src/stores/auth.js</code>（state 加 <code>pets</code> + <code>setPets</code>）· <code>client/src/views/HomeView.vue</code>（写入 auth.pets）· <code>client/src/db.js</code>（<code>submitRound</code> 接 featuredPetId，<code>rollFoodDrops</code> 按展示宠物决策）· <code>client/src/views/QuizView.vue</code>（<code>endRound</code> 同步 + 乐观更新，后台持久化）· <code>client/src/composables/useQuizGen.js</code>（加法 within100 去掉 multi-step 触发）<br>
+        改（文档）：<code>docs/curriculum/curriculum.html</code>（加减法行 + 题型表）· <code>docs/curriculum/decompose-skill.html</code>（触发说明 v1.6 改写）· <code>docs/modules/module-quiz.html</code>（multi-step 用途）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
+    <!-- 回合 11 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #11</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.6.1 · 小绵羊成长资源</span>
+        <span class="tag feat">feat</span><span class="tag asset">asset</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "这是一个算术游戏，里面有一个宠物系统，宠物可以成长，参考成长设计资源会话，重新生成小绵羊的进化资源，需要生成相对应的资源描述json以及相对应的资源。不要只生成一张图。"
+      </div>
+      <h4>决策</h4>
+      <ul>
+        <li><b>新增小绵羊资源包</b>：按现有成长资源结构生成 4 阶段资源，每阶段包含 <code>portrait</code> / <code>model</code> / <code>icon</code> / <code>badge</code> / <code>label</code> / <code>effect</code>，并落地 <code>sheep_001.growth.json</code>。</li>
+        <li><b>接入运行时配置</b>：新增 <code>sheep</code> 宠物与专属口粮 <code>alfalfa</code>，并把 4 阶段名称、描述、动画占位、资源路径写入 <code>PET_GROWTH_RESOURCES</code>。</li>
+      </ul>
+      <h4>实现 / 影响文件</h4>
+      <p class="files">
+        新：<code>client/public/pets/sheep/</code>（24 个阶段资源 PNG + 1 张预览图 + <code>sheep_001.growth.json</code>）<br>
+        改：<code>client/src/catalog.js</code>（sheep/alfalfa + 成长资源配置）· <code>client/src/components/PetSprite.vue</code>（sheep SVG fallback）<br>
+        文档：<code>system/assets.html</code> · <code>system/data-model.html</code> · <code>governance/known-issues.html</code> · <code>governance/roadmap.html</code> · <code>overview/overview.html</code> · <code>modules/module-shop.html</code> · <code>index.html</code>
+      </p>
+    </article>
+
     <!-- 回合 10 -->
     <article class="entry">
       <header>

@@ -152,9 +152,9 @@
 | 阶段ID | 阶段名称 | 展示名 | model | icon | animation | unlock_condition | 主立绘 |
 |---|---|---|---|---|---|---|---|
 | 0 | 幼年 | 小奶猫 | `cat_baby` | `icon_cat_baby` | `idle_baby` / `sleep_baby` / `eat_baby` | `default` | `/pets/cat/0.png` |
-| 1 | 成长 | 活泼猫 | `cat_growing` | `icon_cat_growing` | `idle_growing` / `run_growing` / `play_growing` | `intimacy >= 100` | `/pets/cat/1.png` |
-| 2 | 强壮 | 战斗猫 | `cat_strong` | `icon_cat_strong` | `idle_strong` / `attack_strong` / `guard_strong` | `level >= 20` | `/pets/cat/2.png` |
-| 3 | 完全体 | 灵猫 | `cat_final` | `icon_cat_final` | `idle_final` / `skill_final` / `special_final` | `level >= 40 && item: evolution_stone` | `/pets/cat/3.png` |
+| 1 | 成长 | 活泼猫 | `cat_growing` | `icon_cat_growing` | `idle_growing` / `run_growing` / `play_growing` | `level >= 3` | `/pets/cat/1.png` |
+| 2 | 强壮 | 战斗猫 | `cat_strong` | `icon_cat_strong` | `idle_strong` / `attack_strong` / `guard_strong` | `level >= 6` | `/pets/cat/2.png` |
+| 3 | 完全体 | 灵猫 | `cat_final` | `icon_cat_final` | `idle_final` / `skill_final` / `special_final` | `level >= 9` | `/pets/cat/3.png` |
 
 每个阶段额外拆分独立资源：
 

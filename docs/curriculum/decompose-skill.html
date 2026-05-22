@@ -21,12 +21,17 @@
     <div class="group"><div class="group-title">📋 治理</div><a href="../governance/change-protocol.html">变更协议</a><a href="../governance/changelog.html">沟通日志</a><a href="../governance/known-issues.html">已知问题</a><a href="../governance/roadmap.html">占位 / 待补清单</a></div>
   </aside>
   <main class="content">
-    <h1>拆分技巧引导 <span class="tag major">v1.3 新增 · v1.4 触发改为 within100</span></h1>
+    <h1>拆分技巧引导 <span class="tag major">v1.3 新增 · v1.6 加法转教学卡</span></h1>
     <div class="lead">
       用户的教学目标：不只让孩子背 34-25=9，而是引导他<b>"先减整十，再减个位；个位不够就拆"</b>的思维方式。这是中国小学数学竖式启蒙的核心思路（<b>连减法 / 凑十法</b>）。
     </div>
     <div class="note">
-      <b>触发范围（v1.4）</b>：仅数学加 / 减 的 <code>within100</code> 分类，且结果 ≥ 10（加）或需要破十（减）。其它分类（<code>within10</code> / <code>n2-n4</code>）一律 tile-fill，不进 multi-step。
+      <b>当前触发（v1.6）</b>：
+      <ul style="margin:4px 0 0 0">
+        <li>加法 <code>within100</code> 一律 <b>tile-fill 拖拽</b>。<b>凑十法</b>不再自动 multi-step，而是作为 <a href="../curriculum/textbook.html">教学卡</a>（<code>trickId=make-ten</code>）单独提供，玩家可主动进入学习。</li>
+        <li>减法 <code>within100</code> 在需要破十时仍走 multi-step <b>连减法</b>引导（个位不够减就拆）。</li>
+        <li>其它分类（<code>within10</code> / <code>n2-n4</code>）一律 tile-fill，不进 multi-step。</li>
+      </ul>
     </div>
     <h2>算法（<span class="fp">src/lib/decompose.js</span>）</h2>
     <h3>减法连减法 <code>decomposeSub(a, b)</code></h3>
