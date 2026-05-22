@@ -7,10 +7,8 @@ import './style.css';
 
 const app = createApp(App);
 app.use(createPinia());
+app.use(router);
 
-// 先初始化登录态，再挂载路由，避免守卫误判
-const auth = useAuthStore();
-auth.init().finally(() => {
-  app.use(router);
-  app.mount('#app');
-});
+// 登录态初始化转为非阻塞：立刻挂载，首屏先出现加载占位，再由路由守卫等待 ready
+useAuthStore().init();
+app.mount('#app');

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>已知问题 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>已知问题</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>已知问题</h1>
+    <div class="warn">
+      <b>I-001 · panda 解锁条件未联动新进度</b><br>
+      <code>pet:panda</code> 解锁条件仍读 <code>profiles.main_level</code>（DB 字段），但 v1.3 后关卡进度全在 localStorage，<code>main_level</code> 永远是 0。<br>
+      <b>修复方向</b>：① 改解锁条件为「math.add 通关 ≥ N 关」；② 或修复一个 DB 写入入口同步关键里程碑。<br>
+      <b>状态</b>：未提出，先记录。
+    </div>
+    <div class="warn">
+      <b>I-002 · 仅猫咪有 PetIcon 资源</b><br>
+      其余 7 只宠物（狗/兔/鸡/狐狸/熊猫/企鹅/龙）的 4 阶段头像未提供。<br>
+      <b>修复方向</b>：用户提供原图后用回合 #2 的 Python 工艺批量处理。
+    </div>
+    <div class="warn">
+      <b>I-003 · 语文/英语 6 个占位模块</b><br>
+      除 <code>chinese.recognize</code> 和 <code>english.alphabet</code> 外，其它 6 个模块仅有占位页。<br>
+      <b>下一步</b>：拼音匹配 / 组词造句 / 成语接龙 / 看图选词 / 拼写组词 / 看图选句 的题目生成器待实现。
+    </div>
+    <div class="note">
+      <b>I-004 · npm rollup 原生绑定丢失</b><br>
+      偶发 <code>Cannot find module @rollup/rollup-darwin-x64</code>（npm 可选依赖 bug）。<br>
+      <b>解法</b>：<code>rm -rf node_modules package-lock.json &amp;&amp; npm install</code>
+    </div>
+    <div class="note">
+      <b>I-005 · 旧进度 KEY 未迁移</b><br>
+      v1.2 用 <code>mpg_cleared_stage</code>（单数字），v1.3 改为 <code>mpg_progress_v2</code>（对象）。<br>
+      老用户旧进度不会自动迁移到新结构，等同于"从 0 开始"。当前用户量 0，可接受。
+    </div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="changelog.html">‹ 沟通日志</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <span class="spacer"></span>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

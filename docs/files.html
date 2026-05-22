@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文件结构 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>系统设计<span class="sep">›</span>文件结构</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>文件结构</h1>
+    <h2>代码（client/）</h2>
+    <pre><code>math-pet-game/
+├── client/
+│   ├── public/pets/cat/
+│   │   ├── icons/      # icon_cat_{baby,growing,strong,final}.png
+│   │   ├── models/ badges/ labels/ effects/
+│   │   └── 0..3.png
+│   └── src/
+│       ├── App.vue · main.js · style.css · supabase.js
+│       ├── catalog.js              # ★ SUBJECTS/MODULES/PETS/FOODS/PET_GROWTH_RESOURCES
+│       ├── db.js                   # ★ Supabase 数据访问层（submitRound 含上下文）
+│       ├── components/
+│       │   ├── PetSprite.vue · PetIcon.vue · NumberBlock.vue · FoodIcon.vue
+│       ├── composables/
+│       │   └── useQuizGen.js       # ★ 多学科出题（4 mode）+ 难度梯度
+│       ├── lib/
+│       │   ├── gameLogic.js        # 计分 + 解锁
+│       │   ├── progress.js         # ★ 多模块进度（v2 schema）
+│       │   └── decompose.js        # ★ v1.3 新增：加减拆分算法
+│       ├── router/index.js
+│       ├── stores/auth.js
+│       └── views/
+│           ├── LoginView.vue
+│           ├── HomeView.vue        # ★ v1.3 学科 Tab + 模块卡 + 跳关
+│           ├── QuizView.vue        # ★ v1.3 4 mode
+│           ├── ShopView.vue
+│           └── PetHouseView.vue</code></pre>
+    <h2>文档（docs/）<span class="tag major">v1.3.1 多页化</span></h2>
+    <pre><code>docs/
+├── index.html              # ★ 知识库主页（卡片导航）
+├── shared.css              # 公共样式
+├── shared.js               # 公共脚本（侧栏高亮 + 跨页搜索）
+├── overview.html · quick-start.html · tech.html
+├── curriculum.html · difficulty.html · decompose-skill.html
+├── module-auth.html · module-home.html · module-quiz.html
+├── module-shop.html · module-pet.html
+├── data-model.html · shared-systems.html · assets.html · files.html
+├── change-protocol.html · changelog.html · known-issues.html
+├── DESIGN.md               # PRD v1.0 历史归档（不再维护）
+└── SUPABASE_SETUP.md       # 部署指引</code></pre>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="assets.html">‹ 资源体系</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="change-protocol.html">变更协议 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

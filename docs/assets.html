@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>资源体系 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>系统设计<span class="sep">›</span>资源体系</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>资源体系</h1>
+    <h2>猫咪成长资源</h2>
+    <table>
+      <thead><tr><th>阶段</th><th>icon (圆头像)</th><th>portrait (立绘)</th></tr></thead>
+      <tbody>
+        <tr><td>0 幼年（小奶猫）</td><td><code>/pets/cat/icons/icon_cat_baby.png</code></td><td><code>/pets/cat/0.png</code></td></tr>
+        <tr><td>1 成长（活泼猫）</td><td><code>/pets/cat/icons/icon_cat_growing.png</code></td><td><code>/pets/cat/1.png</code></td></tr>
+        <tr><td>2 强壮（战斗猫）</td><td><code>/pets/cat/icons/icon_cat_strong.png</code></td><td><code>/pets/cat/2.png</code></td></tr>
+        <tr><td>3 完全体（灵猫）</td><td><code>/pets/cat/icons/icon_cat_final.png</code></td><td><code>/pets/cat/3.png</code></td></tr>
+      </tbody>
+    </table>
+    <h2>头像抠图工艺（Python + Pillow）</h2>
+    <pre><code># 1. 定位源图圆心 + 半径
+centers = [(1018, 133), (1152, 133), (1287, 133), (1422, 133)]
+r = 68
+# 2. crop → 4x 放大（LANCZOS）→ 软边圆形 alpha mask
+inner = int(big.size[0] * 0.47)
+mask.ellipse((cx-inner, cy-inner, cx+inner, cy+inner), fill=255)
+mask = mask.filter(GaussianBlur(radius=3))
+# 3. 降采样到 256×256，paste 时套用 mask</code></pre>
+    <h2>语文识字字库（CHAR_BANK）</h2>
+    <p>v1.3 内置 ~50 组 emoji ↔ 汉字（动物/植物/食物/自然/人体/家居），按 stage 索引轮播。后续可扩展。</p>
+    <p>当前覆盖：🐱猫 🐶狗 🐰兔 🐤鸡 🦊狐 🐼熊 🐧鹅 🐉龙 🐟鱼 🌳树 🌸花 🍎果 🌙月 ☀️日 ⭐星 🏠家 🚗车 ✈️飞 🚢船 📖书 ✏️笔 💡灯 🎵音 🔥火 💧水 ⛅云 🌧雨 🌈虹 🪨石 🍌蕉 🍇葡 🍉瓜 🥕萝 🌻葵 🌹玫 🍀草 🥚蛋 🍞面 🍚饭 🍵茶 🥛奶 🧊冰 👁目 👂耳 👃鼻 👄口 🖐手 🦶足</p>
+    <h2>英语字母</h2>
+    <p>26 字母 A-Z 大小写循环。stage 奇偶决定问大写或小写。</p>
+    <div class="warn">其余 7 只宠物（狗/兔/鸡/狐狸/熊猫/企鹅/龙）的 4 阶段头像未提供，当前靠 PetIcon 的 PetSprite fallback 显示 SVG 版本。</div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="shared-systems.html">‹ 共享系统</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="files.html">文件结构 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

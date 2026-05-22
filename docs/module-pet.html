@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宠物之家 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>业务模块<span class="sep">›</span>宠物之家</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>模块：宠物之家 <span class="tag module">module</span></h1>
+    <div class="module-card">
+      <div class="meta-row">
+        <span><b>视图：</b><span class="fp">src/views/PetHouseView.vue</span></span>
+        <span><b>路由：</b><code>/pets</code></span>
+      </div>
+      <h3>列表卡片</h3>
+      <ul>
+        <li>card-art 130×130 橙黄径向背景 + PetSprite + 右下 40px PetIcon</li>
+        <li>名字 + 阶段 tag（背景色 = <code>STAGE_COLORS[stage]</code>）</li>
+        <li>等级条（绿） + 亲密度条（粉）</li>
+        <li>底部喂食区：FoodIcon + 库存 + 喂食按钮（库存=0 时 disabled）</li>
+        <li>点卡片 → 打开放大预览（feed 区 click.stopPropagation）</li>
+      </ul>
+      <h3>预览弹窗 <span class="tag ui">ui</span> <span class="tag feat">feat v1.1</span></h3>
+      <ol>
+        <li><b>4 阶段头像行</b>：4 个 58px <code>PetIcon</code>（<code>level=STAGE_MIN_LEVEL[s-1]</code>），未达成 <code>locked=true</code> + 数字 badge</li>
+        <li>大立绘 <code>.pv-art</code>：240×240 阶段色径向背景 + <code>PetSprite size=220</code></li>
+        <li>名称 + 阶段 tag + 4 颗星（当前阶段+1 颗点亮）</li>
+        <li>阶段描述 <code>stageDesc()</code></li>
+        <li>阶段 meta：外观关键词 / 定位 / 解锁条件（横排 grid）</li>
+        <li>等级/经验/亲密度统计 + 喂食区</li>
+      </ol>
+      <h3>喂食 / 升级 / 进化 <span class="tag api">api</span></h3>
+      <pre><code>// db.js#feed(petId)
+食物 exp 计入 user_pets.exp
+while level &lt; MAX_LEVEL &amp;&amp; exp ≥ expForLevel(level):
+   exp -= expForLevel(level); level += 1; leveledUp = true
+亲密度 += food.intimacy（封顶 100）
+user_foods.quantity -= 1
+返回 { leveledUp, newlyUnlocked, pet }
+
+expForLevel(level) = 50 × level    // MAX_LEVEL = 10</code></pre>
+      <h4>进化特效（playEvolve）</h4>
+      <p>当 <code>afterStage &gt; beforeStage</code>，触发 2.2s 全屏特效：</p>
+      <ul>
+        <li><code>.evo-overlay</code> 暗紫径向罩</li>
+        <li><code>.evo-rings</code> 三层 ring 扩散动画（delay 0/0.4/0.8s）</li>
+        <li><code>.evo-pet</code> 主立绘 evopop 缩放 + 阶段色光晕 <code>drop-shadow(0 0 24px var(--evo))</code></li>
+        <li>文字「✨ 进化！{stageName}」+ 2.2s 后 toast「✨ 进化成「xxx」啦！」</li>
+      </ul>
+    </div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="module-shop.html">‹ 商店</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="data-model.html">数据模型 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

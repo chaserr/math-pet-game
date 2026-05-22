@@ -7,18 +7,29 @@ export const useAuthStore = defineStore('auth', {
     user: null,        // Supabase auth user
     points: 0,
     ready: false,
+    _readyPromise: null,
   }),
   getters: {
     isLoggedIn: (s) => !!s.user,
   },
   actions: {
-    async init() {
-      const { data } = await supabase.auth.getSession();
-      if (data?.session?.user) {
-        this.user = data.session.user;
-        await this.refreshProfile();
-      }
-      this.ready = true;
+    init() {
+      if (this._readyPromise) return this._readyPromise;
+      this._readyPromise = (async () => {
+        try {
+          const { data } = await supabase.auth.getSession();
+          if (data?.session?.user) {
+            this.user = data.session.user;
+            await this.refreshProfile();
+          }
+        } catch { /* 容错：网络问题时仍标记 ready，避免应用永远卡在加载页 */ }
+        this.ready = true;
+      })();
+      return this._readyPromise;
+    },
+    async whenReady() {
+      if (this.ready) return;
+      if (this._readyPromise) await this._readyPromise;
     },
     async refreshProfile() {
       try {

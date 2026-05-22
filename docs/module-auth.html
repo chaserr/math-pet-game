@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录 / 注册 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>业务模块<span class="sep">›</span>登录 / 注册</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>模块：登录 / 注册 <span class="tag module">module</span></h1>
+    <div class="module-card">
+      <div class="meta-row">
+        <span><b>视图：</b><span class="fp">src/views/LoginView.vue</span></span>
+        <span><b>状态：</b><span class="fp">src/stores/auth.js</span></span>
+        <span><b>路由：</b><code>/login</code></span>
+      </div>
+      <h3>业务规则</h3>
+      <ul>
+        <li>邮箱 + 密码注册/登录（Supabase Auth）</li>
+        <li>无邮箱验证</li>
+        <li>登录成功 → 跳 <code>/</code></li>
+        <li>未登录访问受保护路由 → 强制回 <code>/login</code></li>
+      </ul>
+      <h3>错误文案翻译</h3>
+      <table>
+        <tr><th>Supabase 英文</th><th>中文</th></tr>
+        <tr><td>Invalid login credentials</td><td>邮箱或密码错误</td></tr>
+        <tr><td>User already registered</td><td>该邮箱已注册</td></tr>
+        <tr><td>Password should be at least</td><td>密码太短（至少 6 位）</td></tr>
+        <tr><td>Unable to validate email</td><td>邮箱格式不正确</td></tr>
+      </table>
+    </div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="decompose-skill.html">‹ 拆分技巧引导</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="module-home.html">首页 / 学科选择 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

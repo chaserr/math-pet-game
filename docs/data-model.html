@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据模型 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>系统设计<span class="sep">›</span>数据模型</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>数据模型 <span class="tag data">data</span></h1>
+    <h2>Supabase 表</h2>
+    <table>
+      <thead><tr><th>表</th><th>列</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>profiles</code></td><td><code>id, points, main_level</code></td><td>账号资料；<code>main_level</code> 仅作 panda 解锁条件，关卡进度已不写此字段</td></tr>
+        <tr><td><code>user_pets</code></td><td><code>id, user_id, pet_id, level, exp, intimacy, last_fed_at, created_at</code></td><td>我的宠物</td></tr>
+        <tr><td><code>user_foods</code></td><td><code>user_id, food_id, quantity</code></td><td>口粮库存</td></tr>
+        <tr><td><code>user_unlocks</code></td><td><code>user_id, unlock_key</code></td><td>解锁 key</td></tr>
+        <tr><td><code>answer_history</code></td><td><code>id, user_id, question, answer, user_answer, is_correct, error_count, time_ms, created_at</code></td><td>答题历史；<code>question</code> 前缀含 <code>[subject/module#stage]</code> 上下文</td></tr>
+      </tbody>
+    </table>
+    <h2>RPC</h2>
+    <ul><li><code>add_points(delta integer) returns integer</code></li></ul>
+    <h2>静态目录（catalog.js）</h2>
+    <ul>
+      <li><code>SUBJECTS</code>：3 学科（math/chinese/english）</li>
+      <li><code>MODULES</code>：{subjectId: Module[]}，每学科 4 个模块；<code>placeholder=true</code> 表示占位</li>
+      <li><code>STAGES_PER_MODULE = 1000</code> · <code>ROUND_SIZE = 5</code></li>
+      <li><code>PETS</code>：8 只宠物 · <code>FOODS</code>：8 种口粮</li>
+      <li><code>PET_GROWTH_RESOURCES</code>：每只宠物 4 阶段资源</li>
+      <li><code>STAGE_MIN_LEVEL = [1,3,6,9]</code> · <code>STAGE_COLORS</code></li>
+      <li><code>MAX_LEVEL = 10</code> · <code>GACHA_COST = 50</code></li>
+    </ul>
+    <h2>宠物清单</h2>
+    <table>
+      <thead><tr><th>id</th><th>cnName</th><th>获取</th><th>价格</th><th>解锁条件</th><th>专属口粮</th></tr></thead>
+      <tbody>
+        <tr><td>cat</td><td>小猫 Mimi</td><td>明购</td><td>80</td><td>—</td><td>小鱼干</td></tr>
+        <tr><td>dog</td><td>小狗 Wangwang</td><td>明购</td><td>100</td><td>—</td><td>肉骨头</td></tr>
+        <tr><td>rabbit</td><td>小兔 Tutu</td><td>明购</td><td>130</td><td>—</td><td>胡萝卜</td></tr>
+        <tr><td>chick</td><td>小鸡 Jiji</td><td>明购</td><td>60</td><td>—</td><td>小米粒</td></tr>
+        <tr><td>fox</td><td>小狐狸 Huhu</td><td>解锁</td><td>350</td><td>拥有 3 只宠物</td><td>浆果</td></tr>
+        <tr><td>panda</td><td>熊猫 Panpan</td><td>解锁</td><td>500</td><td>profile.main_level≥5 ⚠️</td><td>竹笋</td></tr>
+        <tr><td>penguin</td><td>企鹅 Qiqi</td><td>解锁</td><td>400</td><td>任一宠物 Lv≥5</td><td>冰鲜鱼</td></tr>
+        <tr><td>dragon</td><td>萌龙 Long</td><td>抽卡</td><td>—</td><td>50 积分/抽</td><td>火龙果</td></tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="module-pet.html">‹ 宠物之家</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="shared-systems.html">共享系统 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

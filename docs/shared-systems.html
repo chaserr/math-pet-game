@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>共享系统 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>系统设计<span class="sep">›</span>共享系统</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>共享系统</h1>
+    <div class="module-card">
+      <h3>关卡进度（localStorage v2）<span class="tag module">shared</span></h3>
+      <div class="meta-row"><span><b>文件：</b><span class="fp">src/lib/progress.js</span></span></div>
+      <dl class="kv">
+        <dt>存储键</dt><dd><code>mpg_progress_v2</code>（JSON 对象）</dd>
+        <dt>数据格式</dt><dd><code>{"math.add": 42, "math.sub": 10, "chinese.recognize": 3}</code>（按 <code>subject.module</code> → cleared stage 数字）</dd>
+        <dt>API</dt><dd>
+          <code>getClearedStage(s, m)</code> 已通关最高（0=尚未）<br>
+          <code>setClearedStage(s, m, n)</code> 仅当 n &gt; 当前才写入（防回退）<br>
+          <code>nextChallengeStage(s, m)</code> = cleared+1，封顶 1000<br>
+          <code>isStageCleared(s, m, id)</code> id ≤ cleared<br>
+          <code>progressSummary()</code> 全部进度的扁平数组
+        </dd>
+        <dt>设计取舍</dt><dd>不上 Supabase：12000 关进度小型 JSON 即可；想跨设备同步时再升级</dd>
+      </dl>
+    </div>
+    <div class="module-card">
+      <h3>拆分算法 <span class="tag api">api</span> <span class="tag major">v1.3 新增</span></h3>
+      <div class="meta-row"><span><b>文件：</b><span class="fp">src/lib/decompose.js</span></span></div>
+      <p>导出 <code>decomposeAdd(a, b)</code> / <code>decomposeSub(a, b)</code> / <code>decompose(a, b, op)</code>。返回步骤数组（详见 <a href="decompose-skill.html">拆分技巧引导</a>）。</p>
+    </div>
+    <div class="module-card">
+      <h3>进化阶段（4 阶）<span class="tag module">shared</span></h3>
+      <dl class="kv">
+        <dt>阶段映射</dt><dd><code>petStage(level)</code> → 0..3，按 <code>STAGE_MIN_LEVEL=[1,3,6,9]</code></dd>
+        <dt>阶段名</dt><dd>幼年 / 成长 / 强壮 / 完全体（猫=小奶猫/活泼猫/战斗猫/灵猫）</dd>
+        <dt>主题色</dt><dd>🟡 #f0a93a / 🟢 #54b85a / 🔵 #3a92e0 / 🟣 #9b5cd6</dd>
+      </dl>
+    </div>
+    <div class="module-card">
+      <h3>宠物头像 <code>PetIcon</code> <span class="tag ui">ui</span></h3>
+      <div class="meta-row"><span><b>文件：</b><span class="fp">src/components/PetIcon.vue</span></span></div>
+      <p>Props: <code>petId / level / size / locked / badge</code>。PNG 加载失败 → fallback PetSprite。</p>
+    </div>
+    <div class="module-card">
+      <h3>计分与解锁（gameLogic.js）</h3>
+      <pre><code>baseScore: 1位=5 / 2位=10 / 3位=15
+streakMultiplier: ≥3→1.5x, ==2→1.2x, else→1.0x
+满轮奖励: 全 5 题正确 → +30
+
+unlockConditions:
+  'pet:fox':     ownedCount >= 3
+  'pet:panda':   mainLevel >= 5    // ⚠️ DB main_level，未由新关卡推进
+  'pet:penguin': maxPetLevel >= 5</code></pre>
+    </div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="data-model.html">‹ 数据模型</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="assets.html">资源体系 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

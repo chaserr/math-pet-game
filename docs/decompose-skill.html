@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拆分技巧引导 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>拆分技巧引导</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>拆分技巧引导 <span class="tag major">v1.3 新增</span></h1>
+    <div class="lead">
+      用户的教学目标：不只让孩子背 34-25=9，而是引导他<b>"先减整十，再减个位；个位不够就拆"</b>的思维方式。这是中国小学数学竖式启蒙的核心思路（<b>连减法 / 凑十法</b>）。
+    </div>
+    <h2>算法（<span class="fp">src/lib/decompose.js</span>）</h2>
+    <h3>减法连减法 <code>decomposeSub(a, b)</code></h3>
+    <ol>
+      <li>把 <code>b</code> 拆为 <b>整十 bTens + 个位 bOnes</b></li>
+      <li>先 <code>a - bTens</code></li>
+      <li>再 <code>cur - bOnes</code>：
+        <ul>
+          <li>若 <code>cur 的个位 ≥ bOnes</code>：直接减</li>
+          <li>否则把 <code>bOnes</code> 拆为 <code>cur%10 + 剩余</code>，先减到整十，再减剩余</li>
+        </ul>
+      </li>
+    </ol>
+    <h4>示例 1：34 - 25（用户给的例子）</h4>
+    <div class="decompose-demo">
+      <div class="demo-step"><span class="demo-idx">1</span><span class="demo-eq">25 = <b>20</b> + <b>5</b></span></div>
+      <div class="demo-hint">先把 25 拆成 20 + 5（用户填两个空）</div>
+      <div class="demo-step"><span class="demo-idx">2</span><span class="demo-eq">34 - 20 = <b>14</b></span></div>
+      <div class="demo-hint">先减整十</div>
+      <div class="demo-step"><span class="demo-idx">3</span><span class="demo-eq">5 = <b>4</b> + <b>1</b></span></div>
+      <div class="demo-hint">14 的个位 4 &lt; 5，把 5 拆成 4 + 1</div>
+      <div class="demo-step"><span class="demo-idx">4</span><span class="demo-eq">14 - 4 = <b>10</b></span></div>
+      <div class="demo-hint">先减到整十</div>
+      <div class="demo-step"><span class="demo-idx">5</span><span class="demo-eq">10 - 1 = <b>9</b></span></div>
+      <div class="demo-hint">再减剩下的</div>
+      <div class="demo-step"><span class="demo-idx">✓</span><span class="demo-eq" style="color:#54b85a">✨ 34 - 25 = 9</span></div>
+    </div>
+    <h3>加法凑十法 <code>decomposeAdd(a, b)</code></h3>
+    <ol>
+      <li>把 <code>b</code> 拆为整十 + 个位</li>
+      <li>先 <code>a + bTens</code></li>
+      <li>再 <code>cur + bOnes</code>：
+        <ul>
+          <li>若 <code>cur%10 + bOnes ≤ 10</code>：直接加</li>
+          <li>否则把 <code>bOnes</code> 拆为 <code>(10 - cur%10) + 剩余</code>，先凑到整十，再加剩余</li>
+        </ul>
+      </li>
+    </ol>
+    <h4>示例 2：28 + 35</h4>
+    <div class="decompose-demo">
+      <div class="demo-step"><span class="demo-idx">1</span><span class="demo-eq">35 = <b>30</b> + <b>5</b></span></div>
+      <div class="demo-hint">先把 35 拆成 30 + 5</div>
+      <div class="demo-step"><span class="demo-idx">2</span><span class="demo-eq">28 + 30 = <b>58</b></span></div>
+      <div class="demo-hint">先加整十</div>
+      <div class="demo-step"><span class="demo-idx">3</span><span class="demo-eq">5 = <b>2</b> + <b>3</b></span></div>
+      <div class="demo-hint">58 的个位 8 + 5 &gt; 10，凑十：拆 5 = 2 + 3</div>
+      <div class="demo-step"><span class="demo-idx">4</span><span class="demo-eq">58 + 2 = <b>60</b></span></div>
+      <div class="demo-hint">先凑到整十</div>
+      <div class="demo-step"><span class="demo-idx">5</span><span class="demo-eq">60 + 3 = <b>63</b></span></div>
+      <div class="demo-hint">再加剩下的</div>
+      <div class="demo-step"><span class="demo-idx">✓</span><span class="demo-eq" style="color:#54b85a">✨ 28 + 35 = 63</span></div>
+    </div>
+    <h2>UI 实现（QuizView multi-step 模式）</h2>
+    <ul>
+      <li><b>步骤列表</b>：所有步骤渲染为竖向卡片，pending（灰）/ current（金色 pulse 高亮）/ done（绿）</li>
+      <li><b>数字键盘</b>：底部 0-9 + ⌫ + ✓ 确定（无需拖拽，单步输入）</li>
+      <li><b>输入校验</b>：split 步必须填 2 个数（顺序不敏感）；calc 步填 1 个数</li>
+      <li><b>错误处理</b>：单步错 = 扣 1 颗心 + 清空输入重试；心耗尽提前结算</li>
+      <li><b>跳过 done 步</b>：最后一步 <code>{ kind: 'done' }</code> 自动完成，触发 <code>onCorrect</code></li>
+    </ul>
+    <h2>步骤数据结构（返回值）</h2>
+    <pre><code>// 减法 34-25 的 steps 数组
+[
+  { kind: 'split', target: 25, parts: [20, 5], hint: '把 25 拆成 20 + 5' },
+  { kind: 'calc',  a: 34, b: 20, op: '-', answer: 14, hint: '先减整十' },
+  { kind: 'split', target: 5,  parts: [4, 1], hint: '个位不够减，把 5 拆成 4 + 1' },
+  { kind: 'calc',  a: 14, b: 4,  op: '-', answer: 10, hint: '先减到整十' },
+  { kind: 'calc',  a: 10, b: 1,  op: '-', answer: 9,  hint: '再减剩下的' },
+  { kind: 'done',  a: 34, b: 25, op: '-', answer: 9 }
+]</code></pre>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="difficulty.html">‹ 数学难度梯度</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="module-auth.html">登录 / 注册 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

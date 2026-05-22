@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技术栈 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>技术栈</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>技术栈</h1>
+    <table>
+      <thead><tr><th>层</th><th>选型</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>前端框架</td><td>Vue 3 + Vite</td><td>SFC + Composition API；HMR</td></tr>
+        <tr><td>状态管理</td><td>Pinia</td><td>仅 <code>auth</code> store；其它走组件局部 ref + localStorage</td></tr>
+        <tr><td>路由</td><td>vue-router 4</td><td>history 模式；5 路由（login/home/quiz/shop/pets）；quiz 用 query <code>?subject&amp;module&amp;stage</code></td></tr>
+        <tr><td>拖拽</td><td>原生 Pointer Events</td><td>鼠标 + 触控统一</td></tr>
+        <tr><td>动画</td><td>CSS keyframes</td><td>积木 waddle/wiggle、当前步 pulse、进化 ring/pop</td></tr>
+        <tr><td>后端 / 持久化</td><td>Supabase</td><td>PostgreSQL + RLS + Auth</td></tr>
+        <tr><td>本地状态</td><td>localStorage</td><td>关卡进度按 <code>{subject.module: cleared}</code> 存于 <code>mpg_progress_v2</code></td></tr>
+        <tr><td>静态资源</td><td>PNG + SVG</td><td>放 <span class="fp">/public/pets/&lt;species&gt;/{icons,models,...}/</span></td></tr>
+      </tbody>
+    </table>
+    <h2>架构演进决策</h2>
+    <ul>
+      <li><b>原计划</b>：Fastify + better-sqlite3，本地单文件部署</li>
+      <li><b>v1.0 改</b>：→ <b>纯前端 + Supabase</b>。理由：换设备能玩 / 可分享 / 用现成账号系统 / 部署零成本</li>
+      <li><b>取舍</b>：计分、抽卡、掉落等逻辑全部在前端 → 接受作弊风险（休闲单机游戏无对抗压力）</li>
+    </ul>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="quick-start.html">‹ 快速开始</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="curriculum.html">三学科四模块体系 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

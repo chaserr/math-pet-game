@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目总览 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>项目总览</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>项目总览</h1>
+    <div class="lead">
+      H5 多学科闯关 + 宠物养成游戏。<b>三大学科</b>（数学 / 语文 / 英语）<b>× 每学科 4 个模块 × 每模块 1000 关</b>。
+      做题赚积分、爆口粮、养宠物。宠物养成为<b>情感主驱动力</b>，学科练习是温和玩法机制。
+    </div>
+    <dl class="kv">
+      <dt>名称</dt><dd>数字积木大冒险（Number Block Adventure）</dd>
+      <dt>类型</dt><dd>H5 多学科闯关 + 宠物养成</dd>
+      <dt>目标用户</dt><dd>全年龄轻松休闲玩家（学龄前 → 成年休闲向，特别适合 6~12 岁儿童）</dd>
+      <dt>核心循环</dt><dd>选学科 → 选模块 → 闯关做题 → 赚积分 + 爆口粮 → 养宠物 → 继续挑战更高关卡</dd>
+      <dt>关卡总量</dt><dd>3 学科 × 4 模块 × 1000 关 = <b>12000 关</b>（数学 4 模块全实现；语文/英语各 1 模块 MVP + 3 占位）</dd>
+      <dt>关卡锁定</dt><dd><b>不锁</b>。所有关卡均可随意挑战，已通关的标记 ✅</dd>
+      <dt>当前版本</dt><dd>v1.3.0（多学科 + 1000 关 + 数学拆分技巧引导）；文档结构 v1.3.1（多页知识库）</dd>
+    </dl>
+    <h2>核心特色</h2>
+    <ul>
+      <li>🎓 <b>三学科四模块体系</b>：数学（加减乘除）、语文（识字/拼音/组词/成语）、英语（字母/词汇/拼写/句子）</li>
+      <li>🧠 <b>数学拆分技巧引导</b>：分步骤教孩子凑十法（加）/ 破十法（减），不只是出题</li>
+      <li>🐱 <b>8 只宠物</b>，4 阶段进化（幼年/成长/强壮/完全体）</li>
+      <li>🎁 <b>通关爆口粮</b>：按已有宠物随机掉对应口粮</li>
+      <li>🪙 <b>积分经济</b>：买宠物、买口粮、抽卡萌龙</li>
+    </ul>
+    <h2>非目标（首版不做）</h2>
+    <ul>
+      <li>❌ 社交 / 排行榜 / PvP</li>
+      <li>❌ 装扮系统（→ V1.4+）</li>
+      <li>❌ 关卡锁定 / 强制顺序通关</li>
+      <li>❌ 实时中途存档（关闭即重启一轮）</li>
+      <li>❌ 邮箱 / 短信验证</li>
+    </ul>
+  </main>
+</div>
+<footer class="page-foot">
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="quick-start.html">快速开始 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

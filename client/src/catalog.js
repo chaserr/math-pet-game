@@ -28,17 +28,47 @@ export const GACHA_DUP_FOOD_QTY = 3;
 export const GACHA_POOL = ['dragon'];
 export const MAX_LEVEL = 10;
 
-// ===== 关卡 =====
-// 数字范围逐步放大，每关 5 题。clearedStage 持久化在 localStorage。
-export const STAGES = [
-  { id: 1, name: '初识数字', maxNum: 5,   desc: '加减 1~5',   emoji: '🌱' },
-  { id: 2, name: '小试牛刀', maxNum: 10,  desc: '加减 1~10',  emoji: '🌿' },
-  { id: 3, name: '渐入佳境', maxNum: 20,  desc: '加减 1~20',  emoji: '🌳' },
-  { id: 4, name: '挑战自我', maxNum: 50,  desc: '加减 1~50',  emoji: '⛰️' },
-  { id: 5, name: '数字大师', maxNum: 100, desc: '加减 1~100', emoji: '👑' },
+// ===== 学科 / 模块 / 关卡 =====
+// 三层：Subject → Module → Stage（每 Module 1000 关），每关 5 题。
+// 关卡<b>不再锁住</b>，仅展示「已通关」标记。
+export const SUBJECTS = [
+  { id: 'math',    name: '数学', emoji: '🔢', color: '#f0a93a', desc: '加减乘除，引导拆分技巧' },
+  { id: 'chinese', name: '语文', emoji: '🀄', color: '#e85b5b', desc: '识字、拼音、组词、成语' },
+  { id: 'english', name: '英语', emoji: '🔤', color: '#3a92e0', desc: '字母、词汇、拼写、句子' },
 ];
-export const findStage = (id) => STAGES.find(s => s.id === Number(id)) || STAGES[0];
-export const MAX_STAGE = STAGES.length;
+
+// 每模块固定 1000 关，按 stage 推断难度参数（见 useQuizGen.js）。
+// placeholder=true 的模块仅占位（敬请期待），点击进入会显示占位页。
+export const MODULES = {
+  math: [
+    { id: 'add', name: '加法', emoji: '➕', color: '#54b85a', desc: '从凑十到进位加' },
+    { id: 'sub', name: '减法', emoji: '➖', color: '#3a92e0', desc: '从破十到借位减' },
+    { id: 'mul', name: '乘法', emoji: '✖️', color: '#9b5cd6', desc: '九九乘法到多位乘' },
+    { id: 'div', name: '除法', emoji: '➗', color: '#e85b5b', desc: '基础除法到长除' },
+    { id: 'place', name: '数位认知', emoji: '🔢', color: '#2bb3a3', desc: '个十百千万…拖数字认数位' },
+  ],
+  chinese: [
+    { id: 'recognize', name: '看图识字', emoji: '👀', color: '#f0a93a', desc: '看图选汉字' },
+    { id: 'pinyin',    name: '拼音匹配', emoji: '🔠', color: '#54b85a', desc: '汉字配拼音', placeholder: true },
+    { id: 'compose',   name: '组词造句', emoji: '📝', color: '#3a92e0', desc: '给字找词',   placeholder: true },
+    { id: 'idiom',     name: '成语接龙', emoji: '🏮', color: '#9b5cd6', desc: '首尾相接',   placeholder: true },
+  ],
+  english: [
+    { id: 'alphabet', name: '字母认知', emoji: '🅰️', color: '#f0a93a', desc: '大小写匹配' },
+    { id: 'vocab',    name: '看图选词', emoji: '📚', color: '#54b85a', desc: '图片对单词',     placeholder: true },
+    { id: 'spell',    name: '拼写组词', emoji: '✍️', color: '#3a92e0', desc: '拖字母拼单词',   placeholder: true },
+    { id: 'sentence', name: '看图选句', emoji: '💬', color: '#9b5cd6', desc: '看图选完整句子', placeholder: true },
+  ],
+};
+
+export const STAGES_PER_MODULE = 1000;
+export const ROUND_SIZE = 5;
+
+export const findSubject = (id) => SUBJECTS.find(s => s.id === id) || SUBJECTS[0];
+export const findModule = (subjectId, moduleId) => {
+  const list = MODULES[subjectId] || [];
+  return list.find(m => m.id === moduleId) || list[0];
+};
 
 export const findPet = (id) => PETS.find(p => p.id === id) || null;
 export const findFood = (id) => FOODS.find(f => f.id === id) || null;

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三学科四模块体系 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>三学科四模块体系</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>三学科四模块体系 <span class="tag major">v1.3 重构</span></h1>
+    <div class="lead">
+      旧版本只有 5 个数字范围递进的「数字闯关」。v1.3 完全重构为三学科分类，每学科 4 个模块，每模块 1000 关。<b>所有关卡不锁定</b>，进度仅用于显示「已通关」标记。
+    </div>
+    <h2>三大学科</h2>
+    <table>
+      <thead><tr><th>id</th><th>emoji</th><th>学科</th><th>主题色</th><th>描述</th></tr></thead>
+      <tbody>
+        <tr><td><code>math</code></td><td>🔢</td><td>数学</td><td>#f0a93a 金</td><td>加减乘除，引导拆分技巧</td></tr>
+        <tr><td><code>chinese</code></td><td>🀄</td><td>语文</td><td>#e85b5b 红</td><td>识字、拼音、组词、成语</td></tr>
+        <tr><td><code>english</code></td><td>🔤</td><td>英语</td><td>#3a92e0 蓝</td><td>字母、词汇、拼写、句子</td></tr>
+      </tbody>
+    </table>
+    <h2>🔢 数学（4 模块全实现）</h2>
+    <table>
+      <thead><tr><th>moduleId</th><th>名称</th><th>题型</th><th>引导模式</th></tr></thead>
+      <tbody>
+        <tr><td><code>add</code></td><td>➕ 加法</td><td>从凑十到进位加</td><td>stage&gt;50 启用拆分（凑十法）</td></tr>
+        <tr><td><code>sub</code></td><td>➖ 减法</td><td>从破十到借位减</td><td>stage&gt;50 启用拆分（连减法）</td></tr>
+        <tr><td><code>mul</code></td><td>✖️ 乘法</td><td>九九乘法到多位乘</td><td>仅拖拽模式（暂无拆分）</td></tr>
+        <tr><td><code>div</code></td><td>➗ 除法</td><td>基础到长除（整除）</td><td>仅拖拽模式</td></tr>
+      </tbody>
+    </table>
+    <h2>🀄 语文（1 模块 MVP + 3 占位）</h2>
+    <table>
+      <thead><tr><th>moduleId</th><th>名称</th><th>状态</th><th>题型</th></tr></thead>
+      <tbody>
+        <tr><td><code>recognize</code></td><td>👀 看图识字</td><td>✅ 已实现</td><td>emoji + 4 选 1 汉字</td></tr>
+        <tr><td><code>pinyin</code></td><td>🔠 拼音匹配</td><td>🚧 占位</td><td>汉字配拼音（计划：4 选 1）</td></tr>
+        <tr><td><code>compose</code></td><td>📝 组词造句</td><td>🚧 占位</td><td>给字找词（计划：拖词组）</td></tr>
+        <tr><td><code>idiom</code></td><td>🏮 成语接龙</td><td>🚧 占位</td><td>首尾相接（计划：4 选 1 下一成语）</td></tr>
+      </tbody>
+    </table>
+    <h2>🔤 英语（1 模块 MVP + 3 占位）</h2>
+    <table>
+      <thead><tr><th>moduleId</th><th>名称</th><th>状态</th><th>题型</th></tr></thead>
+      <tbody>
+        <tr><td><code>alphabet</code></td><td>🅰️ 字母认知</td><td>✅ 已实现</td><td>大写↔小写匹配（4 选 1，奇偶关交替）</td></tr>
+        <tr><td><code>vocab</code></td><td>📚 看图选词</td><td>🚧 占位</td><td>图片对单词（计划：4 选 1）</td></tr>
+        <tr><td><code>spell</code></td><td>✍️ 拼写组词</td><td>🚧 占位</td><td>拖字母拼单词</td></tr>
+        <tr><td><code>sentence</code></td><td>💬 看图选句</td><td>🚧 占位</td><td>看图选完整句</td></tr>
+      </tbody>
+    </table>
+    <h2>题目模式（4 种）</h2>
+    <table>
+      <thead><tr><th>mode</th><th>用在哪里</th><th>UI</th></tr></thead>
+      <tbody>
+        <tr><td><code>tile-fill</code></td><td>数学加减 stage≤50 + 乘除全部</td><td>数字积木拖拽到等式空槽</td></tr>
+        <tr><td><code>multi-step</code></td><td>数学加减 stage&gt;50</td><td>分步引导填空 + 数字键盘</td></tr>
+        <tr><td><code>choice</code></td><td>语文识字 + 英语字母</td><td>四选一大按钮</td></tr>
+        <tr><td><code>placeholder</code></td><td>所有占位模块</td><td>🚧 敬请期待页</td></tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="tech.html">‹ 技术栈</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="difficulty.html">数学难度梯度 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

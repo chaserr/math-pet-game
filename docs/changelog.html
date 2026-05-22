@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沟通日志 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>沟通日志</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>沟通日志</h1>
+    <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
+
+    <!-- 回合 7 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #7</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.3.1 · 知识库多页化</span>
+        <span class="tag refactor">refactor</span><span class="tag spec">spec</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"也不仅仅是一个 index.html 里面装了所有东西，可以不同模块都有自己的 html，然后 index.html 相当于知识库的主页，由主页可以跳转到各个模块这样的。另外这种布局方式可以作为后续任何项目的一个总纲"</div>
+      <h4>决策</h4>
+      <ul>
+        <li>单文件 <code>index.html</code>（64KB 全装）→ 拆为<b>多页本地网站</b></li>
+        <li><code>index.html</code> 改为<b>知识库主页</b>：Hero + 卡片网格导航（5 分组）+ 最新变更/待处理面板</li>
+        <li>18 个模块/章节各自独立 HTML（overview/quick-start/tech/curriculum/difficulty/decompose-skill/module-*×5/data-model/shared-systems/assets/files/change-protocol/changelog/known-issues）</li>
+        <li>抽公共：<code>shared.css</code>（顶栏/侧栏/卡片/表格/tag/页脚）+ <code>shared.js</code>（侧栏当前页高亮 + 跨页 fetch 搜索 + "/"聚焦）</li>
+        <li>每页统一骨架：顶栏（品牌+面包屑+搜索）+ 左侧栏（同级导航高亮）+ 主内容 + 页脚（上一页/主页/下一页）</li>
+        <li><b>定为通用准则</b>：此多页结构作为后续任何项目的文档总纲，已写入 memory <code>feedback_multi_page_knowledge_base</code></li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        新：<code>docs/shared.css</code> · <code>docs/shared.js</code> · 18 个模块 HTML<br>
+        改：<code>docs/index.html</code>（单文件 → 主页导航）<br>
+        memory：新增 <code>feedback_multi_page_knowledge_base.md</code>（通用），更新 <code>feedback_html_docs.md</code>（项目特化）+ <code>MEMORY.md</code>
+      </p>
+    </article>
+
+    <!-- 回合 6 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #6</span><span class="date">2026-05-21</span>
+        <span class="ver">v1.3.0 · 三学科 + 1000 关 + 拆分引导</span>
+        <span class="tag major">major</span><span class="tag feat">feat</span><span class="tag refactor">refactor</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"关卡不再锁住，分为语文数学英语三大类，每个类别下面有相对于的模块，比如数学下面有加减乘除小类，每小类下面有1000关，每关5道题。语文和英语暂时没想好怎么做或者你可以自己思考或者借鉴网络上类似的游戏去实现。另外关于这个加减法，我还想引导小朋友运用技巧做题，比如34-25，引导用户拆分为30+4，25拆违20+5，所以34-25=34-20=14-5=14-4-1=9这样的一个思路去解决问题，加法类似"</div>
+      <h4>实现</h4>
+      <ul>
+        <li><b>关卡不锁</b>：删除 5 关线性解锁，所有关卡可挑战</li>
+        <li><b>三学科四模块</b>：<code>SUBJECTS</code>(3) × <code>MODULES</code>(4 each) × <code>STAGES_PER_MODULE=1000</code></li>
+        <li><b>难度梯度</b>：每模块 <code>params(stage)</code> 函数算法生成（详见 <a href="difficulty.html">数学难度梯度</a>）</li>
+        <li><b>语文 MVP</b>：看图识字（emoji↔汉字 4 选 1）；<b>英语 MVP</b>：字母大小写匹配；其余 6 模块占位</li>
+        <li><b>拆分技巧</b>：新建 <code>decompose.js</code>（连减法 + 凑十法，详见 <a href="decompose-skill.html">拆分技巧引导</a>）</li>
+        <li><b>题目四模式</b>：tile-fill / multi-step / choice / placeholder</li>
+        <li><b>进度持久化</b>：localStorage <code>mpg_progress_v2</code></li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        改：<code>catalog.js</code> · <code>useQuizGen.js</code> · <code>progress.js</code> · <code>db.js</code> · <code>HomeView.vue</code> · <code>QuizView.vue</code><br>
+        新：<code>lib/decompose.js</code><br>
+        构建：通过（QuizView 22.9KB / HomeView 4.6KB / 总 333KB gz 102KB）
+      </p>
+    </article>
+
+    <!-- 回合 5 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #5</span><span class="date">2026-05-21</span>
+        <span class="ver">v1.2.1 · 单文件知识库</span>
+        <span class="tag refactor">refactor</span><span class="tag spec">spec</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"应该只有一个 index.html。项目的所有相关信息都在这个网站上面，他不应该是一个简单的网络，而是一个本地网站一样的知识库"</div>
+      <h4>决策</h4>
+      <ul>
+        <li>spec.html + changelog.html → 合并为单文件 <code>index.html</code>（回合 #7 又拆为多页）</li>
+        <li>知识库特性：sticky 顶栏 + 左侧分组导航 + 主内容 + 右侧 outline + 实时搜索 + 折叠分组</li>
+      </ul>
+    </article>
+
+    <!-- 回合 4 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #4</span><span class="date">2026-05-21</span>
+        <span class="ver">v1.2.1 · 文档化（已迭代）</span>
+        <span class="tag spec">spec</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"上面沟通的交互细节以及业务需求都要记录下来，不要使用 markdown 文档，要使用 html 生成文档，细化每个模块的业务以及交互，方便未来复制到其他平台，以及后面所有沟通细节都需要记录，这一条可以作为项目准则，每次需求有变化，相对于的文档都需要更新。"</div>
+      <h4>决策</h4>
+      <ul>
+        <li>立项目准则：禁止 Markdown 规范文档，必须 HTML</li>
+        <li>初版建 spec.html + changelog.html 双文件（回合 #5 合并 → 回合 #7 多页化）</li>
+      </ul>
+    </article>
+
+    <!-- 回合 3 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #3</span><span class="date">2026-05-21</span>
+        <span class="ver">v1.2 · 关卡 + 拖拽修复 + 掉落</span>
+        <span class="tag feat">feat</span><span class="tag fix">fix</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"优化一下几项：1. 模型拖拽到答案区域时被遮挡住了，2. 在5道题关卡通过后除了给积分，还会根据自己已经有的宠物爆出一定的口粮。3. 要提供关卡，比如图1-5关，5-10关等等这样的，每道关卡通过后进入下一关"</div>
+      <h4>实现</h4>
+      <ul>
+        <li><b>拖拽防遮挡</b>：原 <code>z-index:10</code> 被 overflow:hidden 裁切 → <code>&lt;Teleport to="body"&gt;</code> + position:fixed ghost 副本</li>
+        <li><b>爆口粮</b>：<code>rollFoodDrops(score)</code> 按宠物 foodId 池随机抽</li>
+        <li><b>5 关系统</b>：初版 1~5/1~10/1~20/1~50/1~100（v1.3 完全重构为多学科 1000 关）</li>
+      </ul>
+    </article>
+
+    <!-- 回合 2 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #2</span><span class="date">2026-05-21</span>
+        <span class="ver">v1.1 · 圆形头像 + 商店完全体</span>
+        <span class="tag ui">ui</span><span class="tag asset">asset</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"使用图里那套精致的圆形头像，也需要把商店预览也改成显示某个固定阶段（比如成体）"</div>
+      <h4>实现</h4>
+      <ul>
+        <li>Python+Pillow 从设计稿提取 4 个圆形猫咪头像（256×256 软边）</li>
+        <li>新增 <code>PetIcon.vue</code>（PNG + PetSprite fallback）</li>
+        <li>ShopView 宠物预览改为 level=MAX_LEVEL + 右下 PetIcon head-badge + 「完全体」tag</li>
+        <li>PetHouseView 预览弹窗 4 爪印 → 4 圆形 PetIcon</li>
+      </ul>
+    </article>
+
+    <!-- 回合 1 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #1（汇总）</span><span class="date">2026-05-21 之前</span>
+        <span class="ver">v1.0 · 初版</span><span class="tag feat">feat</span>
+      </header>
+      <h4>覆盖范围</h4>
+      <ul>
+        <li>立项：H5 数学闯关 + 宠物养成（全年龄）；0~100 加减；Numberblocks 拟人风</li>
+        <li>架构：原 Fastify+SQLite → 纯前端 + Supabase</li>
+        <li>初版 8 只宠物（4 明购 / 3 解锁 / 1 抽卡）+ 4 阶段进化</li>
+        <li>用户约束：不需要考虑版权问题；图片由用户提供</li>
+      </ul>
+      <p class="files">完整 PRD：<code>docs/DESIGN.md</code>（v1.0，仅供溯源）</p>
+    </article>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="change-protocol.html">‹ 变更协议</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="known-issues.html">已知问题 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学难度梯度 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>数学难度梯度</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>数学难度梯度</h1>
+    <div class="lead">
+      每模块 1000 关由<b>参数化算法</b>生成，不手写关卡。<code>useQuizGen.js</code> 内 <code>mathXxxParams(stage)</code> 函数返回该关的数字范围参数。
+    </div>
+    <h2>➕ 加法（mathAddParams）</h2>
+    <table>
+      <thead><tr><th>stage</th><th>aMax</th><th>bMax</th><th>sumMax</th><th>触发拆分</th></tr></thead>
+      <tbody>
+        <tr><td>1-50</td><td>9</td><td>9</td><td>10</td><td>否（10 以内）</td></tr>
+        <tr><td>51-150</td><td>19</td><td>9</td><td>20</td><td>是</td></tr>
+        <tr><td>151-300</td><td>49</td><td>9</td><td>50</td><td>是</td></tr>
+        <tr><td>301-500</td><td>99</td><td>99</td><td>100</td><td>是</td></tr>
+        <tr><td>501-700</td><td>99</td><td>99</td><td>100 <b>强制进位</b></td><td>是</td></tr>
+        <tr><td>701-900</td><td>199</td><td>99</td><td>200</td><td>是</td></tr>
+        <tr><td>901-1000</td><td>499</td><td>499</td><td>999</td><td>是</td></tr>
+      </tbody>
+    </table>
+    <h2>➖ 减法（mathSubParams）</h2>
+    <table>
+      <thead><tr><th>stage</th><th>aMax</th><th>触发拆分</th></tr></thead>
+      <tbody>
+        <tr><td>1-50</td><td>10</td><td>否</td></tr>
+        <tr><td>51-150</td><td>20</td><td>是（b≥10 或个位不够）</td></tr>
+        <tr><td>151-300</td><td>50</td><td>是</td></tr>
+        <tr><td>301-500</td><td>100</td><td>是</td></tr>
+        <tr><td>501-700</td><td>100 <b>强制退位</b></td><td>是</td></tr>
+        <tr><td>701-900</td><td>200</td><td>是</td></tr>
+        <tr><td>901-1000</td><td>999</td><td>是</td></tr>
+      </tbody>
+    </table>
+    <h2>✖️ 乘法（mathMulParams）</h2>
+    <table>
+      <thead><tr><th>stage</th><th>aMax × bMax</th><th>productMax</th></tr></thead>
+      <tbody>
+        <tr><td>1-100</td><td>5 × 5</td><td>25</td></tr>
+        <tr><td>101-300</td><td>9 × 9</td><td>81（九九乘法）</td></tr>
+        <tr><td>301-500</td><td>99 × 9</td><td>200</td></tr>
+        <tr><td>501-700</td><td>99 × 9</td><td>500</td></tr>
+        <tr><td>701-900</td><td>99 × 99</td><td>2000</td></tr>
+        <tr><td>901-1000</td><td>99 × 99</td><td>9999</td></tr>
+      </tbody>
+    </table>
+    <h2>➗ 除法（mathDivParams，仅整除）</h2>
+    <table>
+      <thead><tr><th>stage</th><th>dividendMax ÷ divisorMax</th></tr></thead>
+      <tbody>
+        <tr><td>1-100</td><td>25 ÷ 5</td></tr>
+        <tr><td>101-300</td><td>81 ÷ 9</td></tr>
+        <tr><td>301-500</td><td>100 ÷ 9</td></tr>
+        <tr><td>501-700</td><td>500 ÷ 9</td></tr>
+        <tr><td>701-900</td><td>999 ÷ 9</td></tr>
+        <tr><td>901-1000</td><td>999 ÷ 99</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>除法保证整除</b>：先随机 divisor 和 quotient，再算 dividend = divisor × quotient，确保答案为整数。</div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="curriculum.html">‹ 三学科四模块体系</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="decompose-skill.html">拆分技巧引导 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

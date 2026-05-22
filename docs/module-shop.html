@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商店 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>业务模块<span class="sep">›</span>商店</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>模块：商店 <span class="tag module">module</span></h1>
+    <div class="module-card">
+      <div class="meta-row">
+        <span><b>视图：</b><span class="fp">src/views/ShopView.vue</span></span>
+        <span><b>路由：</b><code>/shop</code></span>
+      </div>
+      <h3>三个 Tab</h3>
+      <ul>
+        <li><b>pets</b>：8 只宠物，全部展示<b>完全体</b>（level=MAX_LEVEL）+ 右下 PetIcon 角标 + 「完全体」紫 tag</li>
+        <li><b>foods</b>：8 种口粮 + 「给{宠物}」标签 + 🪙 价格按钮</li>
+        <li><b>gacha</b>：🥚 50 积分/抽，目前 <code>GACHA_POOL=['dragon']</code>；重复 → 3 份专属口粮</li>
+      </ul>
+      <h3>宠物卡片 <span class="tag ui">ui</span> <span class="tag feat">feat v1.1</span></h3>
+      <ul>
+        <li>主图区 <code>.art</code>：140px 圆角卡 + 橙黄径向背景；中央 <code>PetSprite level=10 size=120</code></li>
+        <li>右下角 <code>.head-badge</code>：44px <code>PetIcon level=10</code></li>
+        <li>名称 + 紫色「完全体」tag（<code>linear-gradient(90deg, #9b5cd6, #6f3ec0)</code>）</li>
+        <li>三态按钮：<code>已拥有</code>（disabled） / <code>🪙 价格</code>（可买） / <code>🔒 unlockDesc</code>（未解锁）</li>
+      </ul>
+      <h3>扭蛋</h3>
+      <table>
+        <thead><tr><th>项</th><th>值</th></tr></thead>
+        <tbody>
+          <tr><td>抽卡成本</td><td>50 积分（<code>GACHA_COST</code>）</td></tr>
+          <tr><td>抽卡池</td><td><code>GACHA_POOL = ['dragon']</code>（萌龙限定）</td></tr>
+          <tr><td>重复奖励</td><td>抽到已有 → 3 份专属口粮（<code>GACHA_DUP_FOOD_QTY=3</code>）</td></tr>
+          <tr><td>结果展示</td><td><code>PetSprite level=10 size=140</code> + 文案</td></tr>
+        </tbody>
+      </table>
+      <h3>解锁条件（gameLogic.js#unlockConditions）</h3>
+      <table>
+        <tr><th>unlockKey</th><th>条件</th></tr>
+        <tr><td>pet:fox</td><td><code>ownedCount &gt;= 3</code></td></tr>
+        <tr><td>pet:panda</td><td><code>mainLevel &gt;= 5</code> ⚠️（见已知问题 I-001）</td></tr>
+        <tr><td>pet:penguin</td><td><code>maxPetLevel &gt;= 5</code></td></tr>
+      </table>
+    </div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="module-quiz.html">‹ 答题</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="module-pet.html">宠物之家 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>变更协议 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>变更协议</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>变更协议（项目准则）</h1>
+    <div class="danger">
+      <b>所有业务/交互/数据/资源规范变更必须：</b><br>
+      1️⃣ 改代码<br>
+      2️⃣ 更新本知识库对应模块页面的现状描述<br>
+      3️⃣ 在 <a href="changelog.html">沟通日志</a> 顶部追加一条 <code>&lt;article class="entry"&gt;</code>（含日期、回合号、用户原话、决策、影响文件）<br>
+      4️⃣ 文档与代码<b>同回合提交</b>，不允许"先合代码后补文档"
+    </div>
+    <h2>多页结构约定</h2>
+    <ul>
+      <li>主页 <code>index.html</code> 仅做卡片导航；每个模块/章节是独立 HTML</li>
+      <li>公共样式 <code>shared.css</code> + 公共脚本 <code>shared.js</code>（侧栏高亮 + 跨页搜索），所有页 <code>&lt;link&gt;</code>/<code>&lt;script&gt;</code> 引用</li>
+      <li>新增页面后：① 在 <code>index.html</code> 卡片网格加一张卡 ② 在所有页面的 <code>&lt;aside class="sidebar"&gt;</code> 加导航项 ③ 在 <code>shared.js</code> 的 <code>PAGES</code> 数组加一项（供搜索）</li>
+    </ul>
+    <h2>禁止</h2>
+    <ul>
+      <li>❌ 新建独立的 Markdown 规范文档（旧 <code>DESIGN.md</code> 仅作历史归档）</li>
+      <li>❌ 把规范写在代码注释里替代知识库</li>
+      <li>❌ 删除 changelog 历史条目（只能追加）</li>
+      <li>❌ 把多个模块塞回单一 HTML（保持多页结构）</li>
+    </ul>
+    <div class="note">本结构（index 主页 + 各模块独立 HTML + shared.css/js）已被定为后续<b>任何项目</b>的文档总纲。</div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="files.html">‹ 文件结构</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="changelog.html">沟通日志 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

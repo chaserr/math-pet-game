@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>快速开始 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>快速开始</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>快速开始</h1>
+    <h2>环境</h2>
+    <ul>
+      <li>Node.js ≥ 18</li>
+      <li>Supabase 项目已就绪，前端 <code>.env</code> 注入 <code>VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY</code></li>
+      <li>开发期需在 Supabase 后台关闭 <b>Confirm email</b></li>
+    </ul>
+    <h2>常用命令</h2>
+    <pre><code>cd client
+npm install
+npm run dev               # http://localhost:5173
+npm run build             # → dist/
+
+# 已知问题：构建报 @rollup/rollup-darwin-* MODULE_NOT_FOUND
+rm -rf node_modules package-lock.json &amp;&amp; npm install</code></pre>
+    <h2>典型构建产物体积（v1.3.0）</h2>
+    <table>
+      <tr><th>chunk</th><th>大小</th><th>gz</th></tr>
+      <tr><td>index.js</td><td>333 KB</td><td>102 KB</td></tr>
+      <tr><td>QuizView</td><td>22.9 KB</td><td>8.7 KB</td></tr>
+      <tr><td>PetHouseView</td><td>5.9 KB</td><td>2.6 KB</td></tr>
+      <tr><td>HomeView</td><td>4.6 KB</td><td>2.2 KB</td></tr>
+      <tr><td>ShopView</td><td>3.8 KB</td><td>1.9 KB</td></tr>
+      <tr><td>progress.js</td><td>0.6 KB</td><td>0.3 KB</td></tr>
+    </table>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="overview.html">‹ 项目总览</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="tech.html">技术栈 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

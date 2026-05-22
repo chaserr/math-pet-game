@@ -205,7 +205,7 @@ export async function feed(petId) {
 
 // ===== 提交一轮 =====
 async function rollFoodDrops(score) {
-  if (score.correctCount < 3) return [];
+  if (!score.passed) return [];
   const owned = await ownedPetIds();
   if (!owned.length) return [];
   const foodIds = owned
@@ -213,7 +213,8 @@ async function rollFoodDrops(score) {
     .filter(Boolean);
   if (!foodIds.length) return [];
 
-  const totalQty = score.perfect ? 3 : (score.correctCount >= 4 ? 2 : 1);
+  const highTier = score.correctCount >= Math.ceil((score.count || 1) * 0.8);
+  const totalQty = score.perfect ? 3 : (highTier ? 2 : 1);
   const merged = {};
   for (let i = 0; i < totalQty; i++) {
     const id = foodIds[Math.floor(Math.random() * foodIds.length)];
@@ -228,14 +229,18 @@ async function rollFoodDrops(score) {
   }));
 }
 
-export async function submitRound(results) {
+export async function submitRound(results, context = null) {
+  // context: { subjectId, moduleId, categoryId, stage } | null
   const score = scoreRound(results);
   const userId = await uid();
+  const ctxStr = context
+    ? `[${context.subjectId}/${context.moduleId}${context.categoryId ? '/' + context.categoryId : ''}#${context.stage}] `
+    : '';
   const rows = results.map(r => ({
     user_id: userId,
-    question: String(r.question ?? ''),
-    answer: Number(r.answer ?? 0),
-    user_answer: r.userAnswer == null ? null : Number(r.userAnswer),
+    question: ctxStr + String(r.question ?? ''),
+    answer: Number.isFinite(Number(r.answer)) ? Number(r.answer) : 0,
+    user_answer: r.userAnswer == null ? null : (Number.isFinite(Number(r.userAnswer)) ? Number(r.userAnswer) : null),
     is_correct: !!r.isCorrect,
     error_count: Number(r.errorCount ?? 0),
     time_ms: Number(r.timeMs ?? 0),

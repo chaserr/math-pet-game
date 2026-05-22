@@ -18,6 +18,7 @@ export function streakMultiplier(streak) {
 }
 
 // results: [{ answer, isCorrect }]（按答题顺序）
+// 轮次大小可变（穷举/数位关每关 1 题，其余 5 题），故按本轮题数判定通关/满分。
 export function scoreRound(results) {
   let total = 0, streak = 0, correctCount = 0;
   for (const r of results) {
@@ -28,9 +29,13 @@ export function scoreRound(results) {
       streak = 0;
     }
   }
-  const perfect = correctCount === ROUND_SIZE && results.length === ROUND_SIZE;
-  if (perfect) total += PERFECT_ROUND_BONUS;
-  return { total, correctCount, perfect, bonus: perfect ? PERFECT_ROUND_BONUS : 0 };
+  const count = results.length;
+  const need = Math.max(1, Math.ceil(count * 0.6));
+  const passed = count > 0 && correctCount >= need;
+  const perfect = count > 0 && correctCount === count;
+  const bonus = perfect && count >= ROUND_SIZE ? PERFECT_ROUND_BONUS : 0;
+  total += bonus;
+  return { total, correctCount, count, passed, perfect, bonus };
 }
 
 // ===== 饥饿心情 =====
