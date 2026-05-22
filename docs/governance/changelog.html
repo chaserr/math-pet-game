@@ -4,25 +4,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>沟通日志 · 数字积木大冒险</title>
-<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="../shared.css">
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.5.0</span></a>
-  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>沟通日志</nav>
+  <a class="brand" href="../index.html">🧮 数字积木大冒险 <span class="ver">v1.6.0</span></a>
+  <nav class="breadcrumb"><a href="../index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>沟通日志</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
-    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a><a href="textbook.html">教材轴（跟课本学）</a></div>
-    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
-    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
-    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+    <div class="group"><div class="group-title">📍 概览</div><a href="../overview/overview.html">项目总览</a><a href="../overview/quick-start.html">快速开始</a><a href="../overview/tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="../curriculum/curriculum.html">三学科四模块体系</a><a href="../curriculum/difficulty.html">数学关卡分类</a><a href="../curriculum/decompose-skill.html">拆分技巧引导</a><a href="../curriculum/textbook.html">教材轴（跟课本学）</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="../modules/module-auth.html">登录 / 注册</a><a href="../modules/module-home.html">首页 / 学科选择</a><a href="../modules/module-stages.html">选关</a><a href="../modules/module-quiz.html">答题</a><a href="../modules/module-shop.html">商店</a><a href="../modules/module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="../system/data-model.html">数据模型</a><a href="../system/shared-systems.html">共享系统</a><a href="../system/assets.html">资源体系</a><a href="../system/files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a><a href="roadmap.html">占位 / 待补清单</a></div>
   </aside>
   <main class="content">
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
+
+    <!-- 回合 10 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #10</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.6.0 · 文档重构 + 占位清单</span>
+        <span class="tag refactor">refactor</span><span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "/Users/tongxing/math-pet-game/docs 这个文件整理一下，只保留 index.html 在外面，其他的都按模块按文件夹分类。另外把上面占位的或者未实现的也在知识库里体现出来，防止后续忘记了。"<br><br>
+        "我从跟课本学点进去后然后点 10 以内加减法，再点左上角返回直接返回了关卡，应该再返回到跟课本学。"
+      </div>
+      <h4>决策</h4>
+      <ul>
+        <li><b>文档目录重构</b>：docs/ 仅保留 <code>index.html</code> / <code>shared.css</code> / <code>shared.js</code> / *.md；20 个内容页按侧栏 5 大分组下沉到子目录 <code>overview/ · curriculum/ · modules/ · system/ · governance/</code>。所有内部相对路径同步重写（同目录裸文件名，跨目录 <code>../&lt;folder&gt;/</code>）。</li>
+        <li><b>shared.js 适配</b>：PAGES 数组的 <code>file</code> 加目录前缀；运行时检测页面位置（根 = <code>''</code>，子目录 = <code>'../'</code>），<code>fetch</code> 与搜索结果链接都用此前缀。当前页高亮改为后缀匹配。</li>
+        <li><b>占位 / 待补清单</b>：新建 <code>governance/roadmap.html</code>，集中跟踪 ① 题型模块占位（语文 3 / 英语 3）② 教材轴 6 年级 × 上下册各单元待补 ③ 语文 4 类专题 × 6 年级 = 24 项 ④ 教学卡 trickId 待补（borrow-trick / make-ten 已完成，规划 break-ten / swap-add / mult-distrib / div-with-remainder）⑤ 资源 / 数据 / 系统未完事项。规则：实现即移除/标 ✅，新增需求立刻登记。</li>
+        <li><b>QuizView 返回兼容教材轴</b>：上一轮 <code>practice</code> 路由到 QuizView 时未带教材上下文，返回时回到关卡页而非课本。本轮 <code>TextbookView</code> 在 query 里加 <code>from=textbook&amp;grade&amp;volume&amp;unit</code>，<code>QuizView.quit()</code> 优先识别 <code>from=textbook</code> 回 <code>/textbook</code>，否则保持旧行为。</li>
+      </ul>
+      <h4>实现 / 影响文件</h4>
+      <p class="files">
+        移动：原 docs/ 根下 20 个 html 全部 <code>git mv</code> 到对应子目录（overview / curriculum / modules / system / governance）<br>
+        改：所有子目录页面的 brand / breadcrumb / sidebar / footer / 卡片链接（共 20 文件 × 数十处）；<code>shared.css</code> / <code>shared.js</code> 引用前缀加 <code>../</code><br>
+        改：<code>shared.js</code>（PAGES 加目录前缀 + ROOT 自动判断 + 高亮匹配规则）· <code>index.html</code>（卡片路径 + 5 分组目录脚注 + 待补面板 + 最新变更回合 #10）<br>
+        新：<code>docs/governance/roadmap.html</code>（占位清单）<br>
+        改（代码）：<code>client/src/views/TextbookView.vue</code>（practice 路由附 from/grade/volume/unit）· <code>client/src/views/QuizView.vue</code>（<code>quit()</code> 识别 from=textbook 回教材）
+      </p>
+    </article>
 
     <!-- 回合 9 -->
     <article class="entry">
@@ -76,10 +105,10 @@
       </div>
       <h4>实现</h4>
       <ul>
-        <li><b>数学三层结构</b>：Subject → Module → <b>Category</b> → Stage。加减乘除各新增 5 分类（<code>within10</code> / <code>within100</code> / <code>n2</code> / <code>n3</code> / <code>n4</code>）；新模块 <code>place</code>（数位认知）8 分类（<code>d3</code>~<code>d10</code>）。详见 <a href="difficulty.html">数学关卡分类</a>。</li>
+        <li><b>数学三层结构</b>：Subject → Module → <b>Category</b> → Stage。加减乘除各新增 5 分类（<code>within10</code> / <code>within100</code> / <code>n2</code> / <code>n3</code> / <code>n4</code>）；新模块 <code>place</code>（数位认知）8 分类（<code>d3</code>~<code>d10</code>）。详见 <a href="../curriculum/difficulty.html">数学关卡分类</a>。</li>
         <li><b>10 以内固定 9 关 × 9 题</b>：按"被固定的那个操作数"分关，按钮显示代表标签（如 <code>1+?</code> / <code>?÷5</code>）</li>
         <li><b>数位认知</b>：tile-fill 新增 <code>layout: 'place'</code> 布局，大数字 + 个/十/百/千… 标签格子，复用积木拖拽</li>
-        <li><b>新页 <a href="module-stages.html">选关</a></b>：分类 Tab + 关卡网格（粉色 <code>#F6B8B8</code> 长方形 + 已通关灰显仍可点）+ 分页（每页 100 关）</li>
+        <li><b>新页 <a href="../modules/module-stages.html">选关</a></b>：分类 Tab + 关卡网格（粉色 <code>#F6B8B8</code> 长方形 + 已通关灰显仍可点）+ 分页（每页 100 关）</li>
         <li><b>进度结构换代</b>：<code>mpg_progress_v2</code>（max stage）→ <code>mpg_progress_v3</code>（按分类记录已通关关号<b>集合</b>，支持单关灰显与重玩）</li>
         <li><b>计分按轮次大小</b>：<code>scoreRound</code> 新增 <code>count / passed</code>；<code>passed = correctCount ≥ ⌈count×0.6⌉</code>；<code>perfect = 全对</code>；<code>rollFoodDrops</code> 按比例派发，使单题关也能掉口粮</li>
         <li><b>首屏 splash</b>：<code>main.js</code> 不再被 <code>auth.init</code> 阻塞 mount；<code>App.vue</code> <code>!auth.ready</code> 时显示加载占位；路由守卫 <code>await auth.whenReady()</code>；HomeView <code>refreshProfile + listMyPets</code> 并行</li>
@@ -134,9 +163,9 @@
       <ul>
         <li><b>关卡不锁</b>：删除 5 关线性解锁，所有关卡可挑战</li>
         <li><b>三学科四模块</b>：<code>SUBJECTS</code>(3) × <code>MODULES</code>(4 each) × <code>STAGES_PER_MODULE=1000</code></li>
-        <li><b>难度梯度</b>：每模块 <code>params(stage)</code> 函数算法生成（详见 <a href="difficulty.html">数学关卡分类</a>）</li>
+        <li><b>难度梯度</b>：每模块 <code>params(stage)</code> 函数算法生成（详见 <a href="../curriculum/difficulty.html">数学关卡分类</a>）</li>
         <li><b>语文 MVP</b>：看图识字（emoji↔汉字 4 选 1）；<b>英语 MVP</b>：字母大小写匹配；其余 6 模块占位</li>
-        <li><b>拆分技巧</b>：新建 <code>decompose.js</code>（连减法 + 凑十法，详见 <a href="decompose-skill.html">拆分技巧引导</a>）</li>
+        <li><b>拆分技巧</b>：新建 <code>decompose.js</code>（连减法 + 凑十法，详见 <a href="../curriculum/decompose-skill.html">拆分技巧引导</a>）</li>
         <li><b>题目四模式</b>：tile-fill / multi-step / choice / placeholder</li>
         <li><b>进度持久化</b>：localStorage <code>mpg_progress_v2</code></li>
       </ul>
@@ -234,9 +263,9 @@
 </div>
 <footer class="page-foot">
   <a href="change-protocol.html">‹ 变更协议</a>
-  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a class="home" href="../index.html">↑ 主页</a><div class="spacer"></div>
   <a href="known-issues.html">已知问题 ›</a>
 </footer>
-<script src="shared.js"></script>
+<script src="../shared.js"></script>
 </body>
 </html>

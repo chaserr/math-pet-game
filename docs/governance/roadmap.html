@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>占位 / 待补清单 · 数字积木大冒险</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .roadmap-table { font-size: 13.5px; }
+  .roadmap-table td.status { white-space: nowrap; font-weight: 700; }
+  .st-todo { color: #b97a1f; background: #fff3d6; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+  .st-ph   { color: #9b6bd1; background: #f3e6ff; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+  .st-done { color: #2f9c4d; background: #e1f5e3; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+  .legend { display: flex; gap: 12px; font-size: 12.5px; margin: 6px 0 14px; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="../index.html">🧮 数字积木大冒险 <span class="ver">v1.6.0</span></a>
+  <nav class="breadcrumb"><a href="../index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>占位 / 待补清单</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="../overview/overview.html">项目总览</a><a href="../overview/quick-start.html">快速开始</a><a href="../overview/tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="../curriculum/curriculum.html">三学科四模块体系</a><a href="../curriculum/difficulty.html">数学关卡分类</a><a href="../curriculum/decompose-skill.html">拆分技巧引导</a><a href="../curriculum/textbook.html">教材轴（跟课本学）</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="../modules/module-auth.html">登录 / 注册</a><a href="../modules/module-home.html">首页 / 学科选择</a><a href="../modules/module-stages.html">选关</a><a href="../modules/module-quiz.html">答题</a><a href="../modules/module-shop.html">商店</a><a href="../modules/module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="../system/data-model.html">数据模型</a><a href="../system/shared-systems.html">共享系统</a><a href="../system/assets.html">资源体系</a><a href="../system/files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a><a href="roadmap.html">占位 / 待补清单</a></div>
+  </aside>
+  <main class="content">
+    <h1>占位 / 待补清单 <span class="tag major">v1.6 新增</span></h1>
+    <div class="lead">
+      凡是<b>骨架已搭好但内容是占位（🚧）</b>、<b>等待真实数据填入</b>或<b>规划但未动工</b>的项，统一在这里登记。每次实现/填充一项后，把它从这里移除（或标为 ✅），<b>不准遗忘</b>。
+    </div>
+    <div class="note">
+      <b>与「已知问题」的区别</b>：<a href="known-issues.html">已知问题</a> 记录 Bug / 退化 / 行为偏差；本页记录 <b>未完工的功能 / 未补的内容</b>。
+    </div>
+
+    <div class="legend">
+      <span class="st-ph">占位</span> 骨架已就位，等内容
+      <span class="st-todo">待做</span> 计划中，未实现
+      <span class="st-done">已完成</span> 仅作历史标记
+    </div>
+
+    <h2>① 题型模块（学科 × 模块）</h2>
+    <table class="roadmap-table">
+      <thead><tr><th>学科</th><th>moduleId</th><th>名称</th><th>状态</th><th>题型规划</th><th>引用</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3">🀄 语文</td><td><code>pinyin</code></td><td>拼音匹配</td><td class="status"><span class="st-ph">占位</span></td><td>汉字配拼音（4 选 1）</td><td><a href="../curriculum/curriculum.html">curriculum</a></td></tr>
+        <tr><td><code>compose</code></td><td>组词造句</td><td class="status"><span class="st-ph">占位</span></td><td>给字找词 / 拖词组</td><td>同上</td></tr>
+        <tr><td><code>idiom</code></td><td>成语接龙</td><td class="status"><span class="st-ph">占位</span></td><td>首尾相接 4 选 1</td><td>同上</td></tr>
+        <tr><td rowspan="3">🔤 英语</td><td><code>vocab</code></td><td>看图选词</td><td class="status"><span class="st-ph">占位</span></td><td>图片对单词 4 选 1</td><td>同上</td></tr>
+        <tr><td><code>spell</code></td><td>拼写组词</td><td class="status"><span class="st-ph">占位</span></td><td>拖字母拼单词</td><td>同上</td></tr>
+        <tr><td><code>sentence</code></td><td>看图选句</td><td class="status"><span class="st-ph">占位</span></td><td>看图选完整句</td><td>同上</td></tr>
+      </tbody>
+    </table>
+    <p class="files">影响代码：<code>useQuizGen.js</code> 这些 moduleId 目前 fallback 到 <code>genPlaceholder()</code>，需要新增 <code>gen*()</code> 出题函数 + 题库。</p>
+
+    <h2>② 教材轴 · 数学 <code style="font-size:12px;">grade1..grade6 × up/down</code></h2>
+    <p>对照 <a href="../curriculum/textbook.html">教材轴</a> · 数据 <code>client/src/lib/textbook.js</code> 的 <code>MATH</code>。✅ = 已有内容，🚧 = 占位空册/单元。</p>
+    <table class="roadmap-table">
+      <thead><tr><th>年级</th><th>上册</th><th>下册</th><th>待补单元（已知，从课本目录列出）</th></tr></thead>
+      <tbody>
+        <tr><td>一年级</td><td>✅ U1 认识10以内的数 / ✅ U2 10以内加减 / 🚧 U3 20以内进位加</td><td>🚧 整册</td><td>20 以内退位减、认识图形、人民币认识、100 以内数</td></tr>
+        <tr><td>二年级</td><td>✅ U1 九九乘法表 / 🚧 U2 100以内加减</td><td>🚧 整册</td><td>除法初步、有余数除法、混合运算、长度单位、角的初步认识</td></tr>
+        <tr><td>三年级</td><td>🚧 整册</td><td>🚧 整册</td><td>万以内加减、多位数乘一位数、分数初步、面积、年月日、小数初步</td></tr>
+        <tr><td>四年级</td><td>✅ U1 万以内减法·减1法 / 🚧 其它单元</td><td>🚧 整册</td><td>大数认识、三位数乘两位数、除数是两位数、运算定律、小数加减乘除</td></tr>
+        <tr><td>五年级</td><td>🚧 整册</td><td>🚧 整册</td><td>多边形面积、小数乘除、简易方程、分数加减、长方体正方体、统计</td></tr>
+        <tr><td>六年级</td><td>🚧 整册</td><td>🚧 整册</td><td>分数乘除、比、百分数、圆、扇形统计图、负数</td></tr>
+      </tbody>
+    </table>
+    <p class="files">补法：在 <code>textbook.js</code> 对应年级/册的 <code>units</code> 数组里 <code>push</code> 单元；练习项用 <code>{ type: 'practice', ref: { module, category } }</code> 复用旧题库；新题型先把 module/category 补齐再 ref。</p>
+
+    <h2>③ 教材轴 · 语文 · 用户规划「每年级 4 类专题」</h2>
+    <p>用户在回合 #9 提出：语文每个年级要有 <b>必背诗词 / 必学汉字 / 给汉字注音 / 根据拼音学汉字</b> 各一项。<b>合计 6 × 4 = 24 项待补</b>。</p>
+    <table class="roadmap-table">
+      <thead><tr><th>年级</th><th>📜 必背诗词</th><th>🔤 必学汉字</th><th>🔠 给汉字注音</th><th>🅰️ 根据拼音学汉字</th></tr></thead>
+      <tbody>
+        <tr><td>一年级</td><td class="status"><span class="st-ph">占位</span></td><td class="status"><span class="st-ph">占位</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td></tr>
+        <tr><td>二年级</td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td></tr>
+        <tr><td>三年级</td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td></tr>
+        <tr><td>四年级</td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td></tr>
+        <tr><td>五年级</td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td></tr>
+        <tr><td>六年级</td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td><td class="status"><span class="st-todo">待做</span></td></tr>
+      </tbody>
+    </table>
+    <p class="files">实现路径：4 类专题各自是新的 <b>moduleId</b>（如 <code>poem</code> / <code>chars</code> / <code>annotate</code> / <code>pinyin-to-char</code>），用 <code>choice</code> 或新 layout 出题；教材轴每年级单元里加 4 个 <code>practice</code> ref。</p>
+
+    <h2>④ 教学卡（解题技巧）trickId 待补</h2>
+    <table class="roadmap-table">
+      <thead><tr><th>trickId</th><th>名称</th><th>状态</th><th>对应单元 / 备注</th></tr></thead>
+      <tbody>
+        <tr><td><code>borrow-trick</code></td><td>整万数减法·减1法</td><td class="status"><span class="st-done">已完成</span></td><td>四上 第1单元</td></tr>
+        <tr><td><code>make-ten</code></td><td>凑十法（加法）</td><td class="status"><span class="st-done">已完成</span></td><td>一上 第2单元</td></tr>
+        <tr><td><code>break-ten</code></td><td>破十法（减法）<i>规划中</i></td><td class="status"><span class="st-todo">待做</span></td><td>一下 20以内退位减</td></tr>
+        <tr><td><code>swap-add</code></td><td>加法交换律 / 凑整</td><td class="status"><span class="st-todo">待做</span></td><td>四上 运算定律</td></tr>
+        <tr><td><code>mult-distrib</code></td><td>乘法分配律</td><td class="status"><span class="st-todo">待做</span></td><td>四上 运算定律</td></tr>
+        <tr><td><code>div-with-remainder</code></td><td>有余数的除法</td><td class="status"><span class="st-todo">待做</span></td><td>二下</td></tr>
+      </tbody>
+    </table>
+    <p class="files">新 trickId：在 <code>useQuizGen.js</code> 的 <code>LESSON_META</code> 注册 + 写 <code>build*()</code>；如需新步骤形态，在 <code>decompose.js</code> 加 <code>kind</code> 并到 <code>LessonView</code> 加渲染分支。</p>
+
+    <h2>⑤ 资源 / 数据 / 系统</h2>
+    <table class="roadmap-table">
+      <thead><tr><th>项</th><th>状态</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>PetIcon 资源（猫之外的 7 只）</td><td class="status"><span class="st-todo">待做</span></td><td>商店 / 宠物之家目前仅猫咪有像素图；其它宠物用 SVG fallback</td></tr>
+        <tr><td>panda 解锁条件联动 v3 进度</td><td class="status"><span class="st-todo">待做</span></td><td>v1.4 v2→v3 进度迁移后未联动判定</td></tr>
+        <tr><td>v2 → v3 进度迁移脚本</td><td class="status"><span class="st-todo">待做</span></td><td>旧用户的 <code>mpg_progress_v2</code> 键不会自动迁移</td></tr>
+        <tr><td>QuizView "再来一关"（math 内连续闯关）</td><td class="status"><span class="st-todo">待做</span></td><td>当前结算只能回选关，缺少下一关直达</td></tr>
+        <tr><td>教学卡多技巧引导（演示后加 1-2 题再过）</td><td class="status"><span class="st-todo">待做</span></td><td>当前只演示 + 1 题自测，可加 2-3 题</td></tr>
+      </tbody>
+    </table>
+
+    <h2>更新规则</h2>
+    <ul>
+      <li>实现了某一项 → 把对应行的 <span class="st-ph">占位</span> / <span class="st-todo">待做</span> 改为 <span class="st-done">已完成</span>，或<b>直接删行</b>（推荐删行，保持本页只有"未完成"内容）</li>
+      <li>新增需求时 → 立刻在本页登记，<b>不允许只口头记下</b></li>
+      <li>每次发版 → 同步本页 + <a href="changelog.html">沟通日志</a> 同一条目下</li>
+    </ul>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="known-issues.html">‹ 已知问题</a>
+  <a class="home" href="../index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="../index.html">完结</a>
+</footer>
+<script src="../shared.js"></script>
+</body>
+</html>
