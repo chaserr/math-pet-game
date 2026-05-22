@@ -1,0 +1,87 @@
+{
+  "pet_id": "turtle_001",
+  "pet_name": "乌龟",
+  "runtime_pet_id": "turtle",
+  "growth_stages": [
+    {
+      "stage": 0,
+      "name": "幼年",
+      "display_name": "小龟苗",
+      "model": "turtle_baby",
+      "icon": "icon_turtle_baby",
+      "animation": ["idle_baby", "hide_baby", "eat_baby"],
+      "unlock_condition": "default",
+      "description": "刚被领养的小乌龟，慢吞吞地探头观察世界。",
+      "appearance_keywords": ["小体型", "圆眼睛", "迷你龟壳", "探头动作"],
+      "status_role": "可爱、谨慎、需要陪伴",
+      "assets": {
+        "portrait": "/pets/turtle/0.png",
+        "model": "/pets/turtle/models/turtle_baby.png",
+        "icon": "/pets/turtle/icons/icon_turtle_baby.png",
+        "badge": "/pets/turtle/badges/stage_shell_0.png",
+        "label": "/pets/turtle/labels/stage_label_0.png",
+        "effect": "/pets/turtle/effects/evolve_stage_0.png"
+      }
+    },
+    {
+      "stage": 1,
+      "name": "成长",
+      "display_name": "探险龟",
+      "model": "turtle_growing",
+      "icon": "icon_turtle_growing",
+      "animation": ["idle_growing", "walk_growing", "play_growing"],
+      "unlock_condition": "intimacy >= 100",
+      "description": "开始熟悉主人，喜欢慢慢探索新的地方。",
+      "appearance_keywords": ["体型变大", "龟壳纹路清晰", "动作稳定", "眼神好奇"],
+      "status_role": "稳重、好奇、开始互动",
+      "assets": {
+        "portrait": "/pets/turtle/1.png",
+        "model": "/pets/turtle/models/turtle_growing.png",
+        "icon": "/pets/turtle/icons/icon_turtle_growing.png",
+        "badge": "/pets/turtle/badges/stage_shell_1.png",
+        "label": "/pets/turtle/labels/stage_label_1.png",
+        "effect": "/pets/turtle/effects/evolve_stage_1.png"
+      }
+    },
+    {
+      "stage": 2,
+      "name": "强壮",
+      "display_name": "守护龟",
+      "model": "turtle_strong",
+      "icon": "icon_turtle_strong",
+      "animation": ["idle_strong", "guard_strong", "charge_strong"],
+      "unlock_condition": "level >= 20",
+      "description": "龟壳变得坚硬可靠，可以守护主人完成挑战。",
+      "appearance_keywords": ["厚重龟壳", "坚定眼神", "护甲感", "站姿稳固"],
+      "status_role": "坚韧、可靠、可协助任务",
+      "assets": {
+        "portrait": "/pets/turtle/2.png",
+        "model": "/pets/turtle/models/turtle_strong.png",
+        "icon": "/pets/turtle/icons/icon_turtle_strong.png",
+        "badge": "/pets/turtle/badges/stage_shell_2.png",
+        "label": "/pets/turtle/labels/stage_label_2.png",
+        "effect": "/pets/turtle/effects/evolve_stage_2.png"
+      }
+    },
+    {
+      "stage": 3,
+      "name": "完全体",
+      "display_name": "玄甲灵龟",
+      "model": "turtle_final",
+      "icon": "icon_turtle_final",
+      "animation": ["idle_final", "shield_final", "special_final"],
+      "unlock_condition": "level >= 40 && item: evolution_stone",
+      "description": "乌龟的最终形态，龟甲蕴含灵光，沉稳而强大。",
+      "appearance_keywords": ["玉色龟甲", "金色纹路", "灵光特效", "成熟气质"],
+      "status_role": "成熟、稀有、最终形态",
+      "assets": {
+        "portrait": "/pets/turtle/3.png",
+        "model": "/pets/turtle/models/turtle_final.png",
+        "icon": "/pets/turtle/icons/icon_turtle_final.png",
+        "badge": "/pets/turtle/badges/stage_shell_3.png",
+        "label": "/pets/turtle/labels/stage_label_3.png",
+        "effect": "/pets/turtle/effects/evolve_stage_3.png"
+      }
+    }
+  ]
+}
