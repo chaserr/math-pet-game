@@ -34,9 +34,8 @@ function genRange(op, cat) {
   if (op === '+') {
     const a = randInt(1, max - 1);
     const b = randInt(1, max - a);
-    const answer = a + b;
-    if (answer >= 10) return { mode: 'multi-step', a, b, op: '+', answer, steps: decomposeAdd(a, b) };
-    return buildArithTile([a, b], '+', answer);
+    // 100 以内加法一律拖拽（凑十法走教学卡，不再自动 multi-step）
+    return buildArithTile([a, b], '+', a + b);
   }
   if (op === '-') {
     const a = randInt(2, max);

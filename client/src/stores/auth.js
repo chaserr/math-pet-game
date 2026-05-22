@@ -6,6 +6,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,        // Supabase auth user
     points: 0,
+    pets: [],          // 当前用户的宠物（HomeView 加载后写入，QuizView 用首只决定口粮掉落）
     ready: false,
     _readyPromise: null,
   }),
@@ -17,12 +18,18 @@ export const useAuthStore = defineStore('auth', {
       if (this._readyPromise) return this._readyPromise;
       this._readyPromise = (async () => {
         try {
-          const { data } = await supabase.auth.getSession();
+          // 给 supabase 最多 4 秒：网络不通时不要把首屏卡死
+          // （getSession 在有过期 token 时会触发 refresh 网络请求，可能永久挂起）
+          const res = await Promise.race([
+            supabase.auth.getSession(),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('supabase getSession timeout')), 4000)),
+          ]);
+          const data = res?.data;
           if (data?.session?.user) {
             this.user = data.session.user;
             await this.refreshProfile();
           }
-        } catch { /* 容错：网络问题时仍标记 ready，避免应用永远卡在加载页 */ }
+        } catch (e) { console.warn('[auth] init skipped:', e?.message || e); }
         this.ready = true;
       })();
       return this._readyPromise;
@@ -59,6 +66,7 @@ export const useAuthStore = defineStore('auth', {
       this.points = 0;
     },
     setPoints(p) { this.points = p; },
+    setPets(p) { this.pets = Array.isArray(p) ? p : []; },
   },
 });
 

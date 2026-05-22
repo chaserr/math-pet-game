@@ -204,32 +204,28 @@ export async function feed(petId) {
 }
 
 // ===== 提交一轮 =====
-async function rollFoodDrops(score) {
-  if (!score.passed) return [];
-  const owned = await ownedPetIds();
-  if (!owned.length) return [];
-  const foodIds = owned
-    .map(p => findPet(p.pet_id)?.foodId)
-    .filter(Boolean);
-  if (!foodIds.length) return [];
+// 服务端口粮掉落：以「展示宠物」对应口粮为掉落源；份数与本地 rollFoodDropsLocal 一致。
+async function rollFoodDrops(score, featuredPetId) {
+  let qty = 0;
+  if (score.perfect) qty = 3;
+  else if (score.passed) qty = 2;
+  else if (score.correctCount > 0) qty = 1;
+  if (!qty) return [];
 
-  const highTier = score.correctCount >= Math.ceil((score.count || 1) * 0.8);
-  const totalQty = score.perfect ? 3 : (highTier ? 2 : 1);
-  const merged = {};
-  for (let i = 0; i < totalQty; i++) {
-    const id = foodIds[Math.floor(Math.random() * foodIds.length)];
-    merged[id] = (merged[id] || 0) + 1;
+  let foodId = featuredPetId ? findPet(featuredPetId)?.foodId : null;
+  if (!foodId) {
+    // fallback：用任一已拥有宠物的口粮
+    const owned = await ownedPetIds();
+    if (!owned.length) return [];
+    foodId = findPet(owned[0].pet_id)?.foodId;
   }
+  if (!foodId) return [];
 
-  for (const [foodId, qty] of Object.entries(merged)) {
-    await addFood(foodId, qty);
-  }
-  return Object.entries(merged).map(([foodId, qty]) => ({
-    foodId, qty, name: findFood(foodId)?.name || foodId,
-  }));
+  await addFood(foodId, qty);
+  return [{ foodId, qty, name: findFood(foodId)?.name || foodId }];
 }
 
-export async function submitRound(results, context = null) {
+export async function submitRound(results, context = null, featuredPetId = null) {
   // context: { subjectId, moduleId, categoryId, stage } | null
   const score = scoreRound(results);
   const userId = await uid();
@@ -248,7 +244,7 @@ export async function submitRound(results, context = null) {
   const { error } = await supabase.from('answer_history').insert(rows);
   if (error) throw new Error(error.message);
   const points = await addPoints(score.total);
-  const foodDrops = await rollFoodDrops(score);
+  const foodDrops = await rollFoodDrops(score, featuredPetId);
   const newlyUnlocked = await evaluateUnlocks();
   return { score, points, foodDrops, newlyUnlocked };
 }

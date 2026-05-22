@@ -201,6 +201,7 @@ onMounted(async () => {
   try {
     const [, ps] = await Promise.all([auth.refreshProfile(), listMyPets()]);
     pets.value = ps;
+    auth.setPets(ps);
   } catch { /* ignore */ }
 });
 </script>

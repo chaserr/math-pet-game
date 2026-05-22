@@ -227,10 +227,11 @@ import { submitRound } from '../db.js';
 import { useAuthStore } from '../stores/auth.js';
 import {
   SUBJECTS, MODULES, STAGES_PER_MODULE, ROUND_SIZE as DEFAULT_ROUND_SIZE,
-  findSubject, findModule,
+  findSubject, findModule, findPet, findFood,
 } from '../catalog.js';
 import { findCategory, categoryCount, categoryPerLevel } from '../lib/mathLevels.js';
 import { markCleared } from '../lib/progress.js';
+import { scoreRound, rollFoodDropsLocal } from '../lib/gameLogic.js';
 
 const BASE = 180;
 const router = useRouter();
@@ -684,18 +685,39 @@ function nextQuestion() {
   loadQuestion();
 }
 async function endRound() {
-  try {
-    const res = await submitRound(results, { subjectId: subjectId.value, moduleId: moduleId.value, categoryId: category.value, stage: stage.value });
-    score.value = res.score;
-    auth.setPoints(res.points);
-    foodDrops.value = res.foodDrops || [];
-    if (passed.value && markCleared(subjectId.value, moduleId.value, category.value, stage.value)) {
-      stageAdvanced.value = stage.value;
-    }
-  } catch (e) {
-    hint.value = '提交失败：' + e.message;
+  // 1) 立即用本地数据计算分数、口粮、通关标记 —— 弹框马上出现，不等后端
+  const sc = scoreRound(results);
+  score.value = sc;
+
+  // 展示宠物 = HomeView 加载到 auth.pets 的首只；找不到就回退到第一个静态食物
+  const featuredPetId = auth.pets?.[0]?.petId || null;
+  const featuredFoodId = featuredPetId
+    ? findPet(featuredPetId)?.foodId
+    : null;
+  const localDrops = rollFoodDropsLocal(sc, featuredFoodId);
+  foodDrops.value = localDrops.map(d => ({
+    ...d,
+    name: findFood(d.foodId)?.name || d.foodId,
+  }));
+
+  if (sc.passed && markCleared(subjectId.value, moduleId.value, category.value, stage.value)) {
+    stageAdvanced.value = stage.value;
   }
+
+  // 乐观更新积分（即使后端持久化失败也保留显示）
+  auth.setPoints((auth.points || 0) + sc.total);
   finished.value = true;
+
+  // 2) 后台持久化：成功就把积分同步到服务端权威值；失败就告警，不阻塞 UI
+  submitRound(
+    results,
+    { subjectId: subjectId.value, moduleId: moduleId.value, categoryId: category.value, stage: stage.value },
+    featuredPetId,
+  ).then((res) => {
+    if (res?.points != null) auth.setPoints(res.points);
+  }).catch((e) => {
+    console.warn('[round] persistence failed:', e?.message || e);
+  });
 }
 
 function restart() {

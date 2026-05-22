@@ -1,41 +1,40 @@
-// 纯函数游戏逻辑（计分、经验、心情、解锁条件）—— 从原后端移植到前端
+// 纯函数游戏逻辑（计分、经验、心情、解锁条件 + 本地口粮掉落）
 
-// ===== 计分（DESIGN.md §3.5） =====
+// ===== 计分 =====
+// 通关 = 100；未通关也给鼓励分：20 起步 + 10 × 答对数（封顶 90，保留 100 的稀缺感）
 export const ROUND_SIZE = 5;
-export const PERFECT_ROUND_BONUS = 30;
-
-export function baseScore(answer) {
-  const digits = String(Math.abs(answer)).length;
-  if (digits <= 1) return 5;
-  if (digits === 2) return 10;
-  return 15;
-}
-
-export function streakMultiplier(streak) {
-  if (streak >= 3) return 1.5;
-  if (streak === 2) return 1.2;
-  return 1.0;
-}
+export const STAGE_REWARD = 100;
+export const FAIL_BASE = 20;
+export const FAIL_PER_CORRECT = 10;
+export const FAIL_CAP = 90;
 
 // results: [{ answer, isCorrect }]（按答题顺序）
-// 轮次大小可变（穷举/数位关每关 1 题，其余 5 题），故按本轮题数判定通关/满分。
+// 通关阈值：correctCount ≥ ceil(count × 0.6)
 export function scoreRound(results) {
-  let total = 0, streak = 0, correctCount = 0;
-  for (const r of results) {
-    if (r.isCorrect) {
-      streak += 1; correctCount += 1;
-      total += Math.round(baseScore(r.answer) * streakMultiplier(streak));
-    } else {
-      streak = 0;
-    }
-  }
+  let correctCount = 0;
+  for (const r of results) if (r.isCorrect) correctCount += 1;
   const count = results.length;
   const need = Math.max(1, Math.ceil(count * 0.6));
   const passed = count > 0 && correctCount >= need;
   const perfect = count > 0 && correctCount === count;
-  const bonus = perfect && count >= ROUND_SIZE ? PERFECT_ROUND_BONUS : 0;
-  total += bonus;
-  return { total, correctCount, count, passed, perfect, bonus };
+  const total = passed
+    ? STAGE_REWARD
+    : Math.min(FAIL_CAP, FAIL_BASE + FAIL_PER_CORRECT * correctCount);
+  return { total, correctCount, count, passed, perfect, bonus: 0 };
+}
+
+// ===== 口粮掉落（本地决策，不依赖后端）=====
+// 以「当前展示的宠物」对应的口粮为掉落源，份数：
+//   全对 3 / 通关 2 / 至少 1 题对 1 / 全错 0
+// 返回 [{ foodId, qty, name? }]（name 由调用方根据 catalog 补全也行）
+export function rollFoodDropsLocal(score, featuredFoodId) {
+  if (!featuredFoodId) return [];
+  let qty = 0;
+  if (score.perfect) qty = 3;
+  else if (score.passed) qty = 2;
+  else if (score.correctCount > 0) qty = 1;
+  if (!qty) return [];
+  return [{ foodId: featuredFoodId, qty }];
 }
 
 // ===== 饥饿心情 =====
