@@ -24,6 +24,30 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 13 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #13</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.6.3 · 新增宠物：小鸭子</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"添加一只小鸭子宠物"</div>
+      <h4>实现</h4>
+      <ul>
+        <li><code>catalog.js FOODS</code> 加 <code>{id:'corn', name:'玉米粒', petId:'duck', price:14, exp:19, intimacy:5}</code></li>
+        <li><code>catalog.js PETS</code> 加 <code>{id:'duck', name:'Yaya', cnName:'小鸭子', acquireType:'buy', price:90, foodId:'corn'}</code></li>
+        <li><code>PetSprite.vue</code> 加鸭子 SVG fallback（头顶翘羽 + 黄身体 + 橙扁嘴 + 蹼脚）和 <code>COLORS.duck</code></li>
+        <li>新增 <code>client/public/pets/duck/</code> 完整 PNG 成长资源包：4 阶段 portrait/model/icon/badge/label/effect + <code>duck_001.growth.json</code></li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        新：<code>client/public/pets/duck/</code>（24 个阶段资源 PNG + 1 张预览图 + <code>duck_001.growth.json</code>）<br>
+        改（代码）：<code>client/src/catalog.js</code> · <code>client/src/components/PetSprite.vue</code><br>
+        改（文档）：<code>docs/index.html</code>（宠物数 11→12）· <code>docs/governance/roadmap.html</code>（剩余 PNG 资源项移除鸭）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 12 -->
     <article class="entry">
       <header>
