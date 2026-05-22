@@ -1,0 +1,127 @@
+{
+  "pet_id": "sheep_001",
+  "pet_name": "绵羊",
+  "runtime_pet_id": "sheep",
+  "growth_stages": [
+    {
+      "stage": 0,
+      "name": "幼年",
+      "display_name": "卷卷羊羔",
+      "model": "sheep_baby",
+      "icon": "icon_sheep_baby",
+      "animation": [
+        "idle_baby",
+        "sleep_baby",
+        "eat_baby"
+      ],
+      "unlock_condition": "default",
+      "min_level": 1,
+      "description": "刚被领养的小绵羊，像一团会眨眼的云朵。",
+      "appearance_keywords": [
+        "小体型",
+        "云朵卷毛",
+        "大圆眼睛",
+        "短腿坐姿"
+      ],
+      "status_role": "可爱、柔软、依赖玩家",
+      "assets": {
+        "portrait": "/pets/sheep/0.png",
+        "model": "/pets/sheep/models/sheep_baby.png",
+        "icon": "/pets/sheep/icons/icon_sheep_baby.png",
+        "badge": "/pets/sheep/badges/stage_wool_0.png",
+        "label": "/pets/sheep/labels/stage_label_0.png",
+        "effect": "/pets/sheep/effects/evolve_stage_0.png"
+      }
+    },
+    {
+      "stage": 1,
+      "name": "成长",
+      "display_name": "云朵绵羊",
+      "model": "sheep_growing",
+      "icon": "icon_sheep_growing",
+      "animation": [
+        "idle_growing",
+        "run_growing",
+        "play_growing"
+      ],
+      "unlock_condition": "level >= 3",
+      "min_level": 3,
+      "description": "开始主动跟着主人跑跳，脖子上的薄荷围巾随风摆动。",
+      "appearance_keywords": [
+        "体型变大",
+        "薄荷围巾",
+        "动作轻快",
+        "眼神好奇"
+      ],
+      "status_role": "活泼、亲近、开始互动",
+      "assets": {
+        "portrait": "/pets/sheep/1.png",
+        "model": "/pets/sheep/models/sheep_growing.png",
+        "icon": "/pets/sheep/icons/icon_sheep_growing.png",
+        "badge": "/pets/sheep/badges/stage_wool_1.png",
+        "label": "/pets/sheep/labels/stage_label_1.png",
+        "effect": "/pets/sheep/effects/evolve_stage_1.png"
+      }
+    },
+    {
+      "stage": 2,
+      "name": "强壮",
+      "display_name": "守护绵羊",
+      "model": "sheep_strong",
+      "icon": "icon_sheep_strong",
+      "animation": [
+        "idle_strong",
+        "guard_strong",
+        "charge_strong"
+      ],
+      "unlock_condition": "level >= 6",
+      "min_level": 6,
+      "description": "卷角和星章显现，能稳稳陪主人完成更难的挑战。",
+      "appearance_keywords": [
+        "金色卷角",
+        "蓝色颈环",
+        "星形徽章",
+        "站姿稳固"
+      ],
+      "status_role": "可靠、勇敢、可协助任务",
+      "assets": {
+        "portrait": "/pets/sheep/2.png",
+        "model": "/pets/sheep/models/sheep_strong.png",
+        "icon": "/pets/sheep/icons/icon_sheep_strong.png",
+        "badge": "/pets/sheep/badges/stage_wool_2.png",
+        "label": "/pets/sheep/labels/stage_label_2.png",
+        "effect": "/pets/sheep/effects/evolve_stage_2.png"
+      }
+    },
+    {
+      "stage": 3,
+      "name": "完全体",
+      "display_name": "星绒灵羊",
+      "model": "sheep_final",
+      "icon": "icon_sheep_final",
+      "animation": [
+        "idle_final",
+        "skill_final",
+        "special_final"
+      ],
+      "unlock_condition": "level >= 9",
+      "min_level": 9,
+      "description": "最终形态的绵羊，星光藏在绒毛里，温柔又稀有。",
+      "appearance_keywords": [
+        "华丽金角",
+        "星云披肩",
+        "柔和光效",
+        "成熟气质"
+      ],
+      "status_role": "成熟、稀有、最终形态",
+      "assets": {
+        "portrait": "/pets/sheep/3.png",
+        "model": "/pets/sheep/models/sheep_final.png",
+        "icon": "/pets/sheep/icons/icon_sheep_final.png",
+        "badge": "/pets/sheep/badges/stage_wool_3.png",
+        "label": "/pets/sheep/labels/stage_label_3.png",
+        "effect": "/pets/sheep/effects/evolve_stage_3.png"
+      }
+    }
+  ]
+}
