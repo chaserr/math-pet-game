@@ -7,7 +7,7 @@
 //   'choice'       四选一选择题（语文识字 / 英语字母）
 //   'placeholder'  占位（敬请期待）
 
-import { decomposeAdd, decomposeSub } from '../lib/decompose.js';
+import { decomposeAdd, decomposeSub, decomposeBorrowTrick } from '../lib/decompose.js';
 import { OP_OF, PLACE_NAMES, enumWithin10Fact, findCategory } from '../lib/mathLevels.js';
 
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -222,6 +222,51 @@ export function genQuestion(subjectId, moduleId, categoryId, stage, qIdx = 0) {
     return genPlaceholder(subjectId, moduleId);
   }
   return genPlaceholder(subjectId, moduleId);
+}
+
+// ============ 教学卡（解题技巧）============
+// lessonInfo：演示题（固定经典例子）+ 讲解；genTrickQuiz：随机同类自测题。
+// 返回结构：{ a, b, op, answer, steps }，steps 来自 decompose.*
+
+const LESSON_META = {
+  'borrow-trick': {
+    title: '整万数减法 · 减1法',
+    intro: '被减数是 10000 这种「1 后面一串 0」时，退位很烦。先借走 1 变成 9999，竖式秒算，最后别忘把 1 加回来！',
+    op: '-',
+  },
+  'make-ten': {
+    title: '凑十法（加法技巧）',
+    intro: '个位相加超过 10 时，把一个数拆开先凑成整十，再加剩下的，又快又准。',
+    op: '+',
+  },
+};
+
+function buildBorrowTrick(a, b) {
+  return { a, b, op: '-', answer: a - b, steps: decomposeBorrowTrick(a, b) };
+}
+function buildMakeTen(a, b) {
+  return { a, b, op: '+', answer: a + b, steps: decomposeAdd(a, b) };
+}
+
+export function lessonInfo(trickId) {
+  const meta = LESSON_META[trickId];
+  if (!meta) return null;
+  let demo;
+  if (trickId === 'borrow-trick') demo = buildBorrowTrick(10000, 3847);
+  else demo = buildMakeTen(8, 5);
+  return { trickId, ...meta, demo };
+}
+
+export function genTrickQuiz(trickId) {
+  if (trickId === 'borrow-trick') {
+    const base = [1000, 10000, 100000][randInt(0, 2)];
+    const b = randInt(1, base - 1);
+    return buildBorrowTrick(base, b);
+  }
+  // make-ten：随机进位加法（个位相加 > 10）
+  const a = randInt(5, 9);
+  const b = randInt(11 - a + 1, 9); // 保证 a%10 + b%10 > 10
+  return buildMakeTen(a, b);
 }
 
 // ============ 校验工具 ============

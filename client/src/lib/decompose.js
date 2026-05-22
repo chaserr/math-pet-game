@@ -94,3 +94,38 @@ export function decomposeSub(a, b) {
 export function decompose(a, b, op) {
   return op === '+' ? decomposeAdd(a, b) : decomposeSub(a, b);
 }
+
+// ===== 解题技巧：整十/整百/整千…减法的「减 1 法」 =====
+// 思路：被减数是 10…0（首位 1 + 若干 0）时退位很烦，先借走 1 变成 9…9，
+// 各位都是 9 不退位、竖式秒算，最后别忘把借走的 1 加回来。
+//   10000 - 3847
+//   ① 借出 1：10000 → 9999（积木「1」蹦到旁边等着）
+//   ② 竖式：9999 - 3847 = 6152（逐位相减，不退位）
+//   ③ 加回 1：6152 + 1 = 6153（旁边的「1」蹦回来）
+//
+// 返回步骤 [{ kind, ... }]，新增 kind：
+//   { kind: 'borrow-out', from, to, borrow }            借出 1：from → to
+//   { kind: 'column-sub', a, b, answer, digits }        竖式相减（digits=对齐位数）
+//   { kind: 'add-back',   a, b, answer }                 加回借走的 1
+//
+// 仅当被减数形如 1 后跟全 0（10,100,1000,10000…）且减数小于它时适用。
+export function isBorrowTrickApplicable(a, b) {
+  const s = String(a);
+  return s[0] === '1' && /^10+$/.test(s) && b > 0 && b < a;
+}
+
+export function decomposeBorrowTrick(a, b) {
+  const reduced = a - 1;             // 9…9
+  const colAnswer = reduced - b;     // 竖式结果
+  const final = colAnswer + 1;       // 加回 1
+  const digits = String(a).length - 1; // 9…9 与减数对齐的位数
+  return [
+    { kind: 'borrow-out', from: a, to: reduced, borrow: 1,
+      hint: `${a} 太难退位了，先借走 1，变成 ${reduced}` },
+    { kind: 'column-sub', a: reduced, b, answer: colAnswer, digits,
+      hint: `${reduced} 每一位都是 9，不用退位，竖式很好算` },
+    { kind: 'add-back', a: colAnswer, b: 1, answer: final,
+      hint: `别忘了把借走的 1 加回来！` },
+    { kind: 'done', a, b, op: '-', answer: final },
+  ];
+}
