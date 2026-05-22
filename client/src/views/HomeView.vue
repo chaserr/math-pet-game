@@ -33,6 +33,12 @@
       </div>
       <p class="subj-desc">{{ subjectInfo.desc }}</p>
 
+      <!-- 浏览方式切换：按能力练 / 跟课本学 -->
+      <div class="mode-switch">
+        <button class="mode active" disabled>💪 按能力练</button>
+        <button class="mode" v-if="textbookAvailable" @click="goTextbook">📚 跟课本学 →</button>
+      </div>
+
       <!-- 模块卡片网格 -->
       <div class="module-grid">
         <div v-for="m in modules" :key="m.id"
@@ -125,6 +131,7 @@ import { listMyPets } from '../db.js';
 import { SUBJECTS, MODULES, STAGES_PER_MODULE, findSubject } from '../catalog.js';
 import { moduleHasCategories, getCategories } from '../lib/mathLevels.js';
 import { clearedCount, nextChallengeStage } from '../lib/progress.js';
+import { textbookHasSubject } from '../lib/textbook.js';
 
 const auth = useAuthStore();
 const router = useRouter();
@@ -184,6 +191,10 @@ function confirmJump() {
   });
 }
 function go(name) { router.push({ name }); }
+function goTextbook() {
+  router.push({ name: 'textbook', query: { subject: currentSubject.value } });
+}
+const textbookAvailable = computed(() => textbookHasSubject(currentSubject.value));
 async function logout() { await auth.logout(); router.push({ name: 'login' }); }
 
 onMounted(async () => {
@@ -222,6 +233,15 @@ onMounted(async () => {
 .subj-tab:hover:not(.active) { background: #fff8e8; }
 .subj-tab .se { font-size: 22px; }
 .subj-desc { text-align: center; color: #9b8b7a; font-size: 14px; margin: -4px 0 4px; }
+
+/* 浏览方式切换 */
+.mode-switch { display: flex; justify-content: center; gap: 8px; margin: -4px 0 2px; }
+.mode {
+  background: #fff; color: #9b8b7a; padding: 7px 18px; font-family: inherit; font-weight: 800; font-size: 13px;
+  border: 2px solid transparent; border-radius: 999px; box-shadow: 0 2px 0 var(--shadow); cursor: pointer;
+}
+.mode.active { background: var(--primary); color: #fff; cursor: default; }
+.mode:not(.active):hover { background: #fff3d6; color: var(--primary-dark); }
 
 /* 模块卡片 */
 .module-grid {

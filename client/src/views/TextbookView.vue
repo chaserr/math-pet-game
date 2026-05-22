@@ -127,7 +127,10 @@ function openItem(unit, it) {
   if (it.type === 'lesson' && it.trickId) {
     router.push({ name: 'lesson', query: { trick: it.trickId, ...ctx } });
   } else if (it.ref) {
-    router.push({ name: 'quiz', query: { subject: subject.value, module: it.ref.module, category: it.ref.category, stage: 1 } });
+    router.push({ name: 'quiz', query: {
+      subject: subject.value, module: it.ref.module, category: it.ref.category, stage: 1,
+      from: 'textbook', grade: grade.value, volume: volume.value, unit: unit.unit,
+    } });
   }
 }
 

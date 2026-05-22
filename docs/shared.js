@@ -13,6 +13,7 @@
     { file: 'curriculum.html',      title: '三学科四模块体系', group: '学科与关卡' },
     { file: 'difficulty.html',      title: '数学关卡分类',     group: '学科与关卡' },
     { file: 'decompose-skill.html', title: '拆分技巧引导',     group: '学科与关卡' },
+    { file: 'textbook.html',        title: '教材轴（跟课本学）', group: '学科与关卡' },
     { file: 'module-auth.html',     title: '登录 / 注册',     group: '业务模块' },
     { file: 'module-home.html',     title: '首页 / 学科选择',  group: '业务模块' },
     { file: 'module-stages.html',   title: '选关',            group: '业务模块' },

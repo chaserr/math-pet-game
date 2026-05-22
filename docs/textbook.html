@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教材轴（跟课本学）· 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.5.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>学科与关卡<span class="sep">›</span>教材轴</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a><a href="textbook.html">教材轴（跟课本学）</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>教材轴（跟课本学）<span class="tag major">v1.5 新增</span></h1>
+    <div class="lead">
+      v1.4 的「按能力闯关」轴按 <b>学科 → 模块 → 分类 → 关卡</b> 组织，强调题型与梯度。v1.5 新增 <b>教材轴</b>：按
+      <b>学科 → 年级 → 上下册 → 单元 → 内容项</b> 组织，强调与小学课本对齐，让家长可以按"今天学的第 X 单元"陪练。
+      <b>两套轴并存</b>，从首页学科 Tab 下方的「💪 按能力练 / 📚 跟课本学」切换。
+    </div>
+
+    <div class="note">
+      <b>设计原则</b>：教材轴是"内容入口"，落地仍复用「按能力练」的题库（练习项通过 <code>ref</code> 指回旧分类）。新增的只有
+      <b>教学卡（解题技巧）</b>这一种独立形态，其他都是已有题型的重新组织。
+    </div>
+
+    <h2>五层结构</h2>
+    <table>
+      <thead><tr><th>层</th><th>id 形式</th><th>示例</th><th>来源</th></tr></thead>
+      <tbody>
+        <tr><td>学科</td><td><code>math</code> / <code>chinese</code></td><td>数学 / 语文</td><td>复用 <code>SUBJECTS</code></td></tr>
+        <tr><td>年级</td><td><code>grade1</code> ~ <code>grade6</code></td><td>一年级 ~ 六年级</td><td><code>textbook.js GRADES</code></td></tr>
+        <tr><td>册</td><td><code>up</code> / <code>down</code></td><td>上册 / 下册</td><td><code>textbook.js VOLUMES</code></td></tr>
+        <tr><td>单元</td><td>整数 <code>unit: 1..N</code></td><td>第 1 单元 表内乘法</td><td><code>TEXTBOOK[subj][grade][vol].units</code></td></tr>
+        <tr><td>内容项</td><td>三类 <code>type</code></td><td>教学卡 / 专项练习 / 拓展</td><td>单元 <code>items</code> 数组</td></tr>
+      </tbody>
+    </table>
+
+    <h2>内容项三类</h2>
+    <table>
+      <thead><tr><th>type</th><th>名称</th><th>色/icon</th><th>触发</th><th>路由</th></tr></thead>
+      <tbody>
+        <tr><td><code>lesson</code></td><td>教学卡（解题技巧）</td><td>📖 紫 #9b5cd6</td><td><code>trickId</code> 指向 <code>LESSON_META</code></td><td><code>/lesson?trick=…</code> → <code>LessonView</code></td></tr>
+        <tr><td><code>practice</code></td><td>专项练习</td><td>✏️ 绿 #54b85a</td><td><code>ref: { module, category }</code> 复用旧题库</td><td><code>/quiz?subject&amp;module&amp;category&amp;stage=1&amp;from=textbook&amp;grade&amp;volume&amp;unit</code>（QuizView 返回时识别 <code>from=textbook</code> 回到本单元）</td></tr>
+        <tr><td><code>expand</code></td><td>拓展</td><td>🌟 橙 #f0a93a</td><td>趣味/进阶题（暂占位）</td><td>等内容</td></tr>
+      </tbody>
+    </table>
+    <p>凡 <code>placeholder: true</code> 或没有 <code>trickId</code> / <code>ref</code> 的项 = 🚧 敬请期待（点击无动作，灰显并显示锁）。</p>
+
+    <h2>教学卡（lesson）—— 三段式</h2>
+    <ol>
+      <li><b>看演示</b>：固定经典例题（如 <code>10000 - 3847</code>），按"下一步 →"逐步揭示。每步用不同视觉：
+        <ul>
+          <li><code>borrow-out</code>：箭头 <code>10000 ➡️ 9999</code>，右上角积木「1」蹦跳出现</li>
+          <li><code>column-sub</code>：竖式排版（个十百千对齐 + 减号 + 横线 + 结果）</li>
+          <li><code>add-back</code>：右上角的「1」蹦回来，文字 <code>6152 + 1 = 6153</code></li>
+          <li><code>split</code> / <code>calc</code> / <code>done</code>：复用旧的凑十法/连减法步骤渲染</li>
+        </ul>
+      </li>
+      <li><b>自己试</b>：随机生成同类题（<code>genTrickQuiz</code>），数字键盘输入答案，对/错给提示</li>
+      <li><b>完成</b>：返回课本 or「再来一道」</li>
+    </ol>
+
+    <h3>已实现的 trickId</h3>
+    <table>
+      <thead><tr><th>trickId</th><th>标题</th><th>op</th><th>对应单元</th></tr></thead>
+      <tbody>
+        <tr><td><code>borrow-trick</code></td><td>整万数减法·减1法</td><td>−</td><td>四上 第1单元（万以内的减法）</td></tr>
+        <tr><td><code>make-ten</code></td><td>凑十法（加法技巧）</td><td>+</td><td>一上 第2单元（10 以内的加减法）</td></tr>
+      </tbody>
+    </table>
+    <p>新增技巧 = 在 <code>useQuizGen.js</code> 的 <code>LESSON_META</code> 注册 + 写 <code>build*</code> 构造器；如需新的步骤形态，在 <code>decompose.js</code> 加 <code>kind</code> 并在 <code>LessonView</code> 加渲染分支。</p>
+
+    <h2>占位策略</h2>
+    <p>每个年级/册/单元/项都可标 <code>placeholder: true</code>。年级网格显示 <b>"有内容"/"整理中"</b> 标签；册内无单元显示 🚧 占位提示；单元 <code>placeholder</code> 则不展开 items。<b>等小学 1–6 年级各册 PDF 到位后再按单元逐个填充。</b></p>
+
+    <h2>样板内容（v1.5）</h2>
+    <ul>
+      <li><b>一上 数学</b> · 第1单元「认识 10 以内的数」→ practice: 10 以内加法（<code>add/within10</code>）；第2单元「10 以内的加减法」→ lesson: 凑十法 + practice: 10 以内减法</li>
+      <li><b>二上 数学</b> · 第1单元「表内乘法（九九乘法表）」→ practice: 九九乘法表（<code>mul/within10</code>）</li>
+      <li><b>四上 数学</b> · 第1单元「万以内的减法（解题技巧）」→ lesson: 减1法（<code>borrow-trick</code>）</li>
+      <li><b>一上 语文</b> · 第1单元「汉语拼音」→ 拼音专项占位 + 看图识字（复用 <code>recognize/default</code>）</li>
+    </ul>
+
+    <h2>文件结构</h2>
+    <pre><code>client/src/
+├─ lib/textbook.js          // 数据层（GRADES / VOLUMES / TEXTBOOK / ITEM_TYPES + helpers）
+├─ views/TextbookView.vue   // 年级网格 → 册 Tab → 单元卡 → 内容项
+├─ views/LessonView.vue     // 教学卡（演示 + 自测）
+├─ composables/useQuizGen.js // 新增 lessonInfo(trickId) / genTrickQuiz(trickId) / LESSON_META
+└─ lib/decompose.js          // 新增 decomposeBorrowTrick(a,b) + 步骤 kind: borrow-out/column-sub/add-back</code></pre>
+
+    <h2>与「按能力练」的关系</h2>
+    <ul>
+      <li><b>并存</b>：旧的 HomeView 学科 Tab 下方加「💪 按能力练 / 📚 跟课本学」切换，进度互不影响</li>
+      <li><b>复用</b>：教材轴的 <code>practice</code> 直接路由到旧 QuizView（带 <code>module + category + stage=1</code>），分数/进度仍按旧分类记录</li>
+      <li><b>互补</b>：教材轴回答"今天学什么"，能力轴回答"哪类题练多少"。家长按课本陪练；孩子日常刷题仍用能力轴</li>
+    </ul>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="decompose-skill.html">‹ 拆分技巧引导</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="module-auth.html">登录 / 注册 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

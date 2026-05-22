@@ -715,6 +715,19 @@ watch(() => `${subjectId.value}.${moduleId.value}.${category.value}.${stage.valu
 
 function goHome() { router.push({ name: 'home' }); }
 function quit() {
+  // 从「跟课本学」进来的，返回回教材轴对应单元
+  if (route.query.from === 'textbook') {
+    router.push({
+      name: 'textbook',
+      query: {
+        subject: subjectId.value,
+        grade: route.query.grade,
+        volume: route.query.volume,
+        unit: route.query.unit,
+      },
+    });
+    return;
+  }
   if (subjectId.value === 'math') {
     router.push({
       name: 'stages',

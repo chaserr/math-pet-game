@@ -8,14 +8,14 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.5.0</span></a>
   <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>拆分技巧引导</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a><a href="textbook.html">教材轴（跟课本学）</a></div>
     <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
@@ -96,6 +96,44 @@
   { kind: 'calc',  a: 14, b: 4,  op: '-', answer: 10, hint: '先减到整十' },
   { kind: 'calc',  a: 10, b: 1,  op: '-', answer: 9,  hint: '再减剩下的' },
   { kind: 'done',  a: 34, b: 25, op: '-', answer: 9 }
+]</code></pre>
+
+    <h2>整万数减法 · 减1法 <span class="tag major">v1.5 新增 · trickId=borrow-trick</span></h2>
+    <div class="note">
+      <b>触发</b>：教学卡专用（教材轴 · 四上 第1单元 / 任何路径手动指向 <code>/lesson?trick=borrow-trick</code>），<b>不</b>进入随机闯关。
+      <code>isBorrowTrickApplicable(a, b)</code>：被减数形如 <code>10…0</code>（1 后跟若干 0）且 <code>0 &lt; b &lt; a</code>。
+    </div>
+    <h3>思路：先借走 1，竖式秒算，再加回来</h3>
+    <ol>
+      <li><b>借出 1</b>：<code>10000 → 9999</code>（积木「1」蹦到旁边等着）</li>
+      <li><b>竖式</b>：<code>9999 − 3847 = 6152</code>（各位都是 9，不退位）</li>
+      <li><b>加回 1</b>：<code>6152 + 1 = 6153</code>（旁边的「1」蹦回来）</li>
+    </ol>
+    <h4>示例 3：10000 − 3847（用户给的例子）</h4>
+    <div class="decompose-demo">
+      <div class="demo-step"><span class="demo-idx">1</span><span class="demo-eq">10000 ➡️ <b>9999</b></span></div>
+      <div class="demo-hint">先借走 1（积木「1」蹦到旁边）</div>
+      <div class="demo-step"><span class="demo-idx">2</span><span class="demo-eq">9999 − 3847 = <b>6152</b></span></div>
+      <div class="demo-hint">每位都是 9，不退位，竖式秒算</div>
+      <div class="demo-step"><span class="demo-idx">3</span><span class="demo-eq">6152 + <b>1</b> = <b>6153</b></span></div>
+      <div class="demo-hint">别忘了把借走的 1 加回来！（积木「1」蹦回来）</div>
+      <div class="demo-step"><span class="demo-idx">✓</span><span class="demo-eq" style="color:#54b85a">✨ 10000 − 3847 = 6153</span></div>
+    </div>
+    <h3>新增的步骤 kind</h3>
+    <table>
+      <thead><tr><th>kind</th><th>字段</th><th>渲染</th></tr></thead>
+      <tbody>
+        <tr><td><code>borrow-out</code></td><td><code>{ from, to, borrow, hint }</code></td><td>箭头 <code>from ➡️ to</code> + 蹦跳「1」入场</td></tr>
+        <tr><td><code>column-sub</code></td><td><code>{ a, b, answer, digits, hint }</code></td><td>竖式（个十百千… 对齐 + 减号 + 横线 + 结果）</td></tr>
+        <tr><td><code>add-back</code></td><td><code>{ a, b, answer, hint }</code></td><td>文字 <code>a + b = answer</code> + 蹦跳「1」归位动画</td></tr>
+      </tbody>
+    </table>
+    <h3>步骤数据（10000-3847）</h3>
+    <pre><code>[
+  { kind: 'borrow-out', from: 10000, to: 9999, borrow: 1, hint: '10000 太难退位了，先借走 1，变成 9999' },
+  { kind: 'column-sub', a: 9999, b: 3847, answer: 6152, digits: 4, hint: '9999 每一位都是 9，不用退位，竖式很好算' },
+  { kind: 'add-back',   a: 6152, b: 1, answer: 6153, hint: '别忘了把借走的 1 加回来！' },
+  { kind: 'done',       a: 10000, b: 3847, op: '-', answer: 6153 }
 ]</code></pre>
   </main>
 </div>

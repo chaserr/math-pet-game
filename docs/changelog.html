@@ -8,14 +8,14 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.5.0</span></a>
   <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>沟通日志</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a><a href="textbook.html">教材轴（跟课本学）</a></div>
     <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
@@ -23,6 +23,41 @@
   <main class="content">
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
+
+    <!-- 回合 9 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #9</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.5.0 · 教材轴 + 教学卡（减1法 / 凑十法）</span>
+        <span class="tag major">major</span><span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "接下来我需要增加需求：我现在已经有小学1到6年级的所有教材pdf，我想根据这些pdf设计一些好玩的课本教学内容以及拓展内容还有比如一年级有上下册，每册有对应的第一章第二章等，根据这些来设计。另外还有一些专项练习，比如语文的拼音，数学的九九乘法表等。还有一些解题技巧：比如大数减去小数 10000-3847 = 从10000减去1，就是和被减数时同样的，然后列竖式就很好计算了，最后要提醒别忘记加上1，这个1可以是数字积木里的1，在旁边蹦蹦跳跳（当做出从10000里减去1之后这个就会出现）。另外还有那种凑十法也属于解题技巧。而语文有相对应的必背诗词，必学汉字，给汉字注音，根据拼音学汉字（每个年级一个）。先说这么多需求，你可以进行头脑风暴看看在现有的基础上如何设计上述功能。注意要先设计再实现，实现后需要同步到文档。"
+      </div>
+      <h4>决策（设计后实施）</h4>
+      <ul>
+        <li>新增「教材轴」<b>与「按能力练」并存</b>，首页学科 Tab 下方加切换按钮。教材轴只是"内容入口"，练习落地仍复用旧题库（<code>ref</code> 指回旧 module+category）。</li>
+        <li>本轮搭<b>完整框架 + 占位</b>：6 年级 × 上下册全部建好节点；先实现 3 个有用样板（一上数学/二上数学/四上数学）+ 一上语文占位拼音 + 复用看图识字。其余等用户逐 PDF 提供内容时再填。</li>
+        <li>解题技巧抽出为<b>教学卡（lesson）</b>独立形态：三段式（看演示 → 自己试 → 完成），与随机闯关分开。首发两张：<code>borrow-trick</code>（10000 系减法减1法，含积木「1」蹦跳/归位动画）+ <code>make-ten</code>（凑十法，复用 decomposeAdd）。</li>
+        <li>语文「必背诗词 / 必学汉字 / 注音 / 拼音学字」每年级一个，本轮均按占位骨架接入，等用户提供 PDF 后再填。</li>
+      </ul>
+      <h4>实现</h4>
+      <ul>
+        <li><b>数据层</b>：新建 <code>lib/textbook.js</code>（<code>GRADES</code> / <code>VOLUMES</code> / <code>TEXTBOOK</code> / <code>ITEM_TYPES</code> + 一组查询助手 <code>textbookHasSubject</code> / <code>getUnits</code> / <code>gradeHasContent</code>）</li>
+        <li><b>视图</b>：新建 <code>views/TextbookView.vue</code>（年级网格 → 册 Tab → 单元卡 → 内容项，URL query 同步浏览状态）+ <code>views/LessonView.vue</code>（演示步骤逐步揭示 + 数字键盘自测 + 蹦跳的「1」动画 keyframes <code>hop</code> / <code>hop-back</code>）</li>
+        <li><b>出题器</b>：<code>useQuizGen.js</code> 新增 <code>LESSON_META</code> / <code>buildBorrowTrick</code> / <code>buildMakeTen</code> / <code>lessonInfo(trickId)</code> / <code>genTrickQuiz(trickId)</code></li>
+        <li><b>拆分库</b>：<code>lib/decompose.js</code> 新增 <code>isBorrowTrickApplicable</code> / <code>decomposeBorrowTrick</code> + 三种新 <code>kind</code>：<code>borrow-out</code> / <code>column-sub</code> / <code>add-back</code></li>
+        <li><b>路由 / 首页</b>：<code>router/index.js</code> 加 <code>/textbook</code> + <code>/lesson</code>；<code>HomeView.vue</code> 加「💪 按能力练 / 📚 跟课本学」切换</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        新（代码）：<code>client/src/lib/textbook.js</code> · <code>client/src/views/TextbookView.vue</code> · <code>client/src/views/LessonView.vue</code><br>
+        改（代码）：<code>client/src/lib/decompose.js</code>（+减1法）· <code>client/src/composables/useQuizGen.js</code>（+教学卡）· <code>client/src/router/index.js</code>（+2 路由）· <code>client/src/views/HomeView.vue</code>（+模式切换）<br>
+        新（文档）：<code>docs/textbook.html</code><br>
+        改（文档）：<code>docs/index.html</code>（卡片 + 最新变更面板 + 版本号 v1.5.0）· <code>docs/decompose-skill.html</code>（+减1法章节）· <code>docs/shared.js</code>（PAGES + 教材轴）· 其余 18 个 html 文件的 <code>aside.sidebar</code>（+教材轴链接）· <code>docs/changelog.html</code>（本条）
+      </p>
+    </article>
 
     <!-- 回合 8 -->
     <article class="entry">
