@@ -9,7 +9,7 @@
 <body>
 
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
   <div class="search-wrap">
     <input id="searchInput" type="text" placeholder="搜索模块、API、关键词… (按 /)" autocomplete="off">
   </div>
@@ -21,13 +21,14 @@
     <h1>🧮 数字积木大冒险</h1>
     <p class="tagline">H5 多学科闯关 + 宠物养成 · 项目知识库主页</p>
     <p style="color:var(--muted);font-size:14px;max-width:680px;margin:0 auto;">
-      三大学科（数学 / 语文 / 英语）× 每学科 4 模块 × 每模块 1000 关。做题赚积分、爆口粮、养宠物。
+      三大学科（数学 / 语文 / 英语）。数学拆为「加 / 减 / 乘 / 除 / 数位认知」5 模块 × 每模块若干分类；
+      语文 / 英语保留 4 模块 × 1000 关旧结构。做题赚积分、爆口粮、养宠物。
       这是项目的<b>唯一规范源</b>，由本主页跳转到各模块文档。
     </p>
     <div class="stats">
       <div class="stat"><div class="num">3</div><div class="lbl">学科</div></div>
-      <div class="stat"><div class="num">12</div><div class="lbl">模块</div></div>
-      <div class="stat"><div class="num">12000</div><div class="lbl">关卡</div></div>
+      <div class="stat"><div class="num">13</div><div class="lbl">模块</div></div>
+      <div class="stat"><div class="num">28</div><div class="lbl">数学分类</div></div>
       <div class="stat"><div class="num">8</div><div class="lbl">宠物</div></div>
       <div class="stat"><div class="num">4</div><div class="lbl">进化阶段</div></div>
     </div>
@@ -47,8 +48,8 @@
   <div class="group-block">
     <h2>🎓 学科与关卡</h2>
     <div class="card-grid">
-      <a class="nav-card" href="curriculum.html"><span class="nc-emoji">📚</span><span class="nc-title">三学科四模块体系</span><span class="nc-desc">数学/语文/英语 + 12 模块 + 4 题型</span></a>
-      <a class="nav-card" href="difficulty.html"><span class="nc-emoji">📈</span><span class="nc-title">数学难度梯度</span><span class="nc-desc">加减乘除 1000 关参数化生成</span></a>
+      <a class="nav-card" href="curriculum.html"><span class="nc-emoji">📚</span><span class="nc-title">三学科四模块体系</span><span class="nc-desc">数学/语文/英语 + 模块 + 题型</span></a>
+      <a class="nav-card" href="difficulty.html"><span class="nc-emoji">📈</span><span class="nc-title">数学关卡分类</span><span class="nc-desc">10以内/100以内/2-3-4数 + 数位认知</span></a>
       <a class="nav-card" href="decompose-skill.html"><span class="nc-emoji">🧠</span><span class="nc-title">拆分技巧引导</span><span class="nc-desc">凑十法 / 破十法分步教学</span></a>
     </div>
   </div>
@@ -57,9 +58,10 @@
   <div class="group-block">
     <h2>🧩 业务模块</h2>
     <div class="card-grid">
-      <a class="nav-card" href="module-auth.html"><span class="nc-emoji">🔐</span><span class="nc-title">登录 / 注册</span><span class="nc-desc">Supabase Auth + 错误文案</span></a>
-      <a class="nav-card" href="module-home.html"><span class="nc-emoji">🏡</span><span class="nc-title">首页 / 学科选择</span><span class="nc-desc">学科 Tab + 模块卡 + 跳关</span></a>
-      <a class="nav-card" href="module-quiz.html"><span class="nc-emoji">✏️</span><span class="nc-title">答题</span><span class="nc-desc">4 种题目模式 + 心 + 计分 + 掉落</span></a>
+      <a class="nav-card" href="module-auth.html"><span class="nc-emoji">🔐</span><span class="nc-title">登录 / 注册</span><span class="nc-desc">Supabase Auth + 首屏 splash</span></a>
+      <a class="nav-card" href="module-home.html"><span class="nc-emoji">🏡</span><span class="nc-title">首页 / 学科选择</span><span class="nc-desc">学科 Tab + 模块卡 + 进入选关</span></a>
+      <a class="nav-card" href="module-stages.html"><span class="nc-emoji">🗂️</span><span class="nc-title">选关</span><span class="nc-desc">分类 Tab + 粉色关卡网格 + 分页</span></a>
+      <a class="nav-card" href="module-quiz.html"><span class="nc-emoji">✏️</span><span class="nc-title">答题</span><span class="nc-desc">tile-fill/multi-step/choice + 数位</span></a>
       <a class="nav-card" href="module-shop.html"><span class="nc-emoji">🛒</span><span class="nc-title">商店</span><span class="nc-desc">宠物 / 口粮 / 扭蛋</span></a>
       <a class="nav-card" href="module-pet.html"><span class="nc-emoji">🐱</span><span class="nc-title">宠物之家</span><span class="nc-desc">列表 / 预览 / 喂食 / 进化</span></a>
     </div>
@@ -70,7 +72,7 @@
     <h2>⚙️ 系统设计</h2>
     <div class="card-grid">
       <a class="nav-card" href="data-model.html"><span class="nc-emoji">🗄️</span><span class="nc-title">数据模型</span><span class="nc-desc">Supabase 表 / RPC / catalog 静态目录</span></a>
-      <a class="nav-card" href="shared-systems.html"><span class="nc-emoji">🔗</span><span class="nc-title">共享系统</span><span class="nc-desc">进度 / 拆分 / 进化 / PetIcon / 计分</span></a>
+      <a class="nav-card" href="shared-systems.html"><span class="nc-emoji">🔗</span><span class="nc-title">共享系统</span><span class="nc-desc">进度 v3 / 拆分 / 进化 / 计分</span></a>
       <a class="nav-card" href="assets.html"><span class="nc-emoji">🎨</span><span class="nc-title">资源体系</span><span class="nc-desc">头像工艺 / 字库 / 字母</span></a>
       <a class="nav-card" href="files.html"><span class="nc-emoji">📁</span><span class="nc-title">文件结构</span><span class="nc-desc">完整目录树</span></a>
     </div>
@@ -81,17 +83,17 @@
     <h2>📋 治理</h2>
     <div class="card-grid">
       <a class="nav-card" href="change-protocol.html"><span class="nc-emoji">📜</span><span class="nc-title">变更协议</span><span class="nc-desc">文档同步规则 + 禁止项</span></a>
-      <a class="nav-card" href="changelog.html"><span class="nc-emoji">🗒️</span><span class="nc-title">沟通日志</span><span class="nc-desc">7 回合需求变更记录</span></a>
-      <a class="nav-card" href="known-issues.html"><span class="nc-emoji">⚠️</span><span class="nc-title">已知问题</span><span class="nc-desc">5 个待处理项</span></a>
+      <a class="nav-card" href="changelog.html"><span class="nc-emoji">🗒️</span><span class="nc-title">沟通日志</span><span class="nc-desc">8 回合需求变更记录</span></a>
+      <a class="nav-card" href="known-issues.html"><span class="nc-emoji">⚠️</span><span class="nc-title">已知问题</span><span class="nc-desc">待处理项</span></a>
     </div>
   </div>
 
   <!-- 快速信息 -->
   <div class="home-info">
     <div class="panel">
-      <h3>🆕 最新变更（回合 #7）</h3>
+      <h3>🆕 最新变更（回合 #8）</h3>
       <p style="font-size:13.5px;margin:6px 0;">
-        <b>v1.3.1 · 知识库多页化</b> — 把单文件 <code>index.html</code> 拆为「主页 + 18 个模块页 + shared.css/js」的多页本地网站，并将此结构定为后续所有项目的通用总纲。
+        <b>v1.4.0 · 分类层 + 数位认知 + 选关网格</b> — 数学加减乘除新增 5 分类（10以内 9×9 / 100以内 / 两-三-四数）；新模块「数位认知」拖数字到 个/十/百/千… 数位；新页 <a href="module-stages.html">选关</a> 用粉色关卡网格替代「跳到任意关」；进度按分类记录每个已通关关号；首屏 splash 杜绝白屏。
       </p>
       <p style="font-size:13px;color:var(--muted);">详见 <a href="changelog.html" style="color:var(--primary-dark);font-weight:700;">沟通日志 →</a></p>
     </div>
@@ -101,6 +103,7 @@
         <li>panda 解锁条件未联动新进度</li>
         <li>仅猫咪有 PetIcon 资源</li>
         <li>语文/英语 6 个占位模块</li>
+        <li>旧 v2 进度键不会迁移到 v3</li>
       </ul>
       <p style="font-size:13px;color:var(--muted);"><a href="known-issues.html" style="color:var(--primary-dark);font-weight:700;">全部已知问题 →</a></p>
     </div>

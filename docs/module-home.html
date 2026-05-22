@@ -8,20 +8,20 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
   <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>业务模块<span class="sep">›</span>首页 / 学科选择</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
-    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
   </aside>
   <main class="content">
-    <h1>模块：首页 / 学科选择 <span class="tag module">module</span> <span class="tag major">v1.3 重构</span></h1>
+    <h1>模块：首页 / 学科选择 <span class="tag module">module</span> <span class="tag major">v1.4 更新</span></h1>
     <div class="module-card">
       <div class="meta-row">
         <span><b>视图：</b><span class="fp">src/views/HomeView.vue</span></span>
@@ -31,23 +31,33 @@
       <ol>
         <li><b>顶栏</b>：标题 + 积分胶囊 + 退出</li>
         <li><b>宠物展示</b>：当前主宠 <code>PetSprite size=140</code> + 名字/等级</li>
-        <li><b>学科 Tab</b>（v1.3 新增）：3 个胶囊式按钮（数学/语文/英语），选中态用学科色描边 + 浅底</li>
-        <li><b>模块网格</b>：当前学科的 4 个模块卡片，<code>grid-template-columns: repeat(auto-fill, minmax(240px, 1fr))</code></li>
+        <li><b>学科 Tab</b>：3 个胶囊式按钮（数学/语文/英语），选中态用学科色描边 + 浅底</li>
+        <li><b>模块网格</b>：当前学科的模块卡片（math 5 张 / chinese 4 张 / english 4 张），<code>grid-template-columns: repeat(auto-fill, minmax(240px, 1fr))</code></li>
         <li><b>次级菜单</b>：🛒 商店 / 🏠 我的宠物</li>
       </ol>
-      <h3>模块卡片</h3>
+      <h3>模块卡片（v1.4 分两类）</h3>
       <ul>
-        <li>头部：emoji + 模块名 + 简介</li>
-        <li>进度条：<code>已通关 N / 1000</code> + 百分比 + 颜色进度条</li>
-        <li>按钮 1：<b>继续第 X 关 →</b>（主按钮，背景=模块色）</li>
-        <li>按钮 2：🎯 跳到任意关 → 打开跳关弹窗</li>
+        <li><b>数学模块卡（含 place）</b>：
+          <ul>
+            <li>进度条：<code>已通关 = Σ 各分类 clearedCount / Σ 各分类 count</code> + 百分比</li>
+            <li>主按钮：<b>进入选关 →</b> → 跳转 <a href="module-stages.html">选关页</a> <code>/stages?subject=math&amp;module=add</code></li>
+            <li><b>不再有跳关弹窗</b>（被关卡网格替代）</li>
+          </ul>
+        </li>
+        <li><b>语文 / 英语模块卡（保留旧流程）</b>：
+          <ul>
+            <li>进度条：<code>已通关 N / 1000</code>（N = <code>clearedCount(subject, module, 'default')</code>）</li>
+            <li>按钮 1：<b>继续第 X 关 →</b>（X = <code>nextChallengeStage</code> = max(cleared)+1）</li>
+            <li>按钮 2：🎯 跳到任意关 → 打开跳关弹窗（数字 1~1000）</li>
+          </ul>
+        </li>
         <li>占位模块：显示「🚧 敬请期待」，无按钮</li>
       </ul>
-      <h3>跳关弹窗</h3>
+      <h3>启动与加载 <span class="tag major">v1.4 优化</span></h3>
       <ul>
-        <li>输入框：数字 1~1000</li>
-        <li>快捷按钮：1 / 50 / 100 / 250 / 500 / 750 / 1000</li>
-        <li>验证后 → <code>router.push({ name:'quiz', query:{ subject, module, stage } })</code></li>
+        <li><b>splash 加载占位</b>：<code>App.vue</code> 在 <code>!auth.ready</code> 时显示 🧮 加载页面，避免首屏白屏（<code>main.js</code> 立刻 <code>mount</code>，<code>auth.init()</code> 异步进行）</li>
+        <li><b>并行拉取</b>：<code>onMounted</code> 用 <code>Promise.all([auth.refreshProfile(), listMyPets()])</code> 同时发起，少一次串行往返</li>
+        <li>路由守卫：<code>await auth.whenReady()</code>，避免 ready 之前误判登录态</li>
       </ul>
     </div>
   </main>
@@ -55,7 +65,7 @@
 <footer class="page-foot">
   <a href="module-auth.html">‹ 登录 / 注册</a>
   <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
-  <a href="module-quiz.html">答题 ›</a>
+  <a href="module-stages.html">选关 ›</a>
 </footer>
 <script src="shared.js"></script>
 </body>

@@ -8,21 +8,57 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
   <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>沟通日志</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
-    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
   </aside>
   <main class="content">
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
+
+    <!-- 回合 8 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #8</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.4.0 · 分类层 + 数位认知 + 选关网格</span>
+        <span class="tag major">major</span><span class="tag feat">feat</span><span class="tag refactor">refactor</span><span class="tag ui">ui</span>
+      </header>
+      <h4>用户原话（多轮整合）</h4>
+      <div class="quote">
+        "数学的加法里面不要有太多 10 以内的算法，或者关卡注明：10 以内的算法，100 以内的算法，2 个数相加，3 个相加，4 个数相加等这样的分类，每个分类下面 500 关… 关卡通过那么按钮就变成灰色但是还可以继续点击玩。加减乘除都一样，其中 10 以内的算法只需要穷举列出来比如 1+1，1+2，1+3，一直到 9+9 这么多即可。另外还要增加个十百千位，比如列出 1000，让用户拖拽，在空格处标记个十百千…这个可以单独作为一个分类和加减乘除并列。"<br><br>
+        "把 10 以内的也分为 9 个关卡吧，每个关卡 9 道题。"<br><br>
+        "从算法页面点击左上角返回直接返回到了首页，应该是返回到关卡页面。"<br><br>
+        "程序首页无法加载比较慢。"<br><br>
+        "关卡背景色修改为蓝色然后饱满一点不要正正方方的 →（最终用 #F6B8B8 不要高光）"
+      </div>
+      <h4>实现</h4>
+      <ul>
+        <li><b>数学三层结构</b>：Subject → Module → <b>Category</b> → Stage。加减乘除各新增 5 分类（<code>within10</code> / <code>within100</code> / <code>n2</code> / <code>n3</code> / <code>n4</code>）；新模块 <code>place</code>（数位认知）8 分类（<code>d3</code>~<code>d10</code>）。详见 <a href="difficulty.html">数学关卡分类</a>。</li>
+        <li><b>10 以内固定 9 关 × 9 题</b>：按"被固定的那个操作数"分关，按钮显示代表标签（如 <code>1+?</code> / <code>?÷5</code>）</li>
+        <li><b>数位认知</b>：tile-fill 新增 <code>layout: 'place'</code> 布局，大数字 + 个/十/百/千… 标签格子，复用积木拖拽</li>
+        <li><b>新页 <a href="module-stages.html">选关</a></b>：分类 Tab + 关卡网格（粉色 <code>#F6B8B8</code> 长方形 + 已通关灰显仍可点）+ 分页（每页 100 关）</li>
+        <li><b>进度结构换代</b>：<code>mpg_progress_v2</code>（max stage）→ <code>mpg_progress_v3</code>（按分类记录已通关关号<b>集合</b>，支持单关灰显与重玩）</li>
+        <li><b>计分按轮次大小</b>：<code>scoreRound</code> 新增 <code>count / passed</code>；<code>passed = correctCount ≥ ⌈count×0.6⌉</code>；<code>perfect = 全对</code>；<code>rollFoodDrops</code> 按比例派发，使单题关也能掉口粮</li>
+        <li><b>首屏 splash</b>：<code>main.js</code> 不再被 <code>auth.init</code> 阻塞 mount；<code>App.vue</code> <code>!auth.ready</code> 时显示加载占位；路由守卫 <code>await auth.whenReady()</code>；HomeView <code>refreshProfile + listMyPets</code> 并行</li>
+        <li><b>返回按钮</b>：QuizView 顶栏返回，math 学科回 <code>/stages?subject&amp;module&amp;category</code>（自动定位回原分类 Tab），其它学科回首页</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        新：<code>lib/mathLevels.js</code>（分类定义 + 10 以内穷举 + 数位名）<br>
+        新：<code>views/StageSelectView.vue</code>（选关页）<br>
+        改：<code>catalog.js</code>（math 加 place 模块） · <code>useQuizGen.js</code>（按分类出题 + 多操作数 tile-fill + place 布局） · <code>lib/progress.js</code>（v3 集合） · <code>lib/gameLogic.js</code>（passed/count） · <code>db.js</code>（rollFoodDrops 按比例 + ctx 带 category） · <code>stores/auth.js</code>（_readyPromise/whenReady） · <code>main.js</code> · <code>App.vue</code> · <code>router/index.js</code>（新 stages 路由 + 守卫 await） · <code>views/HomeView.vue</code>（math 卡进入选关，并行加载） · <code>views/QuizView.vue</code>（category + roundSize + place 布局 + 返回到选关）<br>
+        文档：新建 <code>module-stages.html</code>；改 <code>index.html</code> / <code>changelog.html</code> / <code>module-home.html</code> / <code>module-quiz.html</code> / <code>data-model.html</code> / <code>difficulty.html</code> / <code>curriculum.html</code> / <code>decompose-skill.html</code> / <code>shared-systems.html</code> / <code>files.html</code> / <code>known-issues.html</code> / <code>shared.js</code><br>
+        构建：通过（QuizView 23.75KB / StageSelectView 3.4KB / 总 333KB gz 102KB）
+      </p>
+    </article>
 
     <!-- 回合 7 -->
     <article class="entry">
@@ -54,7 +90,7 @@
     <article class="entry">
       <header>
         <span class="turn">回合 #6</span><span class="date">2026-05-21</span>
-        <span class="ver">v1.3.0 · 三学科 + 1000 关 + 拆分引导</span>
+        <span class="ver">v1.4.0 · 三学科 + 1000 关 + 拆分引导</span>
         <span class="tag major">major</span><span class="tag feat">feat</span><span class="tag refactor">refactor</span>
       </header>
       <h4>用户原话</h4>
@@ -63,7 +99,7 @@
       <ul>
         <li><b>关卡不锁</b>：删除 5 关线性解锁，所有关卡可挑战</li>
         <li><b>三学科四模块</b>：<code>SUBJECTS</code>(3) × <code>MODULES</code>(4 each) × <code>STAGES_PER_MODULE=1000</code></li>
-        <li><b>难度梯度</b>：每模块 <code>params(stage)</code> 函数算法生成（详见 <a href="difficulty.html">数学难度梯度</a>）</li>
+        <li><b>难度梯度</b>：每模块 <code>params(stage)</code> 函数算法生成（详见 <a href="difficulty.html">数学关卡分类</a>）</li>
         <li><b>语文 MVP</b>：看图识字（emoji↔汉字 4 选 1）；<b>英语 MVP</b>：字母大小写匹配；其余 6 模块占位</li>
         <li><b>拆分技巧</b>：新建 <code>decompose.js</code>（连减法 + 凑十法，详见 <a href="decompose-skill.html">拆分技巧引导</a>）</li>
         <li><b>题目四模式</b>：tile-fill / multi-step / choice / placeholder</li>

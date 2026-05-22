@@ -3,79 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数学难度梯度 · 数字积木大冒险</title>
+<title>数学关卡分类 · 数字积木大冒险</title>
 <link rel="stylesheet" href="shared.css">
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
-  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>数学难度梯度</nav>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>数学关卡分类</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
-    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
   </aside>
   <main class="content">
-    <h1>数学难度梯度</h1>
+    <h1>数学关卡分类 <span class="tag major">v1.4 重构</span></h1>
     <div class="lead">
-      每模块 1000 关由<b>参数化算法</b>生成，不手写关卡。<code>useQuizGen.js</code> 内 <code>mathXxxParams(stage)</code> 函数返回该关的数字范围参数。
+      v1.4 用「分类」替代「stage 参数化难度梯度」。每个数学模块（加 / 减 / 乘 / 除 / 数位认知）下挂多个分类，每个分类一组关卡：
+      <b>10 以内</b> 穷举 + 其它分类各 500 关。分类定义见 <span class="fp">src/lib/mathLevels.js</span>。
     </div>
-    <h2>➕ 加法（mathAddParams）</h2>
+
+    <h2>分类种类（kind）</h2>
     <table>
-      <thead><tr><th>stage</th><th>aMax</th><th>bMax</th><th>sumMax</th><th>触发拆分</th></tr></thead>
+      <thead><tr><th>kind</th><th>含义</th><th>perLevel</th><th>count</th><th>关号 → 题</th></tr></thead>
       <tbody>
-        <tr><td>1-50</td><td>9</td><td>9</td><td>10</td><td>否（10 以内）</td></tr>
-        <tr><td>51-150</td><td>19</td><td>9</td><td>20</td><td>是</td></tr>
-        <tr><td>151-300</td><td>49</td><td>9</td><td>50</td><td>是</td></tr>
-        <tr><td>301-500</td><td>99</td><td>99</td><td>100</td><td>是</td></tr>
-        <tr><td>501-700</td><td>99</td><td>99</td><td>100 <b>强制进位</b></td><td>是</td></tr>
-        <tr><td>701-900</td><td>199</td><td>99</td><td>200</td><td>是</td></tr>
-        <tr><td>901-1000</td><td>499</td><td>499</td><td>999</td><td>是</td></tr>
+        <tr><td><code>enum</code></td><td>穷举（10 以内）</td><td>9</td><td>9</td><td>固定算式，按 stage + qIdx 取</td></tr>
+        <tr><td><code>range</code></td><td>给定范围随机（100 以内）</td><td>5</td><td>500</td><td>每次随机，加减大于 10 触发拆分引导</td></tr>
+        <tr><td><code>multi</code></td><td>多个数连算（2/3/4 数）</td><td>5</td><td>500</td><td>tile-fill 多操作数</td></tr>
+        <tr><td><code>place</code></td><td>数位认知</td><td>1</td><td>500</td><td>tile-fill place 布局，标签 个/十/百/千…</td></tr>
       </tbody>
     </table>
-    <h2>➖ 减法（mathSubParams）</h2>
+
+    <h2>➕ 加 / ➖ 减 / ✖️ 乘 / ➗ 除（每模块 5 分类）</h2>
     <table>
-      <thead><tr><th>stage</th><th>aMax</th><th>触发拆分</th></tr></thead>
+      <thead><tr><th>id</th><th>名称</th><th>kind</th><th>count × perLevel</th><th>说明</th></tr></thead>
       <tbody>
-        <tr><td>1-50</td><td>10</td><td>否</td></tr>
-        <tr><td>51-150</td><td>20</td><td>是（b≥10 或个位不够）</td></tr>
-        <tr><td>151-300</td><td>50</td><td>是</td></tr>
-        <tr><td>301-500</td><td>100</td><td>是</td></tr>
-        <tr><td>501-700</td><td>100 <b>强制退位</b></td><td>是</td></tr>
-        <tr><td>701-900</td><td>200</td><td>是</td></tr>
-        <tr><td>901-1000</td><td>999</td><td>是</td></tr>
+        <tr><td><code>within10</code></td><td>10 以内</td><td>enum</td><td>9 × 9 = 81 题</td><td>穷举（见下方分关规则）</td></tr>
+        <tr><td><code>within100</code></td><td>100 以内</td><td>range</td><td>500 × 5</td><td>加减 ≥10 触发 <b>multi-step</b> 拆分引导；乘除 tile-fill 限定积/被除数 ≤ 100</td></tr>
+        <tr><td><code>n2</code></td><td>两个数{相加/相减/相乘/相除}</td><td>multi</td><td>500 × 5</td><td>2 个操作数，加减各 10~99；乘 2~12；除 q∈1..9, d∈2..5</td></tr>
+        <tr><td><code>n3</code></td><td>三个数…</td><td>multi</td><td>500 × 5</td><td>3 个操作数（加减 1~50 / 乘 2~6 / 除 q×2 个 divisor）</td></tr>
+        <tr><td><code>n4</code></td><td>四个数…</td><td>multi</td><td>500 × 5</td><td>4 个操作数（加减 1~30 / 乘 2~5 / 除 q×3 个 divisor）</td></tr>
       </tbody>
     </table>
-    <h2>✖️ 乘法（mathMulParams）</h2>
+
+    <h2>10 以内分关规则（kind=<code>enum</code>）</h2>
+    <p>固定 <code>ENUM_LEVELS=9</code>、<code>ENUM_PER_LEVEL=9</code>，按"<b>被固定的那个操作数</b>"分关；按钮标签直接显示规律：</p>
     <table>
-      <thead><tr><th>stage</th><th>aMax × bMax</th><th>productMax</th></tr></thead>
+      <thead><tr><th>运算</th><th>第 k 关（k=1..9）</th><th>按钮标签</th></tr></thead>
       <tbody>
-        <tr><td>1-100</td><td>5 × 5</td><td>25</td></tr>
-        <tr><td>101-300</td><td>9 × 9</td><td>81（九九乘法）</td></tr>
-        <tr><td>301-500</td><td>99 × 9</td><td>200</td></tr>
-        <tr><td>501-700</td><td>99 × 9</td><td>500</td></tr>
-        <tr><td>701-900</td><td>99 × 99</td><td>2000</td></tr>
-        <tr><td>901-1000</td><td>99 × 99</td><td>9999</td></tr>
+        <tr><td>+</td><td>k+1, k+2, …, k+9</td><td><code>k+?</code></td></tr>
+        <tr><td>×</td><td>k×1, k×2, …, k×9</td><td><code>k×?</code></td></tr>
+        <tr><td>÷</td><td>(k·1)÷k, (k·2)÷k, …, (k·9)÷k → 商 1..9</td><td><code>?÷k</code></td></tr>
+        <tr><td>−</td><td>k−k, (k+1)−k, …, (k+8)−k → 差 0..8（减数固定 k）</td><td><code>?−k</code></td></tr>
       </tbody>
     </table>
-    <h2>➗ 除法（mathDivParams，仅整除）</h2>
+    <div class="note">取题函数：<code>enumWithin10Fact(op, stage, qIdx)</code>；按钮标签：<code>enumLevelLabel(op, stage)</code>。</div>
+
+    <h2>🔢 数位认知（place 模块，8 分类）</h2>
+    <p>每个分类对应一个数位长度，关卡随机生成该位数的整数；玩家把数字积木拖到对应数位格子中。</p>
     <table>
-      <thead><tr><th>stage</th><th>dividendMax ÷ divisorMax</th></tr></thead>
+      <thead><tr><th>id</th><th>位数</th><th>覆盖单位</th></tr></thead>
       <tbody>
-        <tr><td>1-100</td><td>25 ÷ 5</td></tr>
-        <tr><td>101-300</td><td>81 ÷ 9</td></tr>
-        <tr><td>301-500</td><td>100 ÷ 9</td></tr>
-        <tr><td>501-700</td><td>500 ÷ 9</td></tr>
-        <tr><td>701-900</td><td>999 ÷ 9</td></tr>
-        <tr><td>901-1000</td><td>999 ÷ 99</td></tr>
+        <tr><td><code>d3</code></td><td>三位数</td><td>个 / 十 / 百</td></tr>
+        <tr><td><code>d4</code></td><td>四位数</td><td>个 / 十 / 百 / 千</td></tr>
+        <tr><td><code>d5</code></td><td>五位数</td><td>… 到万位</td></tr>
+        <tr><td><code>d6</code></td><td>六位数</td><td>… 到十万位</td></tr>
+        <tr><td><code>d7</code></td><td>七位数</td><td>… 到百万位</td></tr>
+        <tr><td><code>d8</code></td><td>八位数</td><td>… 到千万位</td></tr>
+        <tr><td><code>d9</code></td><td>九位数</td><td>… 到亿位</td></tr>
+        <tr><td><code>d10</code></td><td>十位数</td><td>… 到十亿位</td></tr>
       </tbody>
     </table>
-    <div class="note"><b>除法保证整除</b>：先随机 divisor 和 quotient，再算 dividend = divisor × quotient，确保答案为整数。</div>
+    <pre><code>PLACE_NAMES = ['个','十','百','千','万','十万','百万','千万','亿','十亿']
+// d 位数 → 槽位标签按高→低：PLACE_NAMES[d-1], …, PLACE_NAMES[0]</code></pre>
+
+    <h2>关卡通过与重玩</h2>
+    <ul>
+      <li><b>passed</b> = <code>correctCount ≥ ⌈roundSize × 0.6⌉</code>。<code>roundSize = category.perLevel</code></li>
+      <li>通关 → <code>markCleared(subject, module, category, stage)</code> 加入集合</li>
+      <li>关卡按钮已通关变粉灰，<b>仍可点击重玩</b>，不会取消通关状态</li>
+    </ul>
   </main>
 </div>
 <footer class="page-foot">

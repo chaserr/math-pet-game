@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>选关 · 数字积木大冒险</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
+  <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>业务模块<span class="sep">›</span>选关</nav>
+  <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
+    <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
+  </aside>
+  <main class="content">
+    <h1>模块：选关 <span class="tag module">module</span> <span class="tag major">v1.4 新增</span></h1>
+    <div class="lead">
+      v1.4 把"数学"模块改造为<b>分类 + 关卡网格</b>。首页点数学模块卡 →「进入选关 →」→ 本页：上方分类 Tab 切换，下方平铺所有关卡按钮，点击直接进入答题。
+    </div>
+
+    <div class="module-card">
+      <div class="meta-row">
+        <span><b>视图：</b><span class="fp">src/views/StageSelectView.vue</span></span>
+        <span><b>路由：</b><code>/stages?subject=math&amp;module=add</code></span>
+      </div>
+      <h3>布局结构</h3>
+      <ol>
+        <li><b>顶栏</b>：‹ 返回（回首页）+ 模块上下文牌（emoji + 学科 · 模块）+ 积分胶囊</li>
+        <li><b>分类 Tab</b>：横向胶囊式，每项显示分类名 + <code>已通关 N / 总数</code> 小字。选中态用模块色描边</li>
+        <li><b>进度条</b>：当前分类的进度（颜色 = 模块色）</li>
+        <li><b>关卡网格</b>：<code>grid-template-columns: repeat(auto-fill, minmax(108px, 1fr))</code>，每页 100 关，按需翻页</li>
+        <li><b>分页器</b>：<code>‹</code> + 数字页码（最多 7 个，居中滚窗）+ <code>›</code>；超 100 关才出现</li>
+      </ol>
+
+      <h3>关卡按钮（.lv） <span class="tag ui">ui</span></h3>
+      <ul>
+        <li><b>形状</b>：<code>aspect-ratio: 3 / 1</code> 圆角长方形（<code>border-radius: 18px</code>）</li>
+        <li><b>颜色</b>：纯色粉 <code>#F6B8B8</code>，白色粗体文字 + 微阴影；底部一层柔投影；<b>无</b>顶部高光 / 内阴影</li>
+        <li><b>标签</b>：
+          <ul>
+            <li>穷举类（10 以内）：显示代表算式 <code>k+?</code> / <code>k×?</code> / <code>?÷k</code> / <code>?−k</code></li>
+            <li>其它：直接显示关号 <code>1</code> ~ <code>500</code></li>
+          </ul>
+        </li>
+        <li><b>已通关</b>：背景换为 <code>#dcc7c7</code> 奶粉灰，<b>仍可点击重玩</b>；右上角绿色立体 ✓ 徽章（<code>.lv-check</code>）</li>
+        <li><b>交互</b>：hover 上移 2px + brightness 1.05；active 下沉 2px + 阴影塌缩</li>
+      </ul>
+
+      <h3>状态恢复</h3>
+      <ul>
+        <li>初次进入：默认选中第一个分类；从答题页返回时按 <code>query.category</code> 自动定位回原分类（QuizView quit 时带上 category）</li>
+        <li>翻页：本地 <code>page</code> ref，分类切换时归零</li>
+        <li>已通关读取：<code>isStageCleared(subject, module, category, stage)</code> 实时查询 <code>mpg_progress_v3</code></li>
+      </ul>
+
+      <h3>跳转</h3>
+      <pre><code>play(stage) → router.push({
+  name: 'quiz',
+  query: { subject, module, category: currentCat, stage }
+})</code></pre>
+    </div>
+
+    <div class="module-card">
+      <h3>分类来源</h3>
+      <p>分类定义在 <span class="fp">src/lib/mathLevels.js</span> 的 <code>MATH_CATEGORIES</code>。详见 <a href="difficulty.html">数学关卡分类</a>。</p>
+      <ul>
+        <li>加 / 减 / 乘 / 除 各 5 分类：<code>within10</code> / <code>within100</code> / <code>n2</code> / <code>n3</code> / <code>n4</code></li>
+        <li>数位认知 8 分类：<code>d3</code> ~ <code>d10</code>（三位数 ~ 十位数）</li>
+      </ul>
+    </div>
+  </main>
+</div>
+<footer class="page-foot">
+  <a href="module-home.html">‹ 首页 / 学科选择</a>
+  <a class="home" href="index.html">↑ 主页</a><div class="spacer"></div>
+  <a href="module-quiz.html">答题 ›</a>
+</footer>
+<script src="shared.js"></script>
+</body>
+</html>

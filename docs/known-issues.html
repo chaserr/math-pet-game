@@ -8,15 +8,15 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
   <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>治理<span class="sep">›</span>已知问题</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
-    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
   </aside>
@@ -44,9 +44,9 @@
       <b>解法</b>：<code>rm -rf node_modules package-lock.json &amp;&amp; npm install</code>
     </div>
     <div class="note">
-      <b>I-005 · 旧进度 KEY 未迁移</b><br>
-      v1.2 用 <code>mpg_cleared_stage</code>（单数字），v1.3 改为 <code>mpg_progress_v2</code>（对象）。<br>
-      老用户旧进度不会自动迁移到新结构，等同于"从 0 开始"。当前用户量 0，可接受。
+      <b>I-005 · 旧进度 KEY 未迁移（v2 → v3）</b><br>
+      v1.2 用 <code>mpg_cleared_stage</code>（单数字）；v1.3 改为 <code>mpg_progress_v2</code>（对象，每模块 max）；<b>v1.4 再改为 <code>mpg_progress_v3</code></b>（按分类记录已通关关号集合）。<br>
+      历次升级均不自动迁移，老用户旧进度等同于"从 0 开始"。当前用户量 0，可接受。
     </div>
   </main>
 </div>

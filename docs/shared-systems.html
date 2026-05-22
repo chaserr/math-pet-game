@@ -8,34 +8,61 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
   <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>系统设计<span class="sep">›</span>共享系统</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
-    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
   </aside>
   <main class="content">
     <h1>共享系统</h1>
     <div class="module-card">
-      <h3>关卡进度（localStorage v2）<span class="tag module">shared</span></h3>
+      <h3>关卡进度（localStorage v3）<span class="tag module">shared</span> <span class="tag major">v1.4 重构</span></h3>
       <div class="meta-row"><span><b>文件：</b><span class="fp">src/lib/progress.js</span></span></div>
       <dl class="kv">
-        <dt>存储键</dt><dd><code>mpg_progress_v2</code>（JSON 对象）</dd>
-        <dt>数据格式</dt><dd><code>{"math.add": 42, "math.sub": 10, "chinese.recognize": 3}</code>（按 <code>subject.module</code> → cleared stage 数字）</dd>
+        <dt>存储键</dt><dd><code>mpg_progress_v3</code>（JSON 对象，v2 → v3 不迁移）</dd>
+        <dt>数据格式</dt><dd><code>{"math.add.within10": [1,2,5,...], "math.add.within100": [1], "chinese.recognize.default": [1,2,3]}</code><br>按 <code>subject.module.category</code> → 已通关关号<b>数组</b>（去重+升序）</dd>
+        <dt>无分类模块</dt><dd>语文/英语用 <code>category = 'default'</code> 兜底</dd>
         <dt>API</dt><dd>
-          <code>getClearedStage(s, m)</code> 已通关最高（0=尚未）<br>
-          <code>setClearedStage(s, m, n)</code> 仅当 n &gt; 当前才写入（防回退）<br>
-          <code>nextChallengeStage(s, m)</code> = cleared+1，封顶 1000<br>
-          <code>isStageCleared(s, m, id)</code> id ≤ cleared<br>
-          <code>progressSummary()</code> 全部进度的扁平数组
+          <code>getClearedSet(s, m, c)</code> → <code>Set&lt;number&gt;</code>（已通关关号集合）<br>
+          <code>clearedCount(s, m, c)</code> → 已通关关数<br>
+          <code>isStageCleared(s, m, c, stage)</code> → 该关是否通关<br>
+          <code>markCleared(s, m, c, stage)</code> 把 stage 加入集合；返回是否<b>首次通关</b><br>
+          <code>nextChallengeStage(s, m, c, total)</code> = max(cleared) + 1，封顶 total
         </dd>
-        <dt>设计取舍</dt><dd>不上 Supabase：12000 关进度小型 JSON 即可；想跨设备同步时再升级</dd>
+        <dt>设计取舍</dt><dd>集合而非最高数：支持单关灰显与重玩；关卡可任意顺序通关，没有"回退"概念</dd>
+        <dt>不上 Supabase</dt><dd>JSON 体积小；想跨设备同步时再升级</dd>
+      </dl>
+    </div>
+    <div class="module-card">
+      <h3>数学关卡分类元数据 <span class="tag api">api</span> <span class="tag major">v1.4 新增</span></h3>
+      <div class="meta-row"><span><b>文件：</b><span class="fp">src/lib/mathLevels.js</span></span></div>
+      <dl class="kv">
+        <dt>常量</dt><dd><code>OP_OF</code>（模块→运算符）<br><code>PLACE_NAMES</code>（个/十/百/千/万/十万/百万/千万/亿/十亿）<br><code>ENUM_LEVELS=9</code>、<code>ENUM_PER_LEVEL=9</code></dd>
+        <dt>分类</dt><dd><code>MATH_CATEGORIES</code>：{ add, sub, mul, div, place } → 分类数组</dd>
+        <dt>API</dt><dd>
+          <code>getCategories(s, m)</code> · <code>findCategory(s, m, c)</code><br>
+          <code>categoryCount(s, m, c)</code> · <code>categoryPerLevel(s, m, c)</code><br>
+          <code>moduleHasCategories(s, m)</code> 判定是否走分类层<br>
+          <code>levelLabel(s, m, c, stage)</code> 关卡按钮文本<br>
+          <code>enumWithin10(op)</code> 81 道穷举数组<br>
+          <code>enumWithin10Fact(op, stage, qIdx)</code> 第 stage 关第 qIdx 道<br>
+          <code>enumLevelLabel(op, stage)</code> 10 以内代表标签（<code>1+?</code> 等）
+        </dd>
+      </dl>
+    </div>
+    <div class="module-card">
+      <h3>登录态 <span class="tag api">api</span> <span class="tag major">v1.4 优化</span></h3>
+      <div class="meta-row"><span><b>文件：</b><span class="fp">src/stores/auth.js</span></span></div>
+      <dl class="kv">
+        <dt>非阻塞 init</dt><dd><code>init()</code> 记录 <code>_readyPromise</code>，立即返回；网络/异常都标记 <code>ready=true</code>，避免应用永远卡在 splash</dd>
+        <dt>等待 ready</dt><dd><code>whenReady()</code> 给路由守卫和组件用，<code>await auth.whenReady()</code></dd>
       </dl>
     </div>
     <div class="module-card">
@@ -57,10 +84,23 @@
       <p>Props: <code>petId / level / size / locked / badge</code>。PNG 加载失败 → fallback PetSprite。</p>
     </div>
     <div class="module-card">
-      <h3>计分与解锁（gameLogic.js）</h3>
+      <h3>计分与解锁（gameLogic.js）<span class="tag major">v1.4 passed/count</span></h3>
       <pre><code>baseScore: 1位=5 / 2位=10 / 3位=15
 streakMultiplier: ≥3→1.5x, ==2→1.2x, else→1.0x
-满轮奖励: 全 5 题正确 → +30
+
+scoreRound(results) → {
+  total, correctCount,
+  count,                                   // = results.length
+  passed = correctCount ≥ ⌈count×0.6⌉,    // v1.4 自适应轮次大小
+  perfect = correctCount === count,
+  bonus = perfect &amp;&amp; count ≥ 5 ? 30 : 0,
+}
+
+rollFoodDrops(score):
+  !score.passed → []
+  score.perfect → 3
+  correctCount ≥ ⌈count×0.8⌉ → 2
+  else → 1
 
 unlockConditions:
   'pet:fox':     ownedCount >= 3

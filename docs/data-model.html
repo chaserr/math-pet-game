@@ -8,15 +8,15 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.3.0</span></a>
+  <a class="brand" href="index.html">🧮 数字积木大冒险 <span class="ver">v1.4.0</span></a>
   <nav class="breadcrumb"><a href="index.html">主页</a><span class="sep">›</span>系统设计<span class="sep">›</span>数据模型</nav>
   <div class="search-wrap"><input id="searchInput" type="text" placeholder="搜索… (按 /)" autocomplete="off"></div>
 </header>
 <div class="layout">
   <aside class="sidebar">
     <div class="group"><div class="group-title">📍 概览</div><a href="overview.html">项目总览</a><a href="quick-start.html">快速开始</a><a href="tech.html">技术栈</a></div>
-    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学难度梯度</a><a href="decompose-skill.html">拆分技巧引导</a></div>
-    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
+    <div class="group"><div class="group-title">🎓 学科与关卡</div><a href="curriculum.html">三学科四模块体系</a><a href="difficulty.html">数学关卡分类</a><a href="decompose-skill.html">拆分技巧引导</a></div>
+    <div class="group"><div class="group-title">🧩 业务模块</div><a href="module-auth.html">登录 / 注册</a><a href="module-home.html">首页 / 学科选择</a><a href="module-stages.html">选关</a><a href="module-quiz.html">答题</a><a href="module-shop.html">商店</a><a href="module-pet.html">宠物之家</a></div>
     <div class="group"><div class="group-title">⚙️ 系统设计</div><a href="data-model.html">数据模型</a><a href="shared-systems.html">共享系统</a><a href="assets.html">资源体系</a><a href="files.html">文件结构</a></div>
     <div class="group"><div class="group-title">📋 治理</div><a href="change-protocol.html">变更协议</a><a href="changelog.html">沟通日志</a><a href="known-issues.html">已知问题</a></div>
   </aside>
@@ -30,16 +30,37 @@
         <tr><td><code>user_pets</code></td><td><code>id, user_id, pet_id, level, exp, intimacy, last_fed_at, created_at</code></td><td>我的宠物</td></tr>
         <tr><td><code>user_foods</code></td><td><code>user_id, food_id, quantity</code></td><td>口粮库存</td></tr>
         <tr><td><code>user_unlocks</code></td><td><code>user_id, unlock_key</code></td><td>解锁 key</td></tr>
-        <tr><td><code>answer_history</code></td><td><code>id, user_id, question, answer, user_answer, is_correct, error_count, time_ms, created_at</code></td><td>答题历史；<code>question</code> 前缀含 <code>[subject/module#stage]</code> 上下文</td></tr>
+        <tr><td><code>answer_history</code></td><td><code>id, user_id, question, answer, user_answer, is_correct, error_count, time_ms, created_at</code></td><td>答题历史；<code>question</code> 前缀含 <code>[subject/module/category#stage]</code> 上下文 <span class="tag major">v1.4 含 category</span></td></tr>
       </tbody>
     </table>
     <h2>RPC</h2>
     <ul><li><code>add_points(delta integer) returns integer</code></li></ul>
-    <h2>静态目录（catalog.js）</h2>
+
+    <h2>关卡进度（localStorage） <span class="tag major">v1.4 v2→v3</span></h2>
+    <table>
+      <thead><tr><th>项</th><th>v2（旧）</th><th>v3（新）</th></tr></thead>
+      <tbody>
+        <tr><td>存储 key</td><td><code>mpg_progress_v2</code></td><td><code>mpg_progress_v3</code></td></tr>
+        <tr><td>数据形状</td><td><code>{"math.add": 42}</code><br>每模块只记最高已通关</td><td><code>{"math.add.within10": [1,2,5,...]}</code><br>按分类记录已通关关号<b>集合</b></td></tr>
+        <tr><td>支持单关灰显</td><td>否（仅最高）</td><td>是</td></tr>
+        <tr><td>跳关回退</td><td>不允许（max 单调）</td><td>无概念（集合可任意通关）</td></tr>
+        <tr><td>无分类模块</td><td>—</td><td>使用 <code>category = 'default'</code>（语文/英语）</td></tr>
+      </tbody>
+    </table>
+    <div class="note">v2 → v3 不迁移，老 localStorage 数据等同清零（用户量为 0，可接受；见 <a href="known-issues.html">I-005</a>）。</div>
+
+    <h2>静态目录（catalog.js + lib/mathLevels.js）</h2>
     <ul>
       <li><code>SUBJECTS</code>：3 学科（math/chinese/english）</li>
-      <li><code>MODULES</code>：{subjectId: Module[]}，每学科 4 个模块；<code>placeholder=true</code> 表示占位</li>
-      <li><code>STAGES_PER_MODULE = 1000</code> · <code>ROUND_SIZE = 5</code></li>
+      <li><code>MODULES</code>：math 5 个模块（add/sub/mul/div/<b>place</b> <span class="tag major">v1.4</span>）；chinese/english 各 4 模块</li>
+      <li><code>STAGES_PER_MODULE = 1000</code>（仅 chinese/english 使用） · <code>ROUND_SIZE = 5</code>（默认值）</li>
+      <li><b>v1.4 新增</b> <code>MATH_CATEGORIES</code>（位于 <span class="fp">src/lib/mathLevels.js</span>）：
+        <ul>
+          <li>每个数学模块对应一组分类（add/sub/mul/div 各 5；place 8）</li>
+          <li>每分类含 <code>{ id, name, kind, count, perLevel, ... }</code></li>
+          <li>详见 <a href="difficulty.html">数学关卡分类</a></li>
+        </ul>
+      </li>
       <li><code>PETS</code>：8 只宠物 · <code>FOODS</code>：8 种口粮</li>
       <li><code>PET_GROWTH_RESOURCES</code>：每只宠物 4 阶段资源</li>
       <li><code>STAGE_MIN_LEVEL = [1,3,6,9]</code> · <code>STAGE_COLORS</code></li>
