@@ -102,6 +102,22 @@
         <path d="M60 86 q-6 14 0 22 q6 -8 0 -22" :fill="C.cheek"/>
       </g>
 
+      <!-- 绵羊 -->
+      <g v-else-if="petId === 'sheep'">
+        <ellipse cx="30" cy="58" rx="12" ry="8" :fill="C.cheek" :stroke="C.dark" stroke-width="2.2" transform="rotate(-20 30 58)"/>
+        <ellipse cx="90" cy="58" rx="12" ry="8" :fill="C.cheek" :stroke="C.dark" stroke-width="2.2" transform="rotate(20 90 58)"/>
+        <g v-if="stage >= 2">
+          <path d="M39 38 q-12 -16 2 -24 q10 10 4 24" fill="#d8ad63" stroke="#a98242" stroke-width="2"/>
+          <path d="M81 38 q12 -16 -2 -24 q-10 10 -4 24" fill="#d8ad63" stroke="#a98242" stroke-width="2"/>
+        </g>
+        <g :fill="C.body" :stroke="C.dark" stroke-width="2.3">
+          <circle cx="43" cy="58" r="18"/><circle cx="60" cy="50" r="21"/><circle cx="77" cy="58" r="18"/>
+          <circle cx="42" cy="77" r="20"/><circle cx="60" cy="76" r="24"/><circle cx="79" cy="77" r="20"/>
+          <circle cx="60" cy="34" r="12"/>
+        </g>
+        <ellipse cx="60" cy="66" rx="24" ry="22" fill="#fff8ee" :stroke="C.dark" stroke-width="2"/>
+      </g>
+
       <!-- 兜底 -->
       <g v-else>
         <ellipse cx="60" cy="66" rx="38" ry="36" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
@@ -167,6 +183,7 @@ const COLORS = {
   dragon:  { body: '#6fcf6f', dark: '#3f9e3f', cheek: '#c4f5d3' },
   turtle:  { body: '#7fb98a', dark: '#4a7d54', cheek: '#cfe8c4' },
   goat:    { body: '#f3ede4', dark: '#b9a98f', cheek: '#ffd9c2' },
+  sheep:   { body: '#fff7e8', dark: '#d8c7a7', cheek: '#ffd9c2' },
 };
 const C = computed(() => COLORS[props.petId] || COLORS.cat);
 </script>
