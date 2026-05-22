@@ -10,6 +10,8 @@ export const FOODS = [
   { id: 'bamboo',      name: '竹笋',   petId: 'panda',   price: 35, exp: 40, intimacy: 6 },
   { id: 'ice_fish',    name: '冰鲜鱼', petId: 'penguin', price: 32, exp: 38, intimacy: 6 },
   { id: 'dragonfruit', name: '火龙果', petId: 'dragon',  price: 50, exp: 55, intimacy: 8 },
+  { id: 'seaweed',     name: '海草',   petId: 'turtle',  price: 20, exp: 24, intimacy: 5 },
+  { id: 'grass',       name: '青草',   petId: 'goat',    price: 16, exp: 20, intimacy: 5 },
 ];
 
 export const PETS = [
@@ -21,6 +23,8 @@ export const PETS = [
   { id: 'panda',   name: 'Panpan',   cnName: '熊猫',   acquireType: 'unlock', price: 500, unlockKey: 'pet:panda',   foodId: 'bamboo',  unlockDesc: '通关主线第 5 关后解锁' },
   { id: 'penguin', name: 'Qiqi',     cnName: '企鹅',   acquireType: 'unlock', price: 400, unlockKey: 'pet:penguin', foodId: 'ice_fish',unlockDesc: '任一宠物升到 5 级后解锁' },
   { id: 'dragon',  name: 'Long',     cnName: '萌龙',   acquireType: 'gacha',  price: null, unlockKey: null,         foodId: 'dragonfruit' },
+  { id: 'turtle',  name: 'Guigui',   cnName: '小乌龟', acquireType: 'buy',    price: 110, unlockKey: null,          foodId: 'seaweed' },
+  { id: 'goat',    name: 'Yangyang', cnName: '小山羊', acquireType: 'buy',    price: 120, unlockKey: null,          foodId: 'grass' },
 ];
 
 export const GACHA_COST = 50;

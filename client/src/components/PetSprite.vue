@@ -85,6 +85,23 @@
         <path d="M52 36 q8 -10 16 0" fill="none" :stroke="C.dark" stroke-width="3" stroke-linecap="round"/>
       </g>
 
+      <!-- 乌龟 -->
+      <g v-else-if="petId === 'turtle'">
+        <ellipse cx="22" cy="84" rx="11" ry="9" :fill="C.cheek" :stroke="C.dark" stroke-width="2.5"/>
+        <ellipse cx="98" cy="84" rx="11" ry="9" :fill="C.cheek" :stroke="C.dark" stroke-width="2.5"/>
+        <ellipse cx="60" cy="66" rx="40" ry="36" :fill="C.dark" stroke-width="0"/>
+        <ellipse cx="60" cy="66" rx="35" ry="31" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
+        <path d="M60 36 L60 96 M32 52 L88 52 M32 80 L88 80" :stroke="C.dark" stroke-width="2" fill="none" opacity="0.6"/>
+      </g>
+
+      <!-- 山羊 -->
+      <g v-else-if="petId === 'goat'">
+        <path d="M36 38 Q24 22 30 12 Q38 22 42 36 Z" :fill="C.dark" :stroke="C.dark" stroke-width="2"/>
+        <path d="M84 38 Q96 22 90 12 Q82 22 78 36 Z" :fill="C.dark" :stroke="C.dark" stroke-width="2"/>
+        <ellipse cx="60" cy="66" rx="37" ry="35" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
+        <path d="M60 86 q-6 14 0 22 q6 -8 0 -22" :fill="C.cheek"/>
+      </g>
+
       <!-- 兜底 -->
       <g v-else>
         <ellipse cx="60" cy="66" rx="38" ry="36" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
@@ -148,6 +165,8 @@ const COLORS = {
   panda:   { body: '#ffffff', dark: '#2a2a2a', cheek: '#ffc2cf' },
   penguin: { body: '#2c3e50', dark: '#1a252f', cheek: '#ffb3b3' },
   dragon:  { body: '#6fcf6f', dark: '#3f9e3f', cheek: '#c4f5d3' },
+  turtle:  { body: '#7fb98a', dark: '#4a7d54', cheek: '#cfe8c4' },
+  goat:    { body: '#f3ede4', dark: '#b9a98f', cheek: '#ffd9c2' },
 };
 const C = computed(() => COLORS[props.petId] || COLORS.cat);
 </script>
