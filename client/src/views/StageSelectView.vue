@@ -39,6 +39,7 @@
         <button v-for="st in pageStages" :key="st"
           class="lv"
           :class="{ cleared: isCleared(st), enum: isEnum }"
+          :style="lvStyle(isCleared(st))"
           @click="play(st)"
         >
           <span class="lv-label">{{ label(st) }}</span>
@@ -133,6 +134,42 @@ function play(stage) {
 }
 function goHome() { router.push({ name: 'home' }); }
 
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+
+function lvStyle(cleared) {
+  const hex = moduleInfo.value?.color || '#4a90d9';
+  const [r, g, b] = hexToRgb(hex);
+  if (cleared) {
+    const mr = Math.round(r * 0.38 + 110);
+    const mg = Math.round(g * 0.38 + 110);
+    const mb = Math.round(b * 0.38 + 110);
+    const dr = Math.max(0, mr - 30);
+    const dg = Math.max(0, mg - 30);
+    const db = Math.max(0, mb - 30);
+    return {
+      background: `rgb(${mr},${mg},${mb})`,
+      boxShadow: `0 4px 0 rgb(${dr},${dg},${db}), 0 6px 14px rgba(${r},${g},${b},0.18)`,
+      color: 'rgba(255,255,255,0.82)',
+      textShadow: 'none',
+    };
+  }
+  const lr = Math.min(255, r + 55);
+  const lg = Math.min(255, g + 55);
+  const lb = Math.min(255, b + 55);
+  const dr = Math.max(0, r - 55);
+  const dg = Math.max(0, g - 55);
+  const db = Math.max(0, b - 55);
+  return {
+    background: `linear-gradient(150deg, rgb(${lr},${lg},${lb}) 0%, ${hex} 60%, rgb(${Math.max(0,r-20)},${Math.max(0,g-20)},${Math.max(0,b-20)}) 100%)`,
+    boxShadow: `0 5px 0 rgb(${dr},${dg},${db}), 0 8px 22px rgba(${r},${g},${b},0.42)`,
+    textShadow: `0 1px 3px rgba(${dr},${dg},${db},0.55)`,
+    color: '#fff',
+  };
+}
+
 // 模块切换时重置分类
 watch(moduleId, () => {
   currentCat.value = categories.value[0]?.id || '';
@@ -180,38 +217,23 @@ watch(moduleId, () => {
   grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
   max-width: 760px; width: 100%; margin: 0 auto;
 }
-/* 关卡按钮：纯净粉色长方形（无高光） */
+/* 关卡按钮 */
 .lv {
   position: relative;
   aspect-ratio: 3 / 1;
   border: none;
-  border-radius: 18px;
-  background: #F6B8B8;
-  color: #fff;
+  border-radius: 14px;
   font-family: inherit; font-weight: 900; font-size: 17px;
   letter-spacing: 0.3px;
-  text-shadow: 0 1px 2px rgba(160,70,70,0.45);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(200,130,130,0.3);
-  transition: transform 120ms cubic-bezier(.3,.7,.4,1), filter 160ms, box-shadow 120ms;
+  transition: transform 120ms cubic-bezier(.3,.7,.4,1), filter 140ms, box-shadow 120ms;
   -webkit-tap-highlight-color: transparent;
 }
 
 .lv.enum { font-size: 15px; }
-.lv:hover { transform: translateY(-2px); filter: brightness(1.05); }
-.lv:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 4px rgba(200,130,130,0.25);
-}
-
-/* 已通关：低饱和奶粉灰，仍可点击 */
-.lv.cleared {
-  background: #dcc7c7;
-  color: #fffaf8;
-  text-shadow: 0 1px 2px rgba(120,90,90,0.4);
-  box-shadow: 0 3px 6px rgba(140,110,110,0.22);
-}
+.lv:hover { transform: translateY(-3px); filter: brightness(1.08); }
+.lv:active { transform: translateY(3px); filter: brightness(0.95); }
 
 .lv-label { line-height: 1.1; }
 

@@ -41,7 +41,7 @@ export const SUBJECTS = [
 // placeholder=true 的模块仅占位（敬请期待），点击进入会显示占位页。
 export const MODULES = {
   math: [
-    { id: 'add', name: '加法', emoji: '➕', color: '#54b85a', desc: '从凑十到进位加' },
+    { id: 'add', name: '加法', emoji: '➕', color: '#e8529a', desc: '从凑十到进位加' },
     { id: 'sub', name: '减法', emoji: '➖', color: '#3a92e0', desc: '从破十到借位减' },
     { id: 'mul', name: '乘法', emoji: '✖️', color: '#9b5cd6', desc: '九九乘法到多位乘' },
     { id: 'div', name: '除法', emoji: '➗', color: '#e85b5b', desc: '基础除法到长除' },
