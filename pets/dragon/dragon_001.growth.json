@@ -1,0 +1,148 @@
+{
+  "pet_id": "dragon_001",
+  "pet_name": "龙",
+  "runtime_pet_id": "dragon",
+  "food": "火焰果",
+  "resource_version": "dragon-evolution-v1-2026-05-22",
+  "style_reference": "cute polished 3D mobile game pet, children arithmetic companion",
+  "stage_min_level": [
+    1,
+    3,
+    6,
+    9
+  ],
+  "asset_groups": [
+    "portrait",
+    "model",
+    "icon",
+    "badge",
+    "label",
+    "effect"
+  ],
+  "growth_stages": [
+    {
+      "stage": 0,
+      "name": "幼年",
+      "display_name": "龙宝宝",
+      "model": "dragon_baby",
+      "icon": "icon_dragon_baby",
+      "animation": [
+        "idle_baby",
+        "sleep_baby",
+        "eat_baby"
+      ],
+      "unlock_condition": "default",
+      "min_level": 1,
+      "description": "刚被领养的小龙，身体圆润、眼睛很大，翅膀和角都还很短，走路有些摇晃，喜欢依赖玩家。",
+      "appearance_keywords": [
+        "小体型",
+        "圆眼睛",
+        "幼态短角",
+        "小翅膀",
+        "动作笨拙"
+      ],
+      "status_role": "可爱、弱小、依赖玩家",
+      "assets": {
+        "portrait": "/pets/dragon/0.png",
+        "model": "/pets/dragon/models/dragon_baby.png",
+        "icon": "/pets/dragon/icons/icon_dragon_baby.png",
+        "badge": "/pets/dragon/badges/stage_dragon_0.png",
+        "label": "/pets/dragon/labels/stage_label_0.png",
+        "effect": "/pets/dragon/effects/evolve_stage_0.png"
+      }
+    },
+    {
+      "stage": 1,
+      "name": "成长",
+      "display_name": "探险幼龙",
+      "model": "dragon_growing",
+      "icon": "icon_dragon_growing",
+      "animation": [
+        "idle_growing",
+        "walk_growing",
+        "play_growing"
+      ],
+      "unlock_condition": "level >= 3",
+      "min_level": 3,
+      "description": "小龙开始熟悉主人，体型变大、翅膀展开，戴上围巾和小挎包，主动探索并陪玩家完成算术练习。",
+      "appearance_keywords": [
+        "体型变大",
+        "主动迈步",
+        "展开翅膀",
+        "探索挎包",
+        "好奇姿态"
+      ],
+      "status_role": "活跃、好奇、可以互动",
+      "assets": {
+        "portrait": "/pets/dragon/1.png",
+        "model": "/pets/dragon/models/dragon_growing.png",
+        "icon": "/pets/dragon/icons/icon_dragon_growing.png",
+        "badge": "/pets/dragon/badges/stage_dragon_1.png",
+        "label": "/pets/dragon/labels/stage_label_1.png",
+        "effect": "/pets/dragon/effects/evolve_stage_1.png"
+      }
+    },
+    {
+      "stage": 2,
+      "name": "强壮",
+      "display_name": "守护翼龙",
+      "model": "dragon_strong",
+      "icon": "icon_dragon_strong",
+      "animation": [
+        "idle_strong",
+        "guard_strong",
+        "skill_strong"
+      ],
+      "unlock_condition": "level >= 6",
+      "min_level": 6,
+      "description": "进入可靠的守护形态，身形厚重、站姿稳定，披上蓝金护甲并举起龙鳞盾牌，能协助玩家面对更难挑战。",
+      "appearance_keywords": [
+        "厚实体型",
+        "稳固站姿",
+        "蓝金护甲",
+        "龙鳞盾牌",
+        "守护光效"
+      ],
+      "status_role": "可靠、强壮、能协助完成任务",
+      "assets": {
+        "portrait": "/pets/dragon/2.png",
+        "model": "/pets/dragon/models/dragon_strong.png",
+        "icon": "/pets/dragon/icons/icon_dragon_strong.png",
+        "badge": "/pets/dragon/badges/stage_dragon_2.png",
+        "label": "/pets/dragon/labels/stage_label_2.png",
+        "effect": "/pets/dragon/effects/evolve_stage_2.png"
+      }
+    },
+    {
+      "stage": 3,
+      "name": "完全体",
+      "display_name": "星焰圣龙",
+      "model": "dragon_final",
+      "icon": "icon_dragon_final",
+      "animation": [
+        "idle_final",
+        "aura_final",
+        "special_final"
+      ],
+      "unlock_condition": "level >= 9",
+      "min_level": 9,
+      "description": "龙的最终进化形态，巨大的星焰翼、宝石冠冕、漂浮光球和符文灵气展现稀有力量，是成熟而神秘的陪伴守护者。",
+      "appearance_keywords": [
+        "高挑成熟体型",
+        "巨大星焰翼",
+        "宝石冠冕",
+        "漂浮光球",
+        "最终灵气"
+      ],
+      "status_role": "最终形态、稀有、成熟、有特殊能力",
+      "assets": {
+        "portrait": "/pets/dragon/3.png",
+        "model": "/pets/dragon/models/dragon_final.png",
+        "icon": "/pets/dragon/icons/icon_dragon_final.png",
+        "badge": "/pets/dragon/badges/stage_dragon_3.png",
+        "label": "/pets/dragon/labels/stage_label_3.png",
+        "effect": "/pets/dragon/effects/evolve_stage_3.png"
+      }
+    }
+  ]
+}
