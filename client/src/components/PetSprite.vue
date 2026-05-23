@@ -135,6 +135,25 @@
         <ellipse cx="70" cy="104" rx="8" ry="3.5" fill="#ff9c1f" stroke="#c87600" stroke-width="1.5"/>
       </g>
 
+      <!-- 臭臭（趣味宠物：盘旋造型 + 头顶小尖尖 + 旁边小苍蝇） -->
+      <g v-else-if="petId === 'poop'">
+        <!-- 三层盘旋（自上而下、由小到大），用渐深的棕色 -->
+        <ellipse cx="60" cy="40" rx="14" ry="9" :fill="C.cheek" :stroke="C.dark" stroke-width="2"/>
+        <ellipse cx="60" cy="58" rx="22" ry="11" :fill="C.body" :stroke="C.dark" stroke-width="2"/>
+        <ellipse cx="60" cy="78" rx="32" ry="14" :fill="C.dark" :stroke="C.dark" stroke-width="2"/>
+        <!-- 顶尖 -->
+        <path d="M54 32 Q60 22 66 32 Z" :fill="C.cheek" :stroke="C.dark" stroke-width="1.5"/>
+        <!-- 高光（让看起来像 emoji 💩） -->
+        <ellipse cx="52" cy="55" rx="4" ry="2" fill="#fff" opacity="0.35"/>
+        <ellipse cx="48" cy="75" rx="6" ry="2.5" fill="#fff" opacity="0.25"/>
+        <!-- 小苍蝇陪伴 -->
+        <g class="fly">
+          <ellipse cx="22" cy="22" rx="3.5" ry="2.2" fill="#2a2a2a"/>
+          <ellipse cx="20" cy="20" rx="2.5" ry="1.4" fill="#9fd3e0" opacity="0.85"/>
+          <ellipse cx="24" cy="20" rx="2.5" ry="1.4" fill="#9fd3e0" opacity="0.85"/>
+        </g>
+      </g>
+
       <!-- 兜底 -->
       <g v-else>
         <ellipse cx="60" cy="66" rx="38" ry="36" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
@@ -202,6 +221,7 @@ const COLORS = {
   goat:    { body: '#f3ede4', dark: '#b9a98f', cheek: '#ffd9c2' },
   sheep:   { body: '#fff7e8', dark: '#d8c7a7', cheek: '#ffd9c2' },
   duck:    { body: '#fff2a8', dark: '#d4a017', cheek: '#ffd6a3' },
+  poop:    { body: '#9b6a3c', dark: '#6f4a26', cheek: '#c79166' },
 };
 const C = computed(() => COLORS[props.petId] || COLORS.cat);
 </script>

@@ -14,22 +14,36 @@ export const FOODS = [
   { id: 'grass',       name: '青草',   petId: 'goat',    price: 16, exp: 20, intimacy: 5 },
   { id: 'alfalfa',     name: '苜蓿草', petId: 'sheep',   price: 18, exp: 22, intimacy: 5 },
   { id: 'corn',        name: '玉米粒', petId: 'duck',    price: 14, exp: 19, intimacy: 5 },
+  { id: 'mint',        name: '薄荷叶', petId: 'poop',    price: 10, exp: 15, intimacy: 4 },
+];
+
+// ===== 宠物分类（用于商店 / 宠物之家分组展示）=====
+// 未来加新宠物时只在这里添加 category，自动出现在对应分组下。
+export const PET_CATEGORIES = [
+  { id: 'mammal',    name: '哺乳',  emoji: '🐾' },
+  { id: 'bird',      name: '鸟类',  emoji: '🐦' },
+  { id: 'reptile',   name: '爬行',  emoji: '🐢' },
+  { id: 'mythical',  name: '神话',  emoji: '🐉' },
+  { id: 'fun',       name: '趣味',  emoji: '🎈' },
 ];
 
 export const PETS = [
-  { id: 'cat',     name: 'Mimi',     cnName: '小猫',   acquireType: 'buy',    price: 80,  unlockKey: null,          foodId: 'fish_dry' },
-  { id: 'dog',     name: 'Wangwang', cnName: '小狗',   acquireType: 'buy',    price: 100, unlockKey: null,          foodId: 'bone' },
-  { id: 'rabbit',  name: 'Tutu',     cnName: '小兔',   acquireType: 'buy',    price: 130, unlockKey: null,          foodId: 'carrot' },
-  { id: 'chick',   name: 'Jiji',     cnName: '小鸡',   acquireType: 'buy',    price: 60,  unlockKey: null,          foodId: 'millet' },
-  { id: 'fox',     name: 'Huhu',     cnName: '小狐狸', acquireType: 'unlock', price: 350, unlockKey: 'pet:fox',     foodId: 'berry',   unlockDesc: '拥有 3 只宠物后解锁' },
-  { id: 'panda',   name: 'Panpan',   cnName: '熊猫',   acquireType: 'unlock', price: 500, unlockKey: 'pet:panda',   foodId: 'bamboo',  unlockDesc: '通关主线第 5 关后解锁' },
-  { id: 'penguin', name: 'Qiqi',     cnName: '企鹅',   acquireType: 'unlock', price: 400, unlockKey: 'pet:penguin', foodId: 'ice_fish',unlockDesc: '任一宠物升到 5 级后解锁' },
-  { id: 'dragon',  name: 'Long',     cnName: '萌龙',   acquireType: 'gacha',  price: null, unlockKey: null,         foodId: 'dragonfruit' },
-  { id: 'turtle',  name: 'Guigui',   cnName: '小乌龟', acquireType: 'buy',    price: 110, unlockKey: null,          foodId: 'seaweed' },
-  { id: 'goat',    name: 'Yangyang', cnName: '小山羊', acquireType: 'buy',    price: 120, unlockKey: null,          foodId: 'grass' },
-  { id: 'sheep',   name: 'Mianmian', cnName: '小绵羊', acquireType: 'buy',    price: 115, unlockKey: null,          foodId: 'alfalfa' },
-  { id: 'duck',    name: 'Yaya',     cnName: '小鸭子', acquireType: 'buy',    price: 90,  unlockKey: null,          foodId: 'corn' },
+  { id: 'cat',     name: 'Mimi',     cnName: '小猫',   category: 'mammal',   acquireType: 'buy',    price: 80,  unlockKey: null,          foodId: 'fish_dry' },
+  { id: 'dog',     name: 'Wangwang', cnName: '小狗',   category: 'mammal',   acquireType: 'buy',    price: 100, unlockKey: null,          foodId: 'bone' },
+  { id: 'rabbit',  name: 'Tutu',     cnName: '小兔',   category: 'mammal',   acquireType: 'buy',    price: 130, unlockKey: null,          foodId: 'carrot' },
+  { id: 'chick',   name: 'Jiji',     cnName: '小鸡',   category: 'bird',     acquireType: 'buy',    price: 60,  unlockKey: null,          foodId: 'millet' },
+  { id: 'fox',     name: 'Huhu',     cnName: '小狐狸', category: 'mammal',   acquireType: 'unlock', price: 350, unlockKey: 'pet:fox',     foodId: 'berry',   unlockDesc: '拥有 3 只宠物后解锁' },
+  { id: 'panda',   name: 'Panpan',   cnName: '熊猫',   category: 'mammal',   acquireType: 'unlock', price: 500, unlockKey: 'pet:panda',   foodId: 'bamboo',  unlockDesc: '通关主线第 5 关后解锁' },
+  { id: 'penguin', name: 'Qiqi',     cnName: '企鹅',   category: 'bird',     acquireType: 'unlock', price: 400, unlockKey: 'pet:penguin', foodId: 'ice_fish',unlockDesc: '任一宠物升到 5 级后解锁' },
+  { id: 'dragon',  name: 'Long',     cnName: '萌龙',   category: 'mythical', acquireType: 'gacha',  price: null, unlockKey: null,         foodId: 'dragonfruit' },
+  { id: 'turtle',  name: 'Guigui',   cnName: '小乌龟', category: 'reptile',  acquireType: 'buy',    price: 110, unlockKey: null,          foodId: 'seaweed' },
+  { id: 'goat',    name: 'Yangyang', cnName: '小山羊', category: 'mammal',   acquireType: 'buy',    price: 120, unlockKey: null,          foodId: 'grass' },
+  { id: 'sheep',   name: 'Mianmian', cnName: '小绵羊', category: 'mammal',   acquireType: 'buy',    price: 115, unlockKey: null,          foodId: 'alfalfa' },
+  { id: 'duck',    name: 'Yaya',     cnName: '小鸭子', category: 'bird',     acquireType: 'buy',    price: 90,  unlockKey: null,          foodId: 'corn' },
+  { id: 'poop',    name: 'Choucho',  cnName: '臭臭',   category: 'fun',      acquireType: 'buy',    price: 50,  unlockKey: null,          foodId: 'mint' },
 ];
+
+export const findPetCategory = (id) => PET_CATEGORIES.find(c => c.id === id) || null;
 
 export const GACHA_COST = 50;
 export const GACHA_DUP_FOOD_QTY = 3;

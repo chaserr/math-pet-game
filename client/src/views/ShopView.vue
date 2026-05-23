@@ -14,25 +14,41 @@
 
     <div class="content">
       <!-- 宠物：商店统一展示「完全体」预览 -->
-      <div v-if="tab === 'pets'" class="grid">
-        <div v-for="p in buyablePets" :key="p.id" class="card item col center">
-          <div class="art center">
-            <PetSprite :pet-id="p.id" mood="normal" :level="MAX_LEVEL" :size="120" />
-            <PetIcon class="head-badge" :pet-id="p.id" :level="MAX_LEVEL" :size="44" />
+      <div v-if="tab === 'pets'">
+        <!-- 分类二级 chips -->
+        <div class="cat-chips">
+          <button class="chip" :class="{ on: petCat === 'all' }" @click="petCat = 'all'">
+            🐾 全部 <span class="ct">{{ pets.length }}</span>
+          </button>
+          <button v-for="c in PET_CATEGORIES" :key="c.id"
+            class="chip" :class="{ on: petCat === c.id }"
+            @click="petCat = c.id"
+          >
+            {{ c.emoji }} {{ c.name }}
+            <span class="ct">{{ catCount(c.id) }}</span>
+          </button>
+        </div>
+        <div class="grid">
+          <div v-for="p in buyablePets" :key="p.id" class="card item col center">
+            <div class="art center">
+              <PetSprite :pet-id="p.id" mood="normal" :level="MAX_LEVEL" :size="120" />
+              <PetIcon class="head-badge" :pet-id="p.id" :level="MAX_LEVEL" :size="44" />
+            </div>
+            <div class="iname">
+              {{ p.cnName }}
+              <span class="stage-tag">完全体</span>
+            </div>
+            <template v-if="p.owned">
+              <button disabled>已拥有</button>
+            </template>
+            <template v-else-if="p.purchasable">
+              <button class="btn-primary buy" @click="buyPet(p)">🪙 {{ p.price }}</button>
+            </template>
+            <template v-else>
+              <button disabled class="locked">🔒 {{ p.unlockDesc }}</button>
+            </template>
           </div>
-          <div class="iname">
-            {{ p.cnName }}
-            <span class="stage-tag">完全体</span>
-          </div>
-          <template v-if="p.owned">
-            <button disabled>已拥有</button>
-          </template>
-          <template v-else-if="p.purchasable">
-            <button class="btn-primary buy" @click="buyPet(p)">🪙 {{ p.price }}</button>
-          </template>
-          <template v-else>
-            <button disabled class="locked">🔒 {{ p.unlockDesc }}</button>
-          </template>
+          <div v-if="!buyablePets.length" class="empty-cat">该分类暂无宠物，敬请期待～</div>
         </div>
       </div>
 
@@ -69,11 +85,12 @@ import PetSprite from '../components/PetSprite.vue';
 import PetIcon from '../components/PetIcon.vue';
 import FoodIcon from '../components/FoodIcon.vue';
 import { useAuthStore } from '../stores/auth.js';
-import { MAX_LEVEL } from '../catalog.js';
+import { MAX_LEVEL, PET_CATEGORIES } from '../catalog.js';
 import { getShop, buyPet as apiBuyPet, buyFood as apiBuyFood, gacha as apiGacha } from '../db.js';
 
 const auth = useAuthStore();
 const tab = ref('pets');
+const petCat = ref('all');
 const pets = ref([]);
 const foods = ref([]);
 const gachaCost = ref(50);
@@ -81,7 +98,10 @@ const msg = ref('');
 const msgType = ref('');
 const gachaResult = ref(null);
 
-const buyablePets = computed(() => pets.value); // 含明购+解锁+(抽卡项也展示但不可买)
+function catCount(catId) { return pets.value.filter(p => p.category === catId).length; }
+const buyablePets = computed(() =>
+  petCat.value === 'all' ? pets.value : pets.value.filter(p => p.category === petCat.value)
+);
 
 function petName(id) {
   return pets.value.find(p => p.id === id)?.cnName || '宠物';
@@ -135,6 +155,29 @@ onMounted(load);
 .tabs { display: flex; gap: 8px; }
 .tabs button { background: #fff; color: #9b8b7a; padding: 8px 18px; box-shadow: 0 3px 0 var(--shadow); }
 .tabs button.on { background: var(--primary); color: #fff; }
+
+/* 分类二级 chips */
+.cat-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 12px 20px 4px;
+  max-width: 920px; margin: 0 auto;
+}
+.chip {
+  background: #fff; color: #6f5a45; padding: 6px 14px; font-family: inherit; font-weight: 800; font-size: 13px;
+  border: 2px solid transparent; border-radius: 999px; box-shadow: 0 2px 0 var(--shadow); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.chip:hover:not(.on) { background: #fff3d6; }
+.chip.on { background: var(--primary); color: #fff; }
+.chip .ct {
+  font-size: 11px; background: rgba(0,0,0,0.08); padding: 1px 7px; border-radius: 999px; font-weight: 900;
+}
+.chip.on .ct { background: rgba(255,255,255,0.25); }
+.empty-cat {
+  grid-column: 1 / -1;
+  text-align: center; color: #b9a892; font-weight: 800; padding: 32px;
+  background: #faf3e6; border-radius: 12px;
+}
 .msg { text-align: center; font-weight: 800; padding: 4px; }
 .msg.good { color: var(--green); }
 .msg.bad { color: #e85b5b; }
