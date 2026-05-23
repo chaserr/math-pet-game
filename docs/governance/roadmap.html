@@ -105,13 +105,29 @@
     <table class="roadmap-table">
       <thead><tr><th>项</th><th>状态</th><th>说明</th></tr></thead>
       <tbody>
-        <tr><td>剩余宠物 PNG 成长资源</td><td class="status"><span class="st-todo">待做</span></td><td>猫咪、乌龟、小绵羊、小鸭子已补齐；狗/兔/鸡/狐狸/熊猫/企鹅/龙/山羊仍用 SVG fallback</td></tr>
+        <tr><td>剩余宠物 PNG 成长资源</td><td class="status"><span class="st-todo">待做</span></td><td>猫咪、乌龟、小绵羊、小鸭子已补齐；狗/兔/鸡/狐狸/熊猫/企鹅/龙/山羊/<b>臭臭</b>仍用 SVG fallback</td></tr>
         <tr><td>panda 解锁条件联动 v3 进度</td><td class="status"><span class="st-todo">待做</span></td><td>v1.4 v2→v3 进度迁移后未联动判定</td></tr>
         <tr><td>v2 → v3 进度迁移脚本</td><td class="status"><span class="st-todo">待做</span></td><td>旧用户的 <code>mpg_progress_v2</code> 键不会自动迁移</td></tr>
         <tr><td>QuizView "再来一关"（math 内连续闯关）</td><td class="status"><span class="st-todo">待做</span></td><td>当前结算只能回选关，缺少下一关直达</td></tr>
         <tr><td>教学卡多技巧引导（演示后加 1-2 题再过）</td><td class="status"><span class="st-todo">待做</span></td><td>当前只演示 + 1 题自测，可加 2-3 题</td></tr>
       </tbody>
     </table>
+
+    <h2>⑥ 里程碑：装饰系统（积分商城购买） <span class="tag major">v1.7 规划</span></h2>
+    <p>用户提议：商城里除了宠物 / 口粮 / 扭蛋，新增「装饰品」可用积分购买，挂在宠物身上展示个性。当前优先级低于教材内容补全，挂在路线图先占位。</p>
+    <table class="roadmap-table">
+      <thead><tr><th>项</th><th>状态</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>装饰数据模型</td><td class="status"><span class="st-todo">待做</span></td><td>新增 <code>DECORATIONS</code> 静态目录（id / name / 槽位 slot / 价格 / 适配宠物分类 fitCategory[] 或 fitPetId[] / 资源路径）；<code>user_decorations</code> Supabase 表记拥有，<code>user_pets.equipped</code> JSON 记装备</td></tr>
+        <tr><td>装饰槽位定义</td><td class="status"><span class="st-todo">待做</span></td><td>初版三槽：<code>hat</code> 帽子 · <code>collar</code> 项圈 · <code>accessory</code> 配饰；每槽同时只能装一件</td></tr>
+        <tr><td>商店 Tab 新增「装饰」</td><td class="status"><span class="st-todo">待做</span></td><td>与「宠物 / 口粮 / 扭蛋」并列；按槽位 + 适配分类分组；预览悬浮在选中的展示宠物上</td></tr>
+        <tr><td>宠物之家：装备 / 卸下</td><td class="status"><span class="st-todo">待做</span></td><td>宠物详情卡显示三个槽位，点击换装；持久化到 <code>user_pets.equipped</code></td></tr>
+        <tr><td>PetSprite 渲染装饰</td><td class="status"><span class="st-todo">待做</span></td><td>SVG 叠加层：根据 <code>equipped</code> 三槽位绘制对应装饰元素（与现有动物 SVG 共存）</td></tr>
+        <tr><td>装饰适配规则</td><td class="status"><span class="st-todo">待做</span></td><td>支持「全分类通用」「仅鸟类」「仅哺乳」「仅臭臭专属」等过滤；商店购买时禁用不适配宠物的项或灰显</td></tr>
+        <tr><td>初版装饰内容（10 件）</td><td class="status"><span class="st-todo">待做</span></td><td>建议首批：小礼帽 / 蝴蝶结 / 红围巾 / 太阳眼镜 / 项圈铃铛 / 圣诞帽 / 小翅膀 / 星星头饰 / 王冠 / 嗯臭臭专属苍蝇围巾</td></tr>
+      </tbody>
+    </table>
+    <p class="files">前置依赖：<code>auth.pets</code> 取展示宠物（已有）；<code>PET_CATEGORIES</code>（v1.6.4 已加，便于按分类过滤装饰）。代码路径：<code>catalog.js DECORATIONS</code> · <code>db.js</code> 加 <code>listDecorations / buyDecoration / equipDecoration</code> · <code>ShopView.vue</code> 加 Tab · <code>PetHouseView.vue</code> 详情卡 · <code>PetSprite.vue</code> equipped 叠加。</p>
 
     <h2>更新规则</h2>
     <ul>

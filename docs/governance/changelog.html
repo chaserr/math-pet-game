@@ -24,6 +24,31 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 14 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #14</span><span class="date">2026-05-22</span>
+        <span class="ver">v1.6.4 · 臭臭宠物 + 宠物分类 + 装饰里程碑</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "添加一坨臭臭宠物，另外宠物也需要分类了，因为未来可能还会添加各种各种的宠物以及给宠物购买装饰等，购买装饰这个可以加入里程碑中，商城中积分还可以购买各种装饰品。"
+      </div>
+      <h4>决策</h4>
+      <ul>
+        <li><b>新增臭臭宠物</b>：<code>id=poop / cnName=臭臭 / 50 积分 / foodId=mint（薄荷叶 ¥10）/ category=fun</code>。SVG 用三层棕色盘旋 + 顶尖 + 旁边小苍蝇陪衬，致敬 💩 emoji。</li>
+        <li><b>宠物分类</b>：catalog.js 新增 <code>PET_CATEGORIES</code>（哺乳 / 鸟类 / 爬行 / 神话 / 趣味）+ 每只宠物挂 <code>category</code> 字段；ShopView 宠物 Tab 上方加二级 chips（含「全部」+ 各类计数），切换 chips 即过滤宠物列表。</li>
+        <li><b>装饰系统挂里程碑</b>：roadmap 新增第 ⑥ 章「装饰系统（积分商城购买）」，列出数据模型 / 槽位（hat·collar·accessory）/ 商店 Tab / 宠物之家换装 / PetSprite 叠加渲染 / 适配规则 / 首批 10 件装饰提案。前置依赖 <code>auth.pets</code> 和 <code>PET_CATEGORIES</code> 都已就位，未来按此路线实现即可。</li>
+        <li><b>未做</b>：装饰系统本轮只占位，不写代码；臭臭 PNG 成长资源沿用 SVG fallback（已在 roadmap 登记）。</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        改（代码）：<code>client/src/catalog.js</code>（<code>PET_CATEGORIES</code> + 每宠 category + <code>poop/mint</code>）· <code>client/src/components/PetSprite.vue</code>（poop SVG + COLORS）· <code>client/src/views/ShopView.vue</code>（分类 chips + 过滤逻辑）<br>
+        改（文档）：<code>docs/index.html</code>（宠物数 12→13）· <code>docs/governance/roadmap.html</code>（第 ⑥ 章 装饰里程碑 + 缺图列表加"臭臭"）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 13 -->
     <article class="entry">
       <header>
