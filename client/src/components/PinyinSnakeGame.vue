@@ -1,13 +1,14 @@
 <template>
   <div class="snake-wrap col">
     <div class="snake-header">
-      <div class="score-box">🏆 {{ score }}</div>
+      <div class="score-box">🏆 {{ score }}　🈶 {{ wordsDone }}</div>
       <div class="snake-title">拼音贪吃蛇</div>
-      <div class="lives-box">{{ '❤️'.repeat(lives) }}{{ '🖤'.repeat(Math.max(0, 3 - lives)) }}</div>
+      <button v-if="started" class="restart-btn" @click="startGame">🔄 重来</button>
+      <span v-else class="header-spacer"></span>
     </div>
 
     <!-- 目标提示：当前要拼的字 + 字母进度 -->
-    <div class="target-hint" v-if="started && !gameOver && target">
+    <div class="target-hint" v-if="started && target">
       <span class="th-char">{{ target.char }}</span>
       <span class="th-arrow">→</span>
       <span class="th-letters">
@@ -24,20 +25,15 @@
     <div class="game-area" ref="gameAreaEl">
       <canvas ref="canvasEl" class="game-canvas"></canvas>
 
-      <div v-if="!started || gameOver" class="overlay-screen">
-        <div v-if="!started" class="ov-inner">
+      <div v-if="!started" class="overlay-screen">
+        <div class="ov-inner">
           <div class="ov-emoji">🐍</div>
           <h3>拼音贪吃蛇</h3>
           <p>蛇身上的汉字是空心的，按提示的顺序吃掉字母，把它拼出来！</p>
           <p class="ov-tip">拼对一个字，它就会变绿并标上拼音 🟢</p>
+          <p class="ov-tip">放轻松～撞到自己也不要紧，慢慢拼就好</p>
           <p class="ov-tip">用方向键 或 下方按钮控制方向</p>
           <button class="btn-go" @click="startGame">开始游戏</button>
-        </div>
-        <div v-else class="ov-inner">
-          <div class="ov-emoji">{{ score >= 60 ? '🏆' : score >= 30 ? '🎉' : '😺' }}</div>
-          <h3>游戏结束</h3>
-          <p>得分：<b>{{ score }}</b>　拼出 <b>{{ wordsDone }}</b> 个字</p>
-          <button class="btn-go" @click="startGame">再玩一次</button>
         </div>
       </div>
     </div>
@@ -74,10 +70,8 @@ let CELL = 24;
 const canvasEl   = ref(null);
 const gameAreaEl = ref(null);
 const score    = ref(0);
-const lives    = ref(3);
 const wordsDone = ref(0);
 const started  = ref(false);
-const gameOver = ref(false);
 const paused   = ref(false);
 
 // 当前要拼的字 + 已拼到第几个字母（响应式，供提示条用）
@@ -141,9 +135,7 @@ function placeFoods() {
 function startGame() {
   clearInterval(tickHandle);
   score.value = 0;
-  lives.value = 3;
   wordsDone.value = 0;
-  gameOver.value = false;
   paused.value = false;
   started.value = true;
   flashCell = null;
@@ -165,7 +157,7 @@ function startGame() {
 }
 
 function tick() {
-  if (paused.value || gameOver.value) return;
+  if (paused.value) return;
   dir = { ...nextDir };
 
   const head = snake[0];
@@ -174,12 +166,7 @@ function tick() {
     y: (head.y + dir.dy + ROWS) % ROWS,
   };
 
-  // 撞到自己
-  if (snake.some(s => s.x === nh.x && s.y === nh.y)) {
-    loseLife();
-    return;
-  }
-
+  // 轻松模式：撞到自己也没关系，直接穿过，不掉命、不结束
   snake.unshift(nh);
 
   const fi = foods.findIndex(f => f.x === nh.x && f.y === nh.y);
@@ -223,24 +210,6 @@ function tick() {
   draw();
 }
 
-function loseLife() {
-  lives.value--;
-  if (lives.value <= 0) {
-    clearInterval(tickHandle);
-    gameOver.value = true;
-    draw();
-    return;
-  }
-  // 重置蛇身位置，但保留已拼进度
-  const cx = Math.floor(COLS / 2), cy = Math.floor(ROWS / 2);
-  snake = [{ x: cx, y: cy }, { x: cx - 1, y: cy }, { x: cx - 2, y: cy }];
-  dir = { dx: 1, dy: 0 };
-  nextDir = { dx: 1, dy: 0 };
-  grow = 0;
-  placeFoods();
-  draw();
-}
-
 function setDir(dx, dy) {
   if (dx !== 0 && dir.dx !== 0) return; // 不能反向
   if (dy !== 0 && dir.dy !== 0) return;
@@ -248,7 +217,7 @@ function setDir(dx, dy) {
 }
 
 function togglePause() {
-  if (!started.value || gameOver.value) return;
+  if (!started.value) return;
   paused.value = !paused.value;
 }
 
@@ -375,7 +344,13 @@ onBeforeUnmount(() => {
 }
 .snake-title { font-weight: 900; font-size: 16px; color: var(--ink); }
 .score-box { font-weight: 900; font-size: 14px; color: #9b5cd6; background: #f5f0ff; padding: 4px 12px; border-radius: 999px; }
-.lives-box { font-size: 16px; letter-spacing: 2px; }
+.restart-btn {
+  font-family: inherit; font-weight: 800; font-size: 13px; color: #54b85a;
+  background: #f0f8f2; border: 2px solid #c0e8cc; border-radius: 999px;
+  padding: 4px 12px; cursor: pointer;
+}
+.restart-btn:hover { background: #d0f0da; }
+.header-spacer { width: 64px; }
 
 .target-hint {
   display: flex; align-items: center; gap: 10px; justify-content: center;
