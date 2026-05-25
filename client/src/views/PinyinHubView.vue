@@ -151,6 +151,10 @@
 
       <!-- ========== 练习 tab ========== -->
       <template v-else-if="mainTab === 'practice'">
+        <div class="practice-header">
+          <h3 class="section-title">✏️ 填写拼音</h3>
+          <p class="tip-text">把字母积木拖入对应位置，拼出汉字的拼音</p>
+        </div>
         <FillPinyinSection />
       </template>
 
