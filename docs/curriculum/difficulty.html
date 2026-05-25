@@ -38,11 +38,12 @@
       </tbody>
     </table>
 
-    <h2>➕ 加 / ➖ 减 / ✖️ 乘 / ➗ 除（每模块 5 分类）</h2>
+    <h2>➕ 加 / ➖ 减 / ✖️ 乘 / ➗ 除（每模块 6 分类）<span class="tag major">v1.6.8 新增 within20</span></h2>
     <table>
       <thead><tr><th>id</th><th>名称</th><th>kind</th><th>count × perLevel</th><th>说明</th></tr></thead>
       <tbody>
         <tr><td><code>within10</code></td><td>10 以内</td><td>enum</td><td>9 × 9 = 81 题</td><td>穷举（见下方分关规则）</td></tr>
+        <tr><td><code>within20</code> <span class="tag major">新</span></td><td>20 以内</td><td>range</td><td>500 × 5</td><td>教材一上五 / 一下二；加法直接 tile，减法借位时触发 <b>multi-step</b> 拆分</td></tr>
         <tr><td><code>within100</code></td><td>100 以内</td><td>range</td><td>500 × 5</td><td>加减 ≥10 触发 <b>multi-step</b> 拆分引导；乘除 tile-fill 限定积/被除数 ≤ 100</td></tr>
         <tr><td><code>n2</code></td><td>两个数{相加/相减/相乘/相除}</td><td>multi</td><td>500 × 5</td><td>2 个操作数，加减各 10~99；乘 2~12；除 q∈1..9, d∈2..5</td></tr>
         <tr><td><code>n3</code></td><td>三个数…</td><td>multi</td><td>500 × 5</td><td>3 个操作数（加减 1~50 / 乘 2~6 / 除 q×2 个 divisor）</td></tr>
@@ -63,21 +64,41 @@
     </table>
     <div class="note">取题函数：<code>enumWithin10Fact(op, stage, qIdx)</code>；按钮标签：<code>enumLevelLabel(op, stage)</code>。</div>
 
-    <h2>🔢 数位认知（place 模块，8 分类） <span class="tag major">v1.6.7 改为 9 题/关</span></h2>
+    <h2>🔢 数位认知（place 模块，9 分类） <span class="tag major">v1.6.8 新增 d2</span></h2>
     <p>每个分类对应一个数位长度，每关 <b>9 题</b>，每题随机生成一个该位数的整数；玩家把数字积木拖到对应数位格子中。</p>
     <table>
-      <thead><tr><th>id</th><th>位数</th><th>覆盖单位</th></tr></thead>
+      <thead><tr><th>id</th><th>位数</th><th>覆盖单位</th><th>对应教材单元</th></tr></thead>
       <tbody>
-        <tr><td><code>d3</code></td><td>三位数</td><td>个 / 十 / 百</td></tr>
-        <tr><td><code>d4</code></td><td>四位数</td><td>个 / 十 / 百 / 千</td></tr>
-        <tr><td><code>d5</code></td><td>五位数</td><td>… 到万位</td></tr>
-        <tr><td><code>d6</code></td><td>六位数</td><td>… 到十万位</td></tr>
-        <tr><td><code>d7</code></td><td>七位数</td><td>… 到百万位</td></tr>
-        <tr><td><code>d8</code></td><td>八位数</td><td>… 到千万位</td></tr>
-        <tr><td><code>d9</code></td><td>九位数</td><td>… 到亿位</td></tr>
-        <tr><td><code>d10</code></td><td>十位数</td><td>… 到十亿位</td></tr>
+        <tr><td><code>d2</code> <span class="tag major">新</span></td><td>两位数</td><td>个 / 十</td><td>一上四「11–20 认识」· 一下三「100 以内数认识」</td></tr>
+        <tr><td><code>d3</code></td><td>三位数</td><td>个 / 十 / 百</td><td>—</td></tr>
+        <tr><td><code>d4</code></td><td>四位数</td><td>个 / 十 / 百 / 千</td><td>—</td></tr>
+        <tr><td><code>d5</code></td><td>五位数</td><td>… 到万位</td><td>—</td></tr>
+        <tr><td><code>d6</code></td><td>六位数</td><td>… 到十万位</td><td>—</td></tr>
+        <tr><td><code>d7</code></td><td>七位数</td><td>… 到百万位</td><td>—</td></tr>
+        <tr><td><code>d8</code></td><td>八位数</td><td>… 到千万位</td><td>—</td></tr>
+        <tr><td><code>d9</code></td><td>九位数</td><td>… 到亿位</td><td>—</td></tr>
+        <tr><td><code>d10</code></td><td>十位数</td><td>… 到十亿位</td><td>—</td></tr>
       </tbody>
     </table>
+
+    <h2>🎓 教材轴专属模块 <span class="tag major">v1.8.0 升级</span></h2>
+    <p>这 5 个 module 仅在 <a href="textbook.html">教材轴</a> 引用，<b>不出现在「按能力练」首页</b>（<code>catalog.js MODULES.math</code> 不包含），保持按能力练 5 个核心模块（加减乘除位）干净。</p>
+    <table>
+      <thead><tr><th>module</th><th>分类</th><th>kind</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>review</code></td><td>g1up / g1down</td><td>mix</td><td>综合复习：从 sources[] 各分类轮询抽题</td></tr>
+        <tr><td><code>shape</code> <span class="tag major">v1.8</span></td><td>solid / plane</td><td>shape</td><td>SVG 立体感图形（<code>ShapeIcon.vue</code>，9 个手绘），choice 4-5 选 1</td></tr>
+        <tr><td><code>money</code></td><td>recognize / change</td><td>money</td><td>元/角/分换算（choice）+ 找零计算（tile-fill + caption）</td></tr>
+        <tr><td><code>word</code> <span class="tag major">v1.8</span></td><td>mixed</td><td>word</td><td>32 个中文应用题模板（求和 12 / 剩余 8 / 比多少 5 / 求被减数 3 / 求加数 2 / 求减数 2）</td></tr>
+        <tr><td><code>vertical</code> <span class="tag major">v1.8 竖式</span></td><td>add / sub</td><td>vertical</td><td>真正竖式 UI：上下对齐 + 横线 + 答案槽 + 进/退位小标。<code>mode='vertical'</code>，复用拖拽/校验</td></tr>
+      </tbody>
+    </table>
+    <p class="files">渲染契约：</p>
+    <ul>
+      <li><b>tile-fill</b>：可选 <code>q.caption</code> 字段在算式上方显示黄色提示块</li>
+      <li><b>choice</b>：<code>q.promptKind === 'shape3d' | 'shape2d'</code> 时渲染 <code>&lt;ShapeIcon :shape-id="q.prompt"&gt;</code>，否则按 emoji/letter 文字渲染</li>
+      <li><b>vertical</b>：<code>q.aCols / bCols / ansCols / ansSlotMap / tensMark / maxLen</code> 描述列对齐结构；答案槽用 <code>.vt-slot.slot</code> + <code>data-slot</code>，自动接入现有拖拽逻辑</li>
+    </ul>
     <pre><code>PLACE_NAMES = ['个','十','百','千','万','十万','百万','千万','亿','十亿']
 // d 位数 → 槽位标签按高→低：PLACE_NAMES[d-1], …, PLACE_NAMES[0]</code></pre>
 

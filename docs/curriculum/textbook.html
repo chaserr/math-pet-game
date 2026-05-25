@@ -72,10 +72,11 @@
 
     <h3>已实现的 trickId</h3>
     <table>
-      <thead><tr><th>trickId</th><th>标题</th><th>op</th><th>对应单元</th></tr></thead>
+      <thead><tr><th>trickId</th><th>标题</th><th>op</th><th>对应单元</th><th>demo</th></tr></thead>
       <tbody>
-        <tr><td><code>borrow-trick</code></td><td>整万数减法·减1法</td><td>−</td><td>四上 第1单元（万以内的减法）</td></tr>
-        <tr><td><code>make-ten</code></td><td>凑十法（加法技巧）</td><td>+</td><td>一上 第2单元（10 以内的加减法）</td></tr>
+        <tr><td><code>borrow-trick</code></td><td>整万数减法·减1法</td><td>−</td><td>四上 第1单元（万以内的减法）</td><td>10000-3847</td></tr>
+        <tr><td><code>make-ten</code></td><td>凑十法（加法技巧）</td><td>+</td><td>一上 第5单元（20 以内的进位加法）</td><td>8+5</td></tr>
+        <tr><td><code>break-ten</code> <span class="tag major">v1.6.8 新增</span></td><td>破十法（减法技巧）</td><td>−</td><td>一下 第2单元（20 以内的退位减法）</td><td>14-9</td></tr>
       </tbody>
     </table>
     <p>新增技巧 = 在 <code>useQuizGen.js</code> 的 <code>LESSON_META</code> 注册 + 写 <code>build*</code> 构造器；如需新的步骤形态，在 <code>decompose.js</code> 加 <code>kind</code> 并在 <code>LessonView</code> 加渲染分支。</p>
@@ -83,13 +84,57 @@
     <h2>占位策略</h2>
     <p>每个年级/册/单元/项都可标 <code>placeholder: true</code>。年级网格显示 <b>"有内容"/"整理中"</b> 标签；册内无单元显示 🚧 占位提示；单元 <code>placeholder</code> 则不展开 items。<b>等小学 1–6 年级各册 PDF 到位后再按单元逐个填充。</b></p>
 
-    <h2>样板内容（v1.5）</h2>
+    <h2>已落地内容 <span class="tag major">v1.7.0 一年级 16/16 全接通</span></h2>
+
+    <h3>📕 一年级上册（2022 课标修订版，6 单元）</h3>
+    <table>
+      <thead><tr><th>第</th><th>单元</th><th>内容项</th><th>状态</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>5 以内数的认识和加、减法</td><td>practice <code>add/within10</code> + <code>sub/within10</code></td><td>✅</td></tr>
+        <tr><td>2</td><td>6～10 的认识和加、减法</td><td>practice <code>add/within10</code> + <code>sub/within10</code></td><td>✅</td></tr>
+        <tr><td>3</td><td>认识立体图形</td><td>practice <code>shape/solid</code>（v1.8 SVG 立体图形：4 个手绘长方体/正方体/圆柱/球）</td><td>✅ <span class="tag major">v1.8 SVG</span></td></tr>
+        <tr><td>4</td><td>11～20 的认识</td><td>practice <code>place/d2</code>（两位数 个/十）</td><td>✅</td></tr>
+        <tr><td>5</td><td>20 以内的进位加法</td><td>lesson <code>make-ten</code> + practice <code>add/within20</code></td><td>✅</td></tr>
+        <tr><td>6</td><td>复习与关联</td><td>practice <code>review/g1up</code>（mix 综合，从 within10 / d2 / within20 等混合 9 题）</td><td>✅ <span class="tag major">v1.7.0</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>📗 一年级下册（2022 课标修订版，6 单元 + 主题学习 + 复习 = 8 unit）</h3>
+    <table>
+      <thead><tr><th>第</th><th>单元</th><th>内容项</th><th>状态</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>认识平面图形</td><td>practice <code>shape/plane</code>（v1.8 SVG 平面图形：5 个手绘长方形/正方形/三角形/圆/平行四边形）</td><td>✅ <span class="tag major">v1.8 SVG</span></td></tr>
+        <tr><td>2</td><td>20 以内的退位减法</td><td>lesson <code>break-ten</code> + practice <code>sub/within20</code></td><td>✅</td></tr>
+        <tr><td>3</td><td>100 以内数的认识</td><td>practice <code>place/d2</code></td><td>✅</td></tr>
+        <tr><td>4</td><td>100 以内的口算加、减法</td><td>practice <code>add/within100</code> + <code>sub/within100</code></td><td>✅</td></tr>
+        <tr><td>5</td><td>100 以内的笔算加、减法</td><td>practice <code>vertical/add</code> + <code>vertical/sub</code>（v1.8 真正竖式 UI：列对齐 + 横线 + 进/退位小标）</td><td>✅ <span class="tag major">v1.8 竖式</span></td></tr>
+        <tr><td>6</td><td>数量间的加减关系</td><td>practice <code>word/mixed</code>（v1.8 扩到 32 个中文模板：求和/剩余/比多少/求被减数/求加减数）</td><td>✅ <span class="tag major">v1.8 32 模板</span></td></tr>
+        <tr><td>7</td><td>🛒 欢乐购物街（主题学习）</td><td>practice <code>money/recognize</code>（元角分换算）+ <code>money/change</code>（10/20/50/100 钞票找零）</td><td>✅ <span class="tag major">v1.7.0</span></td></tr>
+        <tr><td>8</td><td>复习与关联</td><td>practice <code>review/g1down</code>（mix 综合）</td><td>✅ <span class="tag major">v1.7.0</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>📘 二上 / 📙 四上（保留旧数据）</h3>
     <ul>
-      <li><b>一上 数学</b> · 第1单元「认识 10 以内的数」→ practice: 10 以内加法（<code>add/within10</code>）；第2单元「10 以内的加减法」→ lesson: 凑十法 + practice: 10 以内减法</li>
       <li><b>二上 数学</b> · 第1单元「表内乘法（九九乘法表）」→ practice: 九九乘法表（<code>mul/within10</code>）</li>
       <li><b>四上 数学</b> · 第1单元「万以内的减法（解题技巧）」→ lesson: 减1法（<code>borrow-trick</code>）</li>
       <li><b>一上 语文</b> · 第1单元「汉语拼音」→ 拼音专项占位 + 看图识字（复用 <code>recognize/default</code>）</li>
     </ul>
+
+    <h2>📖 游戏内查看课本 <span class="tag major">v1.7.0 新增</span></h2>
+    <p>
+      教材轴选定年级 + 册时，旁边有 <code>📖 查看课本</code> 按钮。点击后 <code>&lt;Teleport&gt;</code> 弹出全屏 modal，里面 <code>&lt;iframe&gt;</code> 加载原版 PDF（浏览器原生 PDF 查看器渲染，不引入 pdf.js）。
+    </p>
+    <table>
+      <thead><tr><th>层</th><th>实现</th></tr></thead>
+      <tbody>
+        <tr><td>资源</td><td><code>client/public/textbooks/&lt;subject&gt;/&lt;grade&gt;/&lt;grade&gt;-&lt;volume&gt;.pdf</code>（70 MB+ <b>gitignored</b>，本地放置）</td></tr>
+        <tr><td>注册</td><td><code>textbook.js PDF_AVAILABLE = { math: { grade1: ['up','down'] } }</code></td></tr>
+        <tr><td>API</td><td><code>isPdfAvailable(s,g,v): boolean</code> · <code>pdfPath(s,g,v): string | null</code></td></tr>
+        <tr><td>UI</td><td><code>TextbookView.vue</code> 加 <code>currentPdfPath</code> computed + <code>showPdf</code> ref + Teleport modal；按钮 disabled 当 PDF 未配置时显示提示</td></tr>
+        <tr><td>关闭</td><td>点蒙层 / 点 ✕ / 切学科年级册 → 自动关闭（<code>watch([subject, grade, volume])</code>）</td></tr>
+      </tbody>
+    </table>
 
     <h2>文件结构</h2>
     <pre><code>client/src/

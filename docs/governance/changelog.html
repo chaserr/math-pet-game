@@ -24,6 +24,184 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 20 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #20</span><span class="date">2026-05-25</span>
+        <span class="ver">v1.8.0 · 三件套升级（应用题题库 / 图形 SVG / 竖式 UI）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"好的，按升级方向做。"</div>
+      <p>对应 v1.7.0 roadmap 末段三项 v1.8 升级方向：① 应用题扩题库 ② 图形改 SVG ③ 笔算改真正竖式 UI。</p>
+
+      <h4>① 应用题题库 12 → 32 模板</h4>
+      <ul>
+        <li><b>WORD_TEMPLATES 扩展到 32 个中文模板</b>，按题型分组：求和（12）/ 求剩余（8）/ 比多少求差（5）/ 求被减数（3）/ 求加数（2）/ 求减数（2）。</li>
+        <li><b>覆盖 1 下教材"数量间的加减关系"</b>所有常见题型，孩子练 30 道也不容易撞模板。</li>
+        <li><b>验证</b>：30 次随机抽样命中 22 个不同模板（覆盖率 68%）✓。</li>
+      </ul>
+
+      <h4>② 图形改 SVG：emoji → 手绘 SVG（9 个图形）</h4>
+      <ul>
+        <li><b>新建 <code>client/src/components/ShapeIcon.vue</code></b>：viewBox 100×100，<code>:shape-id</code> prop 切换 9 个 SVG：
+          <ul>
+            <li>立体 4 个：长方体（前矩形 + 顶面 + 右侧面，3 面错位透视）· 正方体（同长方体边等长）· 圆柱（顶椭圆 + 矩形身 + 底椭圆）· 球（径向渐变 + 高光 + 地面阴影）</li>
+            <li>平面 5 个：长方形 · 正方形 · 三角形 · 圆 · 平行四边形（统一带描边和柔和填充色）</li>
+          </ul>
+        </li>
+        <li><b>useQuizGen <code>genShape</code> 改为返回 <code>shapeId</code></b>（不再是 emoji），<code>promptKind: 'shape3d' | 'shape2d'</code>。</li>
+        <li><b>QuizView choice 模板按 promptKind 分支</b>：shape3d/shape2d 走 <code>&lt;ShapeIcon&gt;</code>，其他走原 <code>cz-prompt</code> 文字渲染。SVG 居中显示，外层带圆角白底卡。</li>
+        <li><b>立体感细节</b>：长方体/正方体三面用不同明暗（顶面浅 / 前面中 / 侧面深）；球用 <code>&lt;radialGradient&gt;</code> 高光在左上，下方加椭圆阴影。</li>
+      </ul>
+
+      <h4>③ 笔算改真正竖式 UI（最大头）</h4>
+      <ul>
+        <li><b>新 mode <code>'vertical'</code></b>：useQuizGen <code>genVertical</code> 返回新结构：
+          <pre><code>{
+  mode: 'vertical', op, a, b, answer, maxLen,
+  aCols, bCols, ansCols,    // 列对齐（短数前面 null 补位）
+  ansSlotMap,               // ansSlotMap[col] = slotIdx or null（哪些列是答案槽）
+  slots,                    // 答案位数
+  tensMark,                 // 进/退位小标："+1" / "−1" / ""
+  tiles                     // 数字积木池（含答案位 + 干扰）
+}</code></pre>
+        </li>
+        <li><b>QuizView 加 vertical 模板分支</b>（约 70 行）：
+          <ul>
+            <li><code>.vt-frame</code> 米白卡 + 橙色描边 + Comic Sans 字体</li>
+            <li>4 行结构：进/退位小标行 → a 行 → b 行（带 op） → 横线 → 答案槽位行</li>
+            <li>所有行按 <code>maxLen</code> 列对齐（右对齐），短数左侧空格</li>
+            <li>op slot 单独占一列，横线只盖数字列（margin-left 让位）</li>
+            <li>答案槽位用 <code>.vt-slot.slot</code> 类，data-slot 属性，<b>复用现有拖拽 / 校验逻辑</b>（drop 识别 .slot + data-slot；place() 在所有 slot filled 时调 doCheckTileFill 校验整体相等）</li>
+          </ul>
+        </li>
+        <li><b>初始化路径合并</b>：<code>loadQuestion</code> 里 <code>tile-fill || vertical</code> 共用一个分支初始化 slots + pool。</li>
+        <li><b>hint 文案</b>："从右到左：先算个位，再算十位"。</li>
+        <li><b>已知边界</b>：当前仅支持 a/b 都是两位数（11-99）、答案 ≤ 99 的加法 / 减法。a+b ≥ 100 的进百加法未启用（教材一下 U5 也不出此类）。</li>
+      </ul>
+
+      <h4>验证</h4>
+      <ul>
+        <li>应用题 32 模板，30 次抽样 22 个 distinct ✓</li>
+        <li>图形 9 个 SVG 全部渲染（立体 4 + 平面 5）✓</li>
+        <li>竖式：加法 29+63=92 显示 +1 / 减法 98-29=69 显示 −1 / 减法 31-27=4 ansSlotMap=[null, 0] 处理 1 位答案 ✓</li>
+        <li>QuizView 拖拽 / 校验路径自动适配 vertical（复用 .slot 类 + data-slot 协议）✓</li>
+        <li><code>npm run build</code> 2.46s 通过 ✓（QuizView 18 → 24 kB，新增 vertical 模板 + ShapeIcon 体积可忽略）</li>
+      </ul>
+
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/components/ShapeIcon.vue</code>（9 个 SVG 图形组件）<br>
+        改（代码）：<code>client/src/composables/useQuizGen.js</code>（WORD_TEMPLATES 12→32 · SHAPES_3D/2D 改 shapeId · genVertical 重写为新结构）· <code>client/src/views/QuizView.vue</code>（vertical 模板 + 校验 + 初始化合并 + ShapeIcon 引入 + 新 CSS .vt-* / .cz-shape）<br>
+        改（文档）：<code>docs/governance/changelog.html</code>（本条）· <code>docs/curriculum/difficulty.html</code>（vertical 章节更新）· <code>docs/curriculum/textbook.html</code>（一下 U5 状态从骨架升级到真竖式）· <code>docs/governance/roadmap.html</code>（v1.8 升级方向标完成）· <code>docs/index.html</code>（最新变更卡 + 版本号）
+      </p>
+    </article>
+
+    <!-- 回合 19 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #19</span><span class="date">2026-05-25</span>
+        <span class="ver">v1.7.0 · 一年级 6 个占位单元全部接通 + 游戏内查看课本</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "接下来完成 6 个单元占位，另外将 pdf 文件放在资源路径下面。"<br>
+        "A，然后游戏内查看课本这个功能也可以做。"
+      </div>
+      <h4>方案选择</h4>
+      <p>方案 A：每个占位单元做最小可玩骨架，先粗糙先少内容，6 个 unit 当天全部可玩。深度迭代留后续。</p>
+      <h4>新增 5 个数学 module（教材轴专属，不出现在「按能力练」首页）</h4>
+      <table class="roadmap-table">
+        <thead><tr><th>module</th><th>分类</th><th>kind</th><th>用在 unit</th><th>骨架做法</th></tr></thead>
+        <tbody>
+          <tr><td><code>review</code></td><td>g1up / g1down</td><td><code>mix</code></td><td>一上 6 / 一下 8</td><td>从 sources[] 轮询调 <code>genQuestion</code>；enum 类传 random fakeStage/qIdx 多样化</td></tr>
+          <tr><td><code>shape</code></td><td>solid / plane</td><td><code>shape</code></td><td>一上 3 / 一下 1</td><td>SHAPES_3D 4 个 + SHAPES_2D 5 个，emoji 当 prompt（📦🎲🥫⚽ / ▭⬛🔺⚪▱）；复用 <code>choice</code> 模式</td></tr>
+          <tr><td><code>money</code></td><td>recognize / change</td><td><code>money</code></td><td>一下 7（购物街）</td><td>recognize：元 / 角 / 分换算 8 题模板 × choice；change：10/20/50/100 钞票找零 × tile-fill + caption 题面</td></tr>
+          <tr><td><code>word</code></td><td>mixed</td><td><code>word</code></td><td>一下 6</td><td>12 个中文模板（剩余 / 共有 / 比多少），tile-fill + caption 题面</td></tr>
+          <tr><td><code>vertical</code></td><td>add / sub</td><td><code>vertical</code></td><td>一下 5（笔算）</td><td>最小骨架：tile-fill + caption "💡 笔算 X+Y：先算个位…" 提示；真正竖式 UI 留 v1.8 升级</td></tr>
+        </tbody>
+      </table>
+      <h4>决策</h4>
+      <ul>
+        <li><b>QuizView 加 <code>q.caption</code> 字段</b>：在 .equation 上方显示中文题面（应用题 / 找零 / 笔算提示）。CSS 用黄色带边框块。最小侵入（仅多一行 <code>v-if</code>）。</li>
+        <li><b>数学 module 边界划分</b>：新 5 module 加进 <code>MATH_CATEGORIES</code>（让 QuizView 能出题），但<b>不加进 <code>MODULES.math</code></b>（让首页"按能力练"看不到，仅教材轴可见）。这样按能力练保持 5 个核心模块（add/sub/mul/div/place）干净，教材轴专属内容隔离。</li>
+        <li><b>PDF 资源</b>：物理路径 <code>client/public/textbooks/math/grade1/grade1-{up,down}.pdf</code>。70 MB 不进 git（<code>.gitignore</code> 排除 <code>client/public/textbooks/**/*.pdf</code>）。README 加「教材资源」章节说明本地放置步骤。</li>
+        <li><b>新接口 <code>textbook.js: PDF_AVAILABLE / isPdfAvailable / pdfPath</code></b>：注册哪些册有 PDF；<code>pdfPath</code> 在 Node 测试环境下也健壮（兜底 <code>import.meta.env?.BASE_URL || '/'</code>）。</li>
+        <li><b>TextbookView 加"📖 查看课本"按钮</b>：在册 Tab 旁边；点击弹 Teleport modal，<code>&lt;iframe&gt;</code> 加载 PDF（浏览器原生 PDF 查看，不引入 pdf.js 增加包体）；切册 / 切年级 / 切学科自动关闭。</li>
+        <li><b>教材轴一年级 16 unit 全部接通</b>：14 个有真实内容 + 2 个仍是综合复习占位（一上6 / 一下8 接 review 综合）→ <b>实际全部 16/16 可玩</b>。</li>
+      </ul>
+      <h4>验证</h4>
+      <ul>
+        <li>5 个新 module 全部注册：review/shape/money/word/vertical（共 9 个 category）✓</li>
+        <li>每个 module 出题样本通过：mix 加减混合 / shape choice 4 选 1 / money recognize 角分换算 / money change 10-50-100 钞票找零 / word 中文应用题模板 / vertical 笔算提示 ✓</li>
+        <li>教材轴 19 个 ref 全部能找到分类 ✓</li>
+        <li>PDF 路径 <code>/textbooks/math/grade1/grade1-up.pdf</code> + <code>grade1-down.pdf</code> ✓；grade2 等返回 null（按钮 disabled）✓</li>
+        <li><code>npm run build</code> 2.35s 通过 ✓</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/public/textbooks/math/grade1/grade1-up.pdf</code>（52 MB，gitignored）· <code>grade1-down.pdf</code>（18 MB，gitignored）· <code>.gitignore</code><br>
+        改（代码）：<code>client/src/lib/mathLevels.js</code>（5 个新 module 类目函数 + MATH_CATEGORIES 注册）· <code>client/src/composables/useQuizGen.js</code>（5 个新 gen 函数 + 入口分支）· <code>client/src/lib/textbook.js</code>（PDF_AVAILABLE / isPdfAvailable / pdfPath + grade1 整册 16 unit 全部接通）· <code>client/src/views/TextbookView.vue</code>（查看课本按钮 + PDF modal + 切换关闭 watch）· <code>client/src/views/QuizView.vue</code>（tile-fill 模板 q.caption 行 + .quiz-caption CSS）· <code>README.md</code>（教材资源章节）<br>
+        改（文档）：<code>docs/governance/changelog.html</code>（本条）· <code>docs/curriculum/textbook.html</code>（一年级落地表更新）· <code>docs/curriculum/difficulty.html</code>（5 新 module 表）· <code>docs/governance/roadmap.html</code>（一年级行 + 移除 5 个待补题型）· <code>docs/index.html</code>（最新变更卡 + 统计数字）
+      </p>
+    </article>
+
+    <!-- 回合 18 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #18</span><span class="date">2026-05-25</span>
+        <span class="ver">v1.6.8 · 一年级（2022 课标修订版）整册落地</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "/Users/tongxing/Person/教材/数学/一年级 这里有一年级上下册的 PDF 教材，请分析并完成需求。"
+      </div>
+      <h4>分析</h4>
+      <p>PDF 是 <b>2022 年版课程标准修订</b>（人教版）新教材，与原 <code>textbook.js</code> 中一年级数据（基于旧版 3 单元）结构不一致。新版章节：</p>
+      <ul>
+        <li><b>一上 6 单元</b>：1️⃣5以内加减 · 2️⃣6-10加减 · 3️⃣认识立体图形 · 4️⃣11-20认识 · 5️⃣20以内进位加 · 6️⃣复习</li>
+        <li><b>一下 6 单元 + 主题学习 + 复习 = 8 unit</b>：1️⃣平面图形 · 2️⃣20以内退位减 · 3️⃣100以内数认识 · 4️⃣100以内口算 · 5️⃣100以内笔算 · 6️⃣数量关系 · 7️⃣🛒欢乐购物街 · 8️⃣复习</li>
+      </ul>
+      <h4>决策（本轮范围 ≈ 1.5 h）</h4>
+      <ul>
+        <li><b>章节结构按 2022 新版重建</b>：<code>textbook.js grade1.up/.down</code> 全部重写。</li>
+        <li><b>新分类 <code>add/within20</code> + <code>sub/within20</code></b>：<code>mathLevels.js arithCategories</code> 加 range kind，max=20。减法在借位时复用 <code>decomposeSub</code> 走 multi-step，与教材"破十法"练习契合。</li>
+        <li><b>新分类 <code>place/d2</code></b>：<code>placeCategories</code> 加两位数（11-99，个/十数位），覆盖一上四 + 一下三两个单元。</li>
+        <li><b>新教学卡 <code>break-ten</code>（破十法）</b>：<code>useQuizGen.js LESSON_META</code> 注册 + <code>lessonInfo</code> demo (<code>14-9=5</code>) + <code>genTrickQuiz</code> 随机题（限定 <code>a∈[11,18], b∈[a%10+1, 9]</code> 保证触发破十）。步骤复用 <code>decomposeSub</code> 的 split/calc/done 三 kind，<code>LessonView</code> 已经支持，无需改渲染。</li>
+        <li><b>新内容关联清单</b>：
+          <ul>
+            <li>一上 1：<code>add/within10</code> + <code>sub/within10</code></li>
+            <li>一上 2：同上</li>
+            <li>一上 4：<code>place/d2</code></li>
+            <li>一上 5：lesson <code>make-ten</code> + <code>add/within20</code>（make-ten 教学卡从一上 U2 改绑 U5，与教材一致）</li>
+            <li>一下 2：lesson <code>break-ten</code> + <code>sub/within20</code></li>
+            <li>一下 3：<code>place/d2</code></li>
+            <li>一下 4：<code>add/within100</code> + <code>sub/within100</code></li>
+          </ul>
+        </li>
+        <li><b>占位（单独立项再做）</b>：一上 3 立体图形 · 一上 6 复习 · 一下 1 平面图形 · 一下 5 笔算 · 一下 6 数量关系 · 一下 7 欢乐购物街 · 一下 8 复习。每项均在 textbook.js 留 placeholder 项 + roadmap 登记。</li>
+      </ul>
+      <h4>验证</h4>
+      <ul>
+        <li>三个新分类 <code>findCategory</code> 都能找到，perLevel 5/5/9 正确 ✓</li>
+        <li><code>add/within20</code> 出题：<code>3+9=12 / 6+4=10 / 10+10=20</code>（tile-fill）✓</li>
+        <li><code>sub/within20</code> 出题：退位的自动 multi-step、不退位的 tile-fill ✓</li>
+        <li><code>place/d2</code> 出题：43 / 21 / 89，slot 标 个/十 ✓</li>
+        <li><code>break-ten</code> demo <code>14-9</code> 步骤完整 split→calc→calc→done ✓</li>
+        <li>随机自测 3 道：14-5/12-8/13-7 都是退位减 ✓</li>
+        <li>教材轴一年级 16 个 unit，10 个可玩 + 6 个占位，所有 <code>ref</code> 都能找到分类 ✓</li>
+        <li><code>npm run build</code> 2.23s 通过 ✓</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        改（代码）：<code>client/src/lib/mathLevels.js</code>（<code>arithCategories</code> 加 within20 · <code>placeCategories</code> 加 d2）· <code>client/src/composables/useQuizGen.js</code>（<code>LESSON_META.break-ten</code> + <code>buildBreakTen</code> + <code>lessonInfo</code> demo + <code>genTrickQuiz</code> 分支）· <code>client/src/lib/textbook.js</code>（<code>grade1.up</code> 6 unit · <code>grade1.down</code> 8 unit）<br>
+        改（文档）：<code>docs/curriculum/textbook.html</code>（已实现 trickId 表 + 一年级落地表）· <code>docs/curriculum/difficulty.html</code>（within20 行 + d2 行 + 分类总数 5→6 / 8→9）· <code>docs/governance/roadmap.html</code>（一年级行更新 + break-ten 已完成）· <code>docs/governance/changelog.html</code>（本条）· <code>docs/index.html</code>（最新变更卡）
+      </p>
+    </article>
+
     <!-- 回合 17 -->
     <article class="entry">
       <header>
