@@ -5,6 +5,8 @@ import {
   GACHA_COST, GACHA_DUP_FOOD_QTY, GACHA_POOL,
 } from './catalog.js';
 import { scoreRound, petMood, unlockConditions } from './lib/gameLogic.js';
+import { cacheGet, cacheSet } from './lib/cloudCache.js';
+import { markCloudOnline, markCloudOffline } from './lib/cloudHealth.js';
 
 async function uid() {
   const { data } = await supabase.auth.getUser();
@@ -12,12 +14,55 @@ async function uid() {
   return data.user.id;
 }
 
+// 当前 userId（无需等待 Supabase，给缓存读写用）
+async function uidForCache() {
+  try {
+    const { data } = await supabase.auth.getUser();
+    return data?.user?.id || 'guest';
+  } catch {
+    return 'guest';
+  }
+}
+
+/**
+ * 云端读 + 本地缓存兜底
+ * - 成功：写缓存 + 标记 online + 返回数据
+ * - 失败 + 有缓存：标记 offline + 返回缓存
+ * - 失败 + 无缓存 + 有 fallback：标记 offline + 返回 fallback
+ * - 失败 + 无缓存 + 无 fallback：抛错
+ */
+async function withCache(topic, fetcher, fallback) {
+  try {
+    const data = await fetcher();
+    const u = await uidForCache();
+    cacheSet(u, topic, data);
+    markCloudOnline();
+    return data;
+  } catch (e) {
+    const u = await uidForCache();
+    const cached = cacheGet(u, topic);
+    if (cached !== null && cached !== undefined) {
+      console.warn(`[cloud] ${topic} 失败，使用缓存：`, e?.message || e);
+      markCloudOffline(topic);
+      return cached;
+    }
+    if (fallback !== undefined) {
+      console.warn(`[cloud] ${topic} 失败且无缓存，使用 fallback：`, e?.message || e);
+      markCloudOffline(topic);
+      return fallback;
+    }
+    throw e;
+  }
+}
+
 // ===== 玩家档案 =====
 export async function getProfile() {
-  const { data, error } = await supabase
-    .from('profiles').select('points, main_level').single();
-  if (error) throw new Error(error.message);
-  return { points: data.points, mainLevel: data.main_level };
+  return withCache('profile', async () => {
+    const { data, error } = await supabase
+      .from('profiles').select('points, main_level').single();
+    if (error) throw new Error(error.message);
+    return { points: data.points, mainLevel: data.main_level };
+  }, { points: 0, mainLevel: 1 });
 }
 
 async function addPoints(delta) {
@@ -34,25 +79,29 @@ async function getPoints() {
 
 // ===== 我的宠物 / 口粮 =====
 export async function listMyPets() {
-  const { data, error } = await supabase
-    .from('user_pets').select('*').order('created_at');
-  if (error) throw new Error(error.message);
-  return data.map(r => {
-    const cat = findPet(r.pet_id);
-    return {
-      petId: r.pet_id, name: cat?.cnName, level: r.level, exp: r.exp,
-      expNeeded: r.level >= MAX_LEVEL ? null : expForLevel(r.level),
-      intimacy: r.intimacy, foodId: cat?.foodId,
-      mood: petMood(r.last_fed_at), lastFedAt: r.last_fed_at,
-    };
-  });
+  return withCache('myPets', async () => {
+    const { data, error } = await supabase
+      .from('user_pets').select('*').order('created_at');
+    if (error) throw new Error(error.message);
+    return data.map(r => {
+      const cat = findPet(r.pet_id);
+      return {
+        petId: r.pet_id, name: cat?.cnName, level: r.level, exp: r.exp,
+        expNeeded: r.level >= MAX_LEVEL ? null : expForLevel(r.level),
+        intimacy: r.intimacy, foodId: cat?.foodId,
+        mood: petMood(r.last_fed_at), lastFedAt: r.last_fed_at,
+      };
+    });
+  }, []);
 }
 
 export async function listMyFoods() {
-  const { data, error } = await supabase
-    .from('user_foods').select('food_id, quantity').gt('quantity', 0);
-  if (error) throw new Error(error.message);
-  return Object.fromEntries(data.map(r => [r.food_id, r.quantity]));
+  return withCache('myFoods', async () => {
+    const { data, error } = await supabase
+      .from('user_foods').select('food_id, quantity').gt('quantity', 0);
+    if (error) throw new Error(error.message);
+    return Object.fromEntries(data.map(r => [r.food_id, r.quantity]));
+  }, {});
 }
 
 async function ownedPetIds() {
@@ -92,14 +141,25 @@ export async function evaluateUnlocks() {
 
 // ===== 商店 =====
 export async function getShop() {
-  const owned = new Set((await ownedPetIds()).map(p => p.pet_id));
-  const unlocked = await unlockedKeys();
-  const pets = PETS.map(p => ({
-    ...p,
-    owned: owned.has(p.id),
-    purchasable: p.acquireType === 'buy' || (p.acquireType === 'unlock' && unlocked.has(p.unlockKey)),
-  }));
-  return { pets, foods: FOODS, gachaCost: GACHA_COST };
+  return withCache('shop', async () => {
+    const owned = new Set((await ownedPetIds()).map(p => p.pet_id));
+    const unlocked = await unlockedKeys();
+    const pets = PETS.map(p => ({
+      ...p,
+      owned: owned.has(p.id),
+      purchasable: p.acquireType === 'buy' || (p.acquireType === 'unlock' && unlocked.has(p.unlockKey)),
+    }));
+    return { pets, foods: FOODS, gachaCost: GACHA_COST };
+  }, {
+    // 完全离线（首次进入即失败、无缓存）：所有宠物默认未拥有，按 acquireType 决定可购买
+    pets: PETS.map(p => ({
+      ...p,
+      owned: false,
+      purchasable: p.acquireType === 'buy',
+    })),
+    foods: FOODS,
+    gachaCost: GACHA_COST,
+  });
 }
 
 async function addFood(foodId, qty) {
