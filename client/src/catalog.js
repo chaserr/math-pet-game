@@ -483,6 +483,154 @@ export const PET_GROWTH_RESOURCES = {
   },
 };
 
+const GENERATED_STAGE_SUFFIXES = ['baby', 'growing', 'strong', 'final'];
+const GENERATED_STAGE_ANIMATIONS = [
+  ['idle_baby', 'sleep_baby', 'eat_baby'],
+  ['idle_growing', 'walk_growing', 'play_growing'],
+  ['idle_strong', 'guard_strong', 'skill_strong'],
+  ['idle_final', 'aura_final', 'special_final'],
+];
+const GENERATED_STAGE_KEYWORDS = [
+  ['小体型', '圆眼睛', '幼态特征', '动作笨拙'],
+  ['体型变大', '主动姿态', '探索装饰', '行动力提升'],
+  ['厚实体型', '稳固站姿', '护甲感', '守护感'],
+  ['成熟体型', '专属饰品', '光效符文', '最终进化特征'],
+];
+const GENERATED_STAGE_ROLES = [
+  '可爱、弱小、依赖玩家',
+  '活跃、好奇、可以互动',
+  '可靠、强壮、能协助完成任务',
+  '成熟、稀有、有特殊能力的最终形态',
+];
+const GENERATED_GROWTH_RESOURCE_DEFS = {
+  dog: {
+    pet_id: 'dog_001',
+    pet_name: '小狗',
+    food: '肉骨头',
+    theme: 'bone',
+    display_names: ['奶团小狗', '探险汪', '守护犬', '星盾灵犬'],
+    feature: '软耳朵和骨形星盾',
+  },
+  rabbit: {
+    pet_id: 'rabbit_001',
+    pet_name: '小兔',
+    food: '胡萝卜',
+    theme: 'carrot',
+    display_names: ['棉球兔', '跳跳兔', '月盾兔', '月华灵兔'],
+    feature: '长耳朵和胡萝卜盾牌',
+  },
+  chick: {
+    pet_id: 'chick_001',
+    pet_name: '小鸡',
+    food: '小米粒',
+    theme: 'seed',
+    display_names: ['绒绒鸡', '奔跑小鸡', '勇气咕咕', '金羽晨鸡'],
+    feature: '绒羽、短翅膀和日出金羽',
+  },
+  fox: {
+    pet_id: 'fox_001',
+    pet_name: '狐狸',
+    food: '浆果',
+    theme: 'tail',
+    display_names: ['小狐芽', '探算狐', '星盾狐', '九尾灵狐'],
+    feature: '蓬松尾巴和灵狐光球',
+  },
+  panda: {
+    pet_id: 'panda_001',
+    pet_name: '熊猫',
+    food: '竹笋',
+    theme: 'bamboo',
+    display_names: ['团团幼熊', '竹林伙伴', '竹甲熊猫', '墨竹灵熊'],
+    feature: '黑白圆脸和竹纹护甲',
+  },
+  penguin: {
+    pet_id: 'penguin_001',
+    pet_name: '企鹅',
+    food: '冰鲜鱼',
+    theme: 'ice',
+    display_names: ['冰绒企鹅', '滑冰企鹅', '冰盾企鹅', '极光皇企鹅'],
+    feature: '冰蓝围巾和极光冰冠',
+  },
+  dragon: {
+    pet_id: 'dragon_001',
+    pet_name: '萌龙',
+    food: '火龙果',
+    theme: 'dragon',
+    display_names: ['果芽小龙', '云游萌龙', '龙甲守卫', '数珠天龙'],
+    feature: '短角、小翅膀和发光数珠',
+  },
+  goat: {
+    pet_id: 'goat_001',
+    pet_name: '山羊',
+    food: '青草',
+    theme: 'horn',
+    display_names: ['咩咩羊崽', '攀岩山羊', '角甲山羊', '星角灵羊'],
+    feature: '弯角、胡须和青草符文',
+  },
+  poop: {
+    pet_id: 'poop_001',
+    pet_name: '臭臭',
+    food: '薄荷叶',
+    theme: 'mint',
+    display_names: ['小软团', '薄荷团', '净化团', '香草灵团'],
+    feature: '旋涡身体和薄荷净化气泡',
+  },
+};
+
+function generatedStageDescription(def, stage) {
+  if (stage === 0) return `刚被领养的${def.pet_name}，${def.feature}还处在幼态阶段，体型小、眼睛圆，动作笨拙但非常依赖玩家。`;
+  if (stage === 1) return '开始熟悉主人后变得活跃好奇，体型变大，加入轻量探索装饰，能主动陪玩家完成算术练习。';
+  if (stage === 2) return `进入强壮阶段后站姿更稳，护甲、盾牌和${def.feature}强化了能力感，能可靠协助任务。`;
+  return `最终进化后的${def.display_names[3]}拥有成熟体型、专属饰品、光效与符文灵气，呈现稀有最终形态。`;
+}
+
+function buildGeneratedGrowthResource(runtimePetId, def) {
+  return {
+    pet_id: def.pet_id,
+    pet_name: def.pet_name,
+    runtime_pet_id: runtimePetId,
+    food: def.food,
+    resource_version: `${runtimePetId}-growth-v1-2026-05-23`,
+    style_reference: 'cute polished 3D mobile game pet, children arithmetic companion, clean centered full-body asset',
+    stage_min_level: STAGE_MIN_LEVEL,
+    asset_groups: ['portrait', 'model', 'icon', 'badge', 'label', 'effect'],
+    growth_stages: STAGE_LABELS.map((stageNameValue, stage) => {
+      const suffix = GENERATED_STAGE_SUFFIXES[stage];
+      return {
+        stage,
+        name: stageNameValue,
+        display_name: def.display_names[stage],
+        model: `${runtimePetId}_${suffix}`,
+        icon: `icon_${runtimePetId}_${suffix}`,
+        animation: GENERATED_STAGE_ANIMATIONS[stage],
+        unlock_condition: stage === 0 ? 'default' : `level >= ${STAGE_MIN_LEVEL[stage]}`,
+        min_level: STAGE_MIN_LEVEL[stage],
+        description: generatedStageDescription(def, stage),
+        appearance_keywords: [...GENERATED_STAGE_KEYWORDS[stage], def.feature],
+        status_role: GENERATED_STAGE_ROLES[stage],
+        assets: {
+          portrait: `/pets/${runtimePetId}/${stage}.png`,
+          model: `/pets/${runtimePetId}/models/${runtimePetId}_${suffix}.png`,
+          icon: `/pets/${runtimePetId}/icons/icon_${runtimePetId}_${suffix}.png`,
+          badge: `/pets/${runtimePetId}/badges/stage_${def.theme}_${stage}.png`,
+          label: `/pets/${runtimePetId}/labels/stage_label_${stage}.png`,
+          effect: `/pets/${runtimePetId}/effects/evolve_stage_${stage}.png`,
+        },
+      };
+    }),
+  };
+}
+
+Object.assign(
+  PET_GROWTH_RESOURCES,
+  Object.fromEntries(
+    Object.entries(GENERATED_GROWTH_RESOURCE_DEFS).map(([runtimePetId, def]) => [
+      runtimePetId,
+      buildGeneratedGrowthResource(runtimePetId, def),
+    ]),
+  ),
+);
+
 export const PET_GROWTH_STAGES = Object.fromEntries(
   Object.entries(PET_GROWTH_RESOURCES).map(([petId, resource]) => [
     petId,

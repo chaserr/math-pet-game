@@ -1,0 +1,148 @@
+{
+  "pet_id": "goat_001",
+  "pet_name": "山羊",
+  "runtime_pet_id": "goat",
+  "food": "青草",
+  "resource_version": "goat-growth-v1-2026-05-23",
+  "style_reference": "cute polished 3D mobile game pet, children arithmetic companion, clean centered full-body asset",
+  "stage_min_level": [
+    1,
+    3,
+    6,
+    9
+  ],
+  "asset_groups": [
+    "portrait",
+    "model",
+    "icon",
+    "badge",
+    "label",
+    "effect"
+  ],
+  "growth_stages": [
+    {
+      "stage": 0,
+      "name": "幼年",
+      "display_name": "咩咩羊崽",
+      "model": "goat_baby",
+      "icon": "icon_goat_baby",
+      "animation": [
+        "idle_baby",
+        "sleep_baby",
+        "eat_baby"
+      ],
+      "unlock_condition": "default",
+      "min_level": 1,
+      "description": "刚被领养的山羊，弯角、胡须和青草符文还处在幼态阶段，体型小、眼睛圆，动作笨拙但非常依赖玩家。",
+      "appearance_keywords": [
+        "小体型",
+        "圆眼睛",
+        "幼态特征",
+        "动作笨拙",
+        "弯角、胡须和青草符文"
+      ],
+      "status_role": "可爱、弱小、依赖玩家",
+      "assets": {
+        "portrait": "/pets/goat/0.png",
+        "model": "/pets/goat/models/goat_baby.png",
+        "icon": "/pets/goat/icons/icon_goat_baby.png",
+        "badge": "/pets/goat/badges/stage_horn_0.png",
+        "label": "/pets/goat/labels/stage_label_0.png",
+        "effect": "/pets/goat/effects/evolve_stage_0.png"
+      }
+    },
+    {
+      "stage": 1,
+      "name": "成长",
+      "display_name": "攀岩山羊",
+      "model": "goat_growing",
+      "icon": "icon_goat_growing",
+      "animation": [
+        "idle_growing",
+        "walk_growing",
+        "play_growing"
+      ],
+      "unlock_condition": "level >= 3",
+      "min_level": 3,
+      "description": "开始熟悉主人后变得活跃好奇，体型变大，加入轻量探索装饰，能主动陪玩家完成算术练习。",
+      "appearance_keywords": [
+        "体型变大",
+        "主动姿态",
+        "探索装饰",
+        "行动力提升",
+        "弯角、胡须和青草符文"
+      ],
+      "status_role": "活跃、好奇、可以互动",
+      "assets": {
+        "portrait": "/pets/goat/1.png",
+        "model": "/pets/goat/models/goat_growing.png",
+        "icon": "/pets/goat/icons/icon_goat_growing.png",
+        "badge": "/pets/goat/badges/stage_horn_1.png",
+        "label": "/pets/goat/labels/stage_label_1.png",
+        "effect": "/pets/goat/effects/evolve_stage_1.png"
+      }
+    },
+    {
+      "stage": 2,
+      "name": "强壮",
+      "display_name": "角甲山羊",
+      "model": "goat_strong",
+      "icon": "icon_goat_strong",
+      "animation": [
+        "idle_strong",
+        "guard_strong",
+        "skill_strong"
+      ],
+      "unlock_condition": "level >= 6",
+      "min_level": 6,
+      "description": "进入强壮阶段后站姿更稳，护甲、盾牌和弯角、胡须和青草符文强化了能力感，能可靠协助任务。",
+      "appearance_keywords": [
+        "厚实体型",
+        "稳固站姿",
+        "护甲感",
+        "守护感",
+        "弯角、胡须和青草符文"
+      ],
+      "status_role": "可靠、强壮、能协助完成任务",
+      "assets": {
+        "portrait": "/pets/goat/2.png",
+        "model": "/pets/goat/models/goat_strong.png",
+        "icon": "/pets/goat/icons/icon_goat_strong.png",
+        "badge": "/pets/goat/badges/stage_horn_2.png",
+        "label": "/pets/goat/labels/stage_label_2.png",
+        "effect": "/pets/goat/effects/evolve_stage_2.png"
+      }
+    },
+    {
+      "stage": 3,
+      "name": "完全体",
+      "display_name": "星角灵羊",
+      "model": "goat_final",
+      "icon": "icon_goat_final",
+      "animation": [
+        "idle_final",
+        "aura_final",
+        "special_final"
+      ],
+      "unlock_condition": "level >= 9",
+      "min_level": 9,
+      "description": "最终进化后的星角灵羊拥有成熟体型、专属饰品、光效与符文灵气，呈现稀有最终形态。",
+      "appearance_keywords": [
+        "成熟体型",
+        "专属饰品",
+        "光效符文",
+        "最终进化特征",
+        "弯角、胡须和青草符文"
+      ],
+      "status_role": "成熟、稀有、有特殊能力的最终形态",
+      "assets": {
+        "portrait": "/pets/goat/3.png",
+        "model": "/pets/goat/models/goat_final.png",
+        "icon": "/pets/goat/icons/icon_goat_final.png",
+        "badge": "/pets/goat/badges/stage_horn_3.png",
+        "label": "/pets/goat/labels/stage_label_3.png",
+        "effect": "/pets/goat/effects/evolve_stage_3.png"
+      }
+    }
+  ]
+}

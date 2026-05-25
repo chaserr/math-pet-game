@@ -1,0 +1,148 @@
+{
+  "pet_id": "dog_001",
+  "pet_name": "小狗",
+  "runtime_pet_id": "dog",
+  "food": "肉骨头",
+  "resource_version": "dog-growth-v1-2026-05-23",
+  "style_reference": "cute polished 3D mobile game pet, children arithmetic companion, clean centered full-body asset",
+  "stage_min_level": [
+    1,
+    3,
+    6,
+    9
+  ],
+  "asset_groups": [
+    "portrait",
+    "model",
+    "icon",
+    "badge",
+    "label",
+    "effect"
+  ],
+  "growth_stages": [
+    {
+      "stage": 0,
+      "name": "幼年",
+      "display_name": "奶团小狗",
+      "model": "dog_baby",
+      "icon": "icon_dog_baby",
+      "animation": [
+        "idle_baby",
+        "sleep_baby",
+        "eat_baby"
+      ],
+      "unlock_condition": "default",
+      "min_level": 1,
+      "description": "刚被领养的小狗，软耳朵和骨形星盾还处在幼态阶段，体型小、眼睛圆，动作笨拙但非常依赖玩家。",
+      "appearance_keywords": [
+        "小体型",
+        "圆眼睛",
+        "幼态特征",
+        "动作笨拙",
+        "软耳朵和骨形星盾"
+      ],
+      "status_role": "可爱、弱小、依赖玩家",
+      "assets": {
+        "portrait": "/pets/dog/0.png",
+        "model": "/pets/dog/models/dog_baby.png",
+        "icon": "/pets/dog/icons/icon_dog_baby.png",
+        "badge": "/pets/dog/badges/stage_bone_0.png",
+        "label": "/pets/dog/labels/stage_label_0.png",
+        "effect": "/pets/dog/effects/evolve_stage_0.png"
+      }
+    },
+    {
+      "stage": 1,
+      "name": "成长",
+      "display_name": "探险汪",
+      "model": "dog_growing",
+      "icon": "icon_dog_growing",
+      "animation": [
+        "idle_growing",
+        "walk_growing",
+        "play_growing"
+      ],
+      "unlock_condition": "level >= 3",
+      "min_level": 3,
+      "description": "开始熟悉主人后变得活跃好奇，体型变大，加入轻量探索装饰，能主动陪玩家完成算术练习。",
+      "appearance_keywords": [
+        "体型变大",
+        "主动姿态",
+        "探索装饰",
+        "行动力提升",
+        "软耳朵和骨形星盾"
+      ],
+      "status_role": "活跃、好奇、可以互动",
+      "assets": {
+        "portrait": "/pets/dog/1.png",
+        "model": "/pets/dog/models/dog_growing.png",
+        "icon": "/pets/dog/icons/icon_dog_growing.png",
+        "badge": "/pets/dog/badges/stage_bone_1.png",
+        "label": "/pets/dog/labels/stage_label_1.png",
+        "effect": "/pets/dog/effects/evolve_stage_1.png"
+      }
+    },
+    {
+      "stage": 2,
+      "name": "强壮",
+      "display_name": "守护犬",
+      "model": "dog_strong",
+      "icon": "icon_dog_strong",
+      "animation": [
+        "idle_strong",
+        "guard_strong",
+        "skill_strong"
+      ],
+      "unlock_condition": "level >= 6",
+      "min_level": 6,
+      "description": "进入强壮阶段后站姿更稳，护甲、盾牌和软耳朵和骨形星盾强化了能力感，能可靠协助任务。",
+      "appearance_keywords": [
+        "厚实体型",
+        "稳固站姿",
+        "护甲感",
+        "守护感",
+        "软耳朵和骨形星盾"
+      ],
+      "status_role": "可靠、强壮、能协助完成任务",
+      "assets": {
+        "portrait": "/pets/dog/2.png",
+        "model": "/pets/dog/models/dog_strong.png",
+        "icon": "/pets/dog/icons/icon_dog_strong.png",
+        "badge": "/pets/dog/badges/stage_bone_2.png",
+        "label": "/pets/dog/labels/stage_label_2.png",
+        "effect": "/pets/dog/effects/evolve_stage_2.png"
+      }
+    },
+    {
+      "stage": 3,
+      "name": "完全体",
+      "display_name": "星盾灵犬",
+      "model": "dog_final",
+      "icon": "icon_dog_final",
+      "animation": [
+        "idle_final",
+        "aura_final",
+        "special_final"
+      ],
+      "unlock_condition": "level >= 9",
+      "min_level": 9,
+      "description": "最终进化后的星盾灵犬拥有成熟体型、专属饰品、光效与符文灵气，呈现稀有最终形态。",
+      "appearance_keywords": [
+        "成熟体型",
+        "专属饰品",
+        "光效符文",
+        "最终进化特征",
+        "软耳朵和骨形星盾"
+      ],
+      "status_role": "成熟、稀有、有特殊能力的最终形态",
+      "assets": {
+        "portrait": "/pets/dog/3.png",
+        "model": "/pets/dog/models/dog_final.png",
+        "icon": "/pets/dog/icons/icon_dog_final.png",
+        "badge": "/pets/dog/badges/stage_bone_3.png",
+        "label": "/pets/dog/labels/stage_label_3.png",
+        "effect": "/pets/dog/effects/evolve_stage_3.png"
+      }
+    }
+  ]
+}
