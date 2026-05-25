@@ -25,6 +25,8 @@
     <!-- ========== tile-fill 模式（数字积木拖拽） ========== -->
     <template v-else-if="q.mode === 'tile-fill'">
       <div class="stage-area col center">
+        <!-- 题面：应用题/找零这类带文字背景的题在算式上方显示 -->
+        <div v-if="q.caption" class="quiz-caption">{{ q.caption }}</div>
         <!-- 算式：a op b op c … = 空格 -->
         <div v-if="q.layout !== 'place'" class="equation">
           <span class="expr">{{ q.exprText }}</span>
@@ -61,6 +63,82 @@
         <button class="btn-accent skip" @click="skip">跳过这题 →</button>
       </div>
 
+      <div class="pool-field" ref="fieldEl">
+        <div class="scene">
+          <div class="sun"></div>
+          <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+          <div class="grass"></div>
+        </div>
+        <div
+          v-for="tile in pool" :key="tile.id"
+          class="tile"
+          :class="{ used: tile.placed, grabbed: tile.id === grabbedId, walking: tile.walking && tile.id !== grabbedId }"
+          :style="{ left: tile.x + 'px', top: tile.y + 'px' }"
+          @pointerdown="startDrag(tile, $event)"
+        >
+          <NumberBlock :digit="tile.digit" :size="tileSide(tile.digit)" />
+        </div>
+      </div>
+
+      <Teleport to="body">
+        <div v-if="grabbedTile" class="drag-ghost" :style="{ left: ghostPos.x + 'px', top: ghostPos.y + 'px' }">
+          <NumberBlock :digit="grabbedTile.digit" :size="tileSide(grabbedTile.digit)" dragging />
+        </div>
+      </Teleport>
+    </template>
+
+    <!-- ========== vertical 模式（笔算竖式：v1.8.3） ========== -->
+    <template v-else-if="q.mode === 'vertical'">
+      <div class="stage-area col center">
+        <div class="vt-frame">
+          <!-- 进/退位小标行：在 a 行上方对齐十位列 -->
+          <div class="vt-row vt-carries">
+            <span class="vt-op-slot"></span>
+            <template v-for="(d, col) in q.ansCols" :key="'c'+col">
+              <span class="vt-cell vt-cmark" :class="{ on: col === q.maxLen - 2 && q.tensMark }">
+                <template v-if="col === q.maxLen - 2 && q.tensMark">{{ q.tensMark }}</template>
+              </span>
+            </template>
+          </div>
+          <!-- a 行 -->
+          <div class="vt-row">
+            <span class="vt-op-slot"></span>
+            <span v-for="(d, col) in q.aCols" :key="'a'+col" class="vt-cell vt-num">
+              <template v-if="d !== null">{{ d }}</template>
+            </span>
+          </div>
+          <!-- b 行 + op -->
+          <div class="vt-row">
+            <span class="vt-op-slot vt-op">{{ q.op }}</span>
+            <span v-for="(d, col) in q.bCols" :key="'b'+col" class="vt-cell vt-num">
+              <template v-if="d !== null">{{ d }}</template>
+            </span>
+          </div>
+          <!-- 横线 -->
+          <div class="vt-line"></div>
+          <!-- 答案槽位 -->
+          <div class="vt-row vt-ans">
+            <span class="vt-op-slot"></span>
+            <template v-for="(d, col) in q.ansCols" :key="'s'+col">
+              <span v-if="q.ansSlotMap[col] === null" class="vt-cell vt-empty"></span>
+              <span v-else class="vt-cell vt-slot slot"
+                :data-slot="q.ansSlotMap[col]"
+                :class="{ filled: slots[q.ansSlotMap[col]] !== null, shake: shakeSlots }"
+                @click="unplace(q.ansSlotMap[col])"
+              >
+                <NumberBlock v-if="slots[q.ansSlotMap[col]] !== null"
+                  :digit="poolDigit(slots[q.ansSlotMap[col]])" :size="48"
+                />
+              </span>
+            </template>
+          </div>
+        </div>
+
+        <p class="hint" :class="hintType">{{ hint }}</p>
+        <button class="btn-accent skip" @click="skip">跳过这题 →</button>
+      </div>
+
+      <!-- 数字积木池（复用 tile-fill 的 pool） -->
       <div class="pool-field" ref="fieldEl">
         <div class="scene">
           <div class="sun"></div>
@@ -160,10 +238,15 @@
       </div>
     </template>
 
-    <!-- ========== choice 模式（识字 / 字母） ========== -->
+    <!-- ========== choice 模式（识字 / 字母 / 图形） ========== -->
     <template v-else-if="q.mode === 'choice'">
       <div class="cz-area col center">
-        <div class="cz-prompt" :class="'pk-' + q.promptKind">{{ q.prompt }}</div>
+        <ShapeIcon
+          v-if="q.promptKind === 'shape3d' || q.promptKind === 'shape2d'"
+          :shape-id="q.prompt" :size="140"
+          class="cz-shape"
+        />
+        <div v-else class="cz-prompt" :class="'pk-' + q.promptKind">{{ q.prompt }}</div>
         <p class="cz-sub">{{ q.sub }}</p>
         <div class="cz-options">
           <button v-for="(opt, i) in q.options" :key="i"
@@ -220,6 +303,7 @@ import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router';
 import NumberBlock from '../components/NumberBlock.vue';
 import FoodIcon from '../components/FoodIcon.vue';
+import ShapeIcon from '../components/ShapeIcon.vue';
 import {
   genQuestion, checkTileFill, checkChoice, checkStepCalc, checkStepSplit,
 } from '../composables/useQuizGen.js';
@@ -594,12 +678,14 @@ function qLabel() {
   if (!x) return '';
   if (x.mode === 'choice') return x.prompt || '';
   if (x.mode === 'multi-step') return `${x.a}${x.op}${x.b}`;
+  if (x.mode === 'vertical') return `${x.a}${x.op}${x.b}`;
   return x.exprText || x.numberText || '';
 }
 function loadQuestion() {
   const data = genQuestion(subjectId.value, moduleId.value, category.value, stage.value, index.value);
   q.value = data;
   hint.value = data.mode === 'tile-fill' ? '把数字积木拖到方框里吧！'
+            : data.mode === 'vertical' ? '从右到左：先算个位，再算十位'
             : data.mode === 'multi-step' ? '按提示一步步填空'
             : data.mode === 'choice' ? '请选择正确答案'
             : '';
@@ -610,7 +696,7 @@ function loadQuestion() {
   finishedQuestion.value = false;
 
   // 模式专属初始化
-  if (data.mode === 'tile-fill') {
+  if (data.mode === 'tile-fill' || data.mode === 'vertical') {
     slots.value = Array(data.slots).fill(null);
     pool.value = data.tiles.map((d, i) => {
       const { w, h } = tileBox(d);
@@ -806,8 +892,68 @@ onBeforeUnmount(() => {
 .placeholder-stage { flex: 1; gap: 14px; padding: 40px; }
 .ph-emoji { font-size: 80px; }
 
+/* ===== vertical 笔算（v1.8.3） ===== */
+.vt-frame {
+  display: inline-flex; flex-direction: column; align-items: stretch;
+  background: #fff;
+  border: 3px solid #f0a93a;
+  border-radius: 16px;
+  padding: 20px 26px;
+  box-shadow: 0 6px 0 var(--shadow);
+  font-family: "Comic Sans MS", "Marker Felt", -apple-system, sans-serif;
+  font-weight: 900;
+  color: var(--ink);
+  min-width: 220px;
+}
+.vt-row { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+.vt-op-slot {
+  width: 36px; text-align: right;
+  font-size: 38px; color: var(--primary-dark);
+}
+.vt-op { font-weight: 900; }
+.vt-cell {
+  width: 54px; height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px;
+}
+.vt-cell.vt-num { color: var(--ink); }
+.vt-cell.vt-empty { /* 空列占位 */ }
+
+.vt-carries { height: 24px; }
+.vt-cmark { font-size: 16px; color: #d83f7a; font-weight: 800; height: 24px; line-height: 24px; }
+.vt-cmark.on::before { content: ''; }
+
+.vt-line {
+  border-bottom: 4px solid var(--primary-dark);
+  margin: 6px 0 10px;
+  margin-left: 36px;   /* 让出 op-slot 宽度，使线只盖 cells */
+}
+
+.vt-cell.vt-slot {
+  border: 3px dashed #b9a892;
+  border-radius: 10px;
+  background: #fffaf0;
+  cursor: pointer;
+}
+.vt-cell.vt-slot.filled {
+  border-style: solid; border-color: transparent; background: transparent;
+}
+.vt-cell.vt-slot.shake { animation: shake 0.4s; }
+
 /* ===== tile-fill ===== */
 .stage-area { gap: 18px; padding: 10px 16px 14px; }
+.quiz-caption {
+  max-width: 560px;
+  background: #fff7e6;
+  border: 2px dashed #f0a93a;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #6b4d1d;
+  line-height: 1.5;
+  text-align: center;
+}
 .equation {
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center;
   font-size: 46px; font-weight: 900; color: var(--ink);
@@ -955,6 +1101,10 @@ onBeforeUnmount(() => {
 }
 .cz-prompt.pk-emoji { font-size: 120px; line-height: 1; }
 .cz-prompt.pk-letter { font-size: 120px; line-height: 1; font-family: "Comic Sans MS", "Marker Felt", cursive; }
+.cz-shape {
+  background: #fff; border-radius: 24px; padding: 18px 30px;
+  box-shadow: 0 6px 0 var(--shadow);
+}
 .cz-sub { color: #9b8b7a; font-size: 16px; font-weight: 800; }
 .cz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 480px; width: 100%; }
 .cz-opt {

@@ -91,6 +91,249 @@ function genPlace(cat) {
   return buildPlaceTile(Number(s), d);
 }
 
+// ============ 综合复习（mix）：从 sources[] 各分类轮询 ============
+function genMix(cat, qIdx) {
+  const src = cat.sources[qIdx % cat.sources.length];
+  // 给 enum 类用 random fakeStage + fakeQIdx 让题更多样
+  const fakeStage = randInt(1, 9);
+  const fakeQIdx = randInt(0, 8);
+  return genQuestion('math', src.module, src.category, fakeStage, fakeQIdx);
+}
+
+// ============ 立体 / 平面图形识别（choice 复用） ============
+// shapeId 与 ShapeIcon.vue 的 SVG 一一对应，prompt 传 shapeId 而不再是 emoji，QuizView 据 promptKind 渲染
+const SHAPES_3D = [
+  { id: 'cuboid',   name: '长方体' },
+  { id: 'cube',     name: '正方体' },
+  { id: 'cylinder', name: '圆柱' },
+  { id: 'sphere',   name: '球' },
+];
+const SHAPES_2D = [
+  { id: 'rectangle',     name: '长方形' },
+  { id: 'square',        name: '正方形' },
+  { id: 'triangle',      name: '三角形' },
+  { id: 'circle',        name: '圆' },
+  { id: 'parallelogram', name: '平行四边形' },
+];
+
+function genShape(cat) {
+  const bank = cat.dim === '3d' ? SHAPES_3D : SHAPES_2D;
+  const item = bank[randInt(0, bank.length - 1)];
+  const distractors = shuffle(bank.filter(x => x.id !== item.id))
+    .slice(0, Math.min(3, bank.length - 1)).map(x => x.name);
+  const options = shuffle([item.name, ...distractors]);
+  return {
+    mode: 'choice',
+    promptKind: cat.dim === '3d' ? 'shape3d' : 'shape2d',
+    prompt: item.id,         // shapeId，由 ShapeIcon 渲染 SVG
+    sub: cat.dim === '3d' ? '这是什么立体图形？' : '这是什么平面图形？',
+    options,
+    correctIndex: options.indexOf(item.name),
+  };
+}
+
+// ============ 人民币（认面额 / 找零） ============
+const MONEY_CONVERSIONS = [
+  { from: '1 元', to: '10 角', distractors: ['5 角', '100 角', '1 角'] },
+  { from: '1 角', to: '10 分', distractors: ['5 分', '100 分', '1 分'] },
+  { from: '5 角', to: '50 分', distractors: ['10 分', '5 分', '500 分'] },
+  { from: '2 元', to: '20 角', distractors: ['10 角', '200 角', '2 角'] },
+  { from: '10 元', to: '100 角', distractors: ['50 角', '10 角', '1000 角'] },
+  { from: '5 元', to: '50 角', distractors: ['10 角', '5 角', '500 角'] },
+  { from: '3 元', to: '30 角', distractors: ['30 分', '300 角', '3 角'] },
+  { from: '2 角', to: '20 分', distractors: ['10 分', '200 分', '2 分'] },
+];
+
+const SHOP_ITEMS = ['🧸 玩具熊', '📕 故事书', '🖍 彩笔', '🩹 创可贴', '🚗 小汽车', '🥤 果汁', '🎨 画本', '🍎 苹果', '🍬 糖果', '✏️ 铅笔', '🍌 香蕉', '🧃 牛奶'];
+
+function genMoney(cat) {
+  if (cat.sub === 'recognize') {
+    const item = MONEY_CONVERSIONS[randInt(0, MONEY_CONVERSIONS.length - 1)];
+    const options = shuffle([item.to, ...item.distractors]);
+    return {
+      mode: 'choice',
+      promptKind: 'money',
+      prompt: '💴 ' + item.from,
+      sub: '等于多少？',
+      options,
+      correctIndex: options.indexOf(item.to),
+    };
+  }
+  // change：找零（付款 - 商品 = 找零）
+  const shopItem = SHOP_ITEMS[randInt(0, SHOP_ITEMS.length - 1)];
+  const price = randInt(12, 85);
+  // 用常见钞票（10/20/50/100）中比 price 大的随机一张
+  const denominations = [10, 20, 50, 100].filter(d => d > price);
+  const paid = denominations[randInt(0, denominations.length - 1)];
+  const change = paid - price;
+  return {
+    ...buildArithTile([paid, price], '-', change),
+    caption: `🛒 ${shopItem} 一个 ${price} 元，小聪付了 ${paid} 元，应找回多少元？`,
+  };
+}
+
+// ============ 应用题（中文模板 + tile-fill 答案） ============
+// v1.8.1 题库扩到 30+ 模板，按 op 分组；每个模板可设 range / requireAGtB / mode
+//   mode 'plain'    a OP b = ?       直白题
+//   mode 'unknown-a' ? OP b = result，求被减数/被加数（追加部分）
+//   mode 'unknown-b' a OP ? = result，求加数/减数（追加部分）
+const WORD_TEMPLATES = [
+  // ===== 求和（加法 · 共有 / 一共） =====
+  { op: '+', mode: 'plain', range: [5, 40],
+    template: (a, b) => `🌸 花园里红花 ${a} 朵，黄花 ${b} 朵，一共多少朵？` },
+  { op: '+', mode: 'plain', range: [5, 20],
+    template: (a, b) => `🐦 树上原本有 ${a} 只小鸟，又飞来 ${b} 只，现在一共多少只？` },
+  { op: '+', mode: 'plain', range: [10, 40],
+    template: (a, b) => `🚗 停车场停了 ${a} 辆车，又开来 ${b} 辆，一共多少辆？` },
+  { op: '+', mode: 'plain', range: [10, 30],
+    template: (a, b) => `🥚 篮子里有 ${a} 个鸡蛋，妈妈又买回 ${b} 个，一共多少个？` },
+  { op: '+', mode: 'plain', range: [5, 30],
+    template: (a, b) => `🐔 鸡妈妈生了 ${a} 个蛋，鸭妈妈生了 ${b} 个蛋，一共有多少个蛋？` },
+  { op: '+', mode: 'plain', range: [5, 20],
+    template: (a, b) => `🌟 第一天得了 ${a} 颗星星，第二天又得了 ${b} 颗，两天一共多少颗？` },
+  { op: '+', mode: 'plain', range: [8, 30],
+    template: (a, b) => `🚌 公交车上原有 ${a} 人，到站上来 ${b} 人，现在车上多少人？` },
+  { op: '+', mode: 'plain', range: [10, 25],
+    template: (a, b) => `📚 书架上有故事书 ${a} 本，又新到 ${b} 本，一共多少本？` },
+  { op: '+', mode: 'plain', range: [5, 25],
+    template: (a, b) => `🍓 上午摘了 ${a} 颗草莓，下午又摘了 ${b} 颗，一天摘了多少颗？` },
+  { op: '+', mode: 'plain', range: [10, 30],
+    template: (a, b) => `🐠 鱼缸里红金鱼 ${a} 条，黑金鱼 ${b} 条，一共多少条？` },
+  { op: '+', mode: 'plain', range: [5, 20],
+    template: (a, b) => `🍪 哥哥分到 ${a} 块饼干，弟弟分到 ${b} 块，两人一共有多少块？` },
+  { op: '+', mode: 'plain', range: [12, 40],
+    template: (a, b) => `🎈 庆生会上挂了 ${a} 个红气球和 ${b} 个蓝气球，一共多少个？` },
+
+  // ===== 求剩余（减法 · 还剩） =====
+  { op: '-', mode: 'plain', range: [10, 50],
+    template: (a, b) => `🍎 树上有 ${a} 个苹果，摘了 ${b} 个，还剩多少个？` },
+  { op: '-', mode: 'plain', range: [10, 30],
+    template: (a, b) => `🐟 鱼缸里有 ${a} 条小鱼，妈妈拿走 ${b} 条，还剩多少条？` },
+  { op: '-', mode: 'plain', range: [10, 20],
+    template: (a, b) => `📚 小聪有 ${a} 本书，借给同学 ${b} 本，还剩多少本？` },
+  { op: '-', mode: 'plain', range: [10, 30],
+    template: (a, b) => `🍭 篮子里有 ${a} 颗糖，吃掉 ${b} 颗，还剩多少颗？` },
+  { op: '-', mode: 'plain', range: [12, 40],
+    template: (a, b) => `🎨 一盒彩笔原有 ${a} 支，丢了 ${b} 支，还剩多少支？` },
+  { op: '-', mode: 'plain', range: [15, 60],
+    template: (a, b) => `🚲 停车场有自行车 ${a} 辆，骑走 ${b} 辆，还剩多少辆？` },
+  { op: '-', mode: 'plain', range: [10, 40],
+    template: (a, b) => `🥕 兔妈妈准备了 ${a} 根胡萝卜，给小兔吃了 ${b} 根，还剩多少根？` },
+  { op: '-', mode: 'plain', range: [10, 30],
+    template: (a, b) => `🥤 商店原有 ${a} 瓶果汁，卖出 ${b} 瓶，还剩多少瓶？` },
+
+  // ===== 比多少 / 求差（减法 · 多 / 少） =====
+  { op: '-', mode: 'plain', range: [10, 40], requireAGtB: true,
+    template: (a, b) => `🐰 小白兔有 ${a} 根胡萝卜，小灰兔有 ${b} 根，小白兔比小灰兔多多少根？` },
+  { op: '-', mode: 'plain', range: [15, 50], requireAGtB: true,
+    template: (a, b) => `📏 哥哥跳绳跳了 ${a} 下，弟弟跳了 ${b} 下，哥哥比弟弟多跳多少下？` },
+  { op: '-', mode: 'plain', range: [10, 30], requireAGtB: true,
+    template: (a, b) => `🏃 红队得 ${a} 分，蓝队得 ${b} 分，红队比蓝队多多少分？` },
+  { op: '-', mode: 'plain', range: [10, 40], requireAGtB: true,
+    template: (a, b) => `🌳 大树有 ${a} 米高，小树有 ${b} 米高，大树比小树高多少米？` },
+  { op: '-', mode: 'plain', range: [12, 40], requireAGtB: true,
+    template: (a, b) => `🐦 一群鸽子 ${a} 只，麻雀 ${b} 只，鸽子比麻雀多多少只？` },
+
+  // ===== 求被减数（前面 + 取走 = 已知，求原有）：实质是加法 =====
+  { op: '+', mode: 'plain', range: [5, 30],
+    template: (a, b) => `🐔 鸡笼里走掉 ${a} 只鸡后，还剩 ${b} 只，原来鸡笼里有多少只？` },
+  { op: '+', mode: 'plain', range: [5, 25],
+    template: (a, b) => `🍓 小明吃了 ${a} 颗草莓，盘里还剩 ${b} 颗，原来盘里有多少颗？` },
+  { op: '+', mode: 'plain', range: [8, 30],
+    template: (a, b) => `🚗 停车场开走 ${a} 辆车后，还剩 ${b} 辆，原来停车场有多少辆？` },
+
+  // ===== 求加数（前后差 = 增加部分） =====
+  { op: '-', mode: 'plain', range: [15, 50], requireAGtB: true,
+    template: (a, b) => `🌸 花瓶里原有 ${b} 朵花，妈妈又插了一些后变成 ${a} 朵，妈妈插了多少朵？` },
+  { op: '-', mode: 'plain', range: [12, 50], requireAGtB: true,
+    template: (a, b) => `📦 仓库原有 ${b} 个箱子，今天又运来一些后变成 ${a} 个，今天运来多少个？` },
+
+  // ===== 求减数（前后差 = 减少部分） =====
+  { op: '-', mode: 'plain', range: [15, 60], requireAGtB: true,
+    template: (a, b) => `🐟 鱼缸有 ${a} 条鱼，妈妈拿走一些后还剩 ${b} 条，拿走了多少条？` },
+  { op: '-', mode: 'plain', range: [12, 40], requireAGtB: true,
+    template: (a, b) => `🍬 罐子里有 ${a} 颗糖，吃掉一些后还剩 ${b} 颗，吃掉了多少颗？` },
+];
+
+function genWord(_cat) {
+  const tpl = WORD_TEMPLATES[randInt(0, WORD_TEMPLATES.length - 1)];
+  const [lo, hi] = tpl.range;
+  let a, b;
+  if (tpl.op === '-') {
+    a = randInt(Math.max(lo, 3), hi);
+    b = randInt(1, a - 1); // 保证 a > b 不出负数
+    if (tpl.requireAGtB) {
+      a = randInt(Math.max(lo, 5), hi);
+      b = randInt(1, a - 1);
+    }
+  } else {
+    a = randInt(lo, Math.floor(hi / 2));
+    b = randInt(lo, Math.floor(hi / 2));
+  }
+  const answer = tpl.op === '+' ? a + b : a - b;
+  return {
+    ...buildArithTile([a, b], tpl.op, answer),
+    caption: tpl.template(a, b),
+  };
+}
+
+// ============ 100 以内笔算（真正竖式 UI） ============
+// v1.8.3 升级：返回竖式专用结构 {aCols, bCols, ansCols, ansSlotMap, tensMark}，
+// QuizView 用 mode='vertical' 分支渲染上下对齐 + 横线 + 答案槽 + 进/退位小标。
+function genVertical(cat) {
+  const op = cat.op;
+  let a, b;
+  if (op === '+') {
+    a = randInt(11, 88);
+    b = randInt(11, 99 - a);
+  } else {
+    a = randInt(20, 99);
+    b = randInt(11, a - 1);
+  }
+  const answer = op === '+' ? a + b : a - b;
+  const maxLen = Math.max(String(a).length, String(b).length, String(answer).length);
+
+  const padCols = (n) => {
+    const s = String(n).padStart(maxLen, ' ');
+    return s.split('').map(c => c === ' ' ? null : Number(c));
+  };
+  const aCols = padCols(a);
+  const bCols = padCols(b);
+  const ansCols = padCols(answer);
+
+  // ansSlotMap[col] = slotIdx（从左到右）或 null（该列没有答案位）
+  const ansSlotMap = [];
+  let slotIdx = 0;
+  for (let i = 0; i < maxLen; i++) {
+    if (ansCols[i] !== null) {
+      ansSlotMap.push(slotIdx);
+      slotIdx++;
+    } else {
+      ansSlotMap.push(null);
+    }
+  }
+  const slots = slotIdx;
+
+  // 进/退位小标（仅"个位 → 十位"的一次进退位，初阶足够）
+  let tensMark = '';
+  if (op === '+' && (a % 10 + b % 10) >= 10) tensMark = '+1';
+  if (op === '-' && (a % 10) < (b % 10)) tensMark = '−1';
+
+  // 数字积木池：含答案各位 + 干扰
+  const tiles = [...String(answer).split('').map(Number)];
+  while (tiles.length < Math.max(5, slots + 3)) tiles.push(randInt(0, 9));
+
+  return {
+    mode: 'vertical',
+    op, a, b, answer,
+    maxLen,
+    aCols, bCols, ansCols, ansSlotMap,
+    slots,
+    tensMark,
+    tiles: shuffle(tiles),
+  };
+}
+
 // ============ 数字积木拖拽题（算式：可多操作数） ============
 function buildArithTile(operands, op, answer) {
   const exprText = operands.join(` ${op} `);
@@ -203,6 +446,21 @@ export function genQuestion(subjectId, moduleId, categoryId, stage, qIdx = 0) {
     if (moduleId === 'place') {
       return genPlace(findCategory('math', 'place', categoryId));
     }
+    if (moduleId === 'review') {
+      return genMix(findCategory('math', 'review', categoryId), qIdx);
+    }
+    if (moduleId === 'shape') {
+      return genShape(findCategory('math', 'shape', categoryId));
+    }
+    if (moduleId === 'money') {
+      return genMoney(findCategory('math', 'money', categoryId));
+    }
+    if (moduleId === 'word') {
+      return genWord(findCategory('math', 'word', categoryId));
+    }
+    if (moduleId === 'vertical') {
+      return genVertical(findCategory('math', 'vertical', categoryId));
+    }
     const op = OP_OF[moduleId];
     if (op) {
       const cat = findCategory('math', moduleId, categoryId);
@@ -238,6 +496,11 @@ const LESSON_META = {
     intro: '个位相加超过 10 时，把一个数拆开先凑成整十，再加剩下的，又快又准。',
     op: '+',
   },
+  'break-ten': {
+    title: '破十法（减法技巧）',
+    intro: '20 以内退位减法：被减数个位不够减时，先把个位减完凑到 10，再用 10 减剩下的。',
+    op: '-',
+  },
 };
 
 function buildBorrowTrick(a, b) {
@@ -246,12 +509,16 @@ function buildBorrowTrick(a, b) {
 function buildMakeTen(a, b) {
   return { a, b, op: '+', answer: a + b, steps: decomposeAdd(a, b) };
 }
+function buildBreakTen(a, b) {
+  return { a, b, op: '-', answer: a - b, steps: decomposeSub(a, b) };
+}
 
 export function lessonInfo(trickId) {
   const meta = LESSON_META[trickId];
   if (!meta) return null;
   let demo;
   if (trickId === 'borrow-trick') demo = buildBorrowTrick(10000, 3847);
+  else if (trickId === 'break-ten') demo = buildBreakTen(14, 9);
   else demo = buildMakeTen(8, 5);
   return { trickId, ...meta, demo };
 }
@@ -261,6 +528,13 @@ export function genTrickQuiz(trickId) {
     const base = [1000, 10000, 100000][randInt(0, 2)];
     const b = randInt(1, base - 1);
     return buildBorrowTrick(base, b);
+  }
+  if (trickId === 'break-ten') {
+    // 退位减：a∈[11,18]，b∈[a%10+1, 9] 保证 a%10 < b 触发破十拆分
+    const a = randInt(11, 18);
+    const lo = (a % 10) + 1;
+    const b = randInt(lo, 9);
+    return buildBreakTen(a, b);
   }
   // make-ten：随机进位加法（个位相加 > 10）
   const a = randInt(5, 9);

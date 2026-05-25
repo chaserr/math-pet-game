@@ -1,11 +1,16 @@
 // 数学关卡分类体系（单一事实来源）
-// 结构：Subject(math) → Module(add/sub/mul/div/place) → Category → Level
+// 结构：Subject(math) → Module(add/sub/mul/div/place/review/shape/money/word/vertical) → Category → Level
 //
 // 每个分类 = 一组关卡：
-//   kind 'enum'  穷举（如 10 以内，逐个列出 1+1..9+9），每关 9 题，固定算式
-//   kind 'range' 指定范围内随机（含拆分引导），每关 5 题
-//   kind 'multi' 多个数连算（2/3/4 个数），每关 5 题
-//   kind 'place' 数位认知（拖数字到 个/十/百/千… 数位），每关 9 题（每题随机一个 d 位数）
+//   kind 'enum'     穷举（如 10 以内，逐个列出 1+1..9+9），每关 9 题，固定算式
+//   kind 'range'    指定范围内随机（含拆分引导），每关 5 题
+//   kind 'multi'    多个数连算（2/3/4 个数），每关 5 题
+//   kind 'place'    数位认知（拖数字到 个/十/百/千… 数位），每关 9 题（每题随机一个 d 位数）
+//   kind 'mix'      综合复习：从 sources[] 中各分类轮询抽题（v1.7 新增，仅教材轴用）
+//   kind 'shape'    图形识别（立体/平面），choice 模式（v1.7 新增）
+//   kind 'money'    人民币认识 / 找零（choice + tile-fill）（v1.7 新增）
+//   kind 'word'     应用题（中文模板 + tile-fill）（v1.7 新增）
+//   kind 'vertical' 100 以内笔算（最小骨架：tile-fill + 提示语）（v1.7 新增）
 
 export const OP_OF = { add: '+', sub: '-', mul: '×', div: '÷' };
 const OP_WORD = { '+': '相加', '-': '相减', '×': '相乘', '÷': '相除' };
@@ -65,6 +70,7 @@ function arithCategories(moduleId) {
   const word = OP_WORD[op]; // 相加/相减/相乘/相除
   return [
     { id: 'within10', name: '10以内', desc: `${word} 9 关 × 9 题（穷举到 9）`, kind: 'enum', op, perLevel: ENUM_PER_LEVEL, count: ENUM_LEVELS },
+    { id: 'within20', name: '20以内', desc: `20 以内${word}（教材一上五 / 一下二）`, kind: 'range', op, max: 20, perLevel: 5, count: GEN },
     { id: 'within100', name: '100以内', desc: `100 以内${word}`, kind: 'range', op, max: 100, perLevel: 5, count: GEN },
     { id: 'n2', name: `两个数${word}`, desc: `两个数${word}`, kind: 'multi', op, operands: 2, perLevel: 5, count: GEN },
     { id: 'n3', name: `三个数${word}`, desc: `三个数${word}`, kind: 'multi', op, operands: 3, perLevel: 5, count: GEN },
@@ -74,6 +80,7 @@ function arithCategories(moduleId) {
 
 function placeCategories() {
   const defs = [
+    [2, '两位数', '个十（11–99）'],
     [3, '三位数', '个十百'],
     [4, '四位数', '个十百千'],
     [5, '五位数', '到万位'],
@@ -88,12 +95,72 @@ function placeCategories() {
   }));
 }
 
+// ===== 教材轴专属模块（不出现在「按能力练」首页 MODULES.math，仅 textbook.js 引用）=====
+
+function reviewCategories() {
+  return [
+    {
+      id: 'g1up', name: '一上综合', desc: '5以内/6-10/11-20/20以内进位加 混合',
+      kind: 'mix', perLevel: 9, count: GEN,
+      sources: [
+        { module: 'add', category: 'within10' },
+        { module: 'sub', category: 'within10' },
+        { module: 'place', category: 'd2' },
+        { module: 'add', category: 'within20' },
+      ],
+    },
+    {
+      id: 'g1down', name: '一下综合', desc: '20以内退位减/100以内口算/数位 混合',
+      kind: 'mix', perLevel: 9, count: GEN,
+      sources: [
+        { module: 'sub', category: 'within20' },
+        { module: 'place', category: 'd2' },
+        { module: 'add', category: 'within100' },
+        { module: 'sub', category: 'within100' },
+      ],
+    },
+  ];
+}
+
+function shapeCategories() {
+  return [
+    { id: 'solid', name: '立体图形', desc: '长方体 / 正方体 / 圆柱 / 球', kind: 'shape', dim: '3d', perLevel: 9, count: GEN },
+    { id: 'plane', name: '平面图形', desc: '长方形 / 正方形 / 三角形 / 圆 / 平行四边形', kind: 'shape', dim: '2d', perLevel: 9, count: GEN },
+  ];
+}
+
+function moneyCategories() {
+  return [
+    { id: 'recognize', name: '认面额', desc: '看图选金额（角 / 元）', kind: 'money', sub: 'recognize', perLevel: 9, count: GEN },
+    { id: 'change', name: '找零', desc: '付款 - 商品价 = 找零（100 以内）', kind: 'money', sub: 'change', perLevel: 5, count: GEN },
+  ];
+}
+
+function wordCategories() {
+  return [
+    { id: 'mixed', name: '加减应用题', desc: '剩余 / 共有 / 比多少（中文模板）', kind: 'word', perLevel: 5, count: GEN },
+  ];
+}
+
+function verticalCategories() {
+  // 最小骨架：复用 tile-fill 出题 + 题面带"竖式提示"。真正的竖式 UI 留 v1.8 升级。
+  return [
+    { id: 'add', name: '两位数加法竖式', desc: '100 以内加法 · 个位 + 十位逐位算', kind: 'vertical', op: '+', perLevel: 5, count: GEN },
+    { id: 'sub', name: '两位数减法竖式', desc: '100 以内减法 · 个位不够借十', kind: 'vertical', op: '-', perLevel: 5, count: GEN },
+  ];
+}
+
 export const MATH_CATEGORIES = {
   add: arithCategories('add'),
   sub: arithCategories('sub'),
   mul: arithCategories('mul'),
   div: arithCategories('div'),
   place: placeCategories(),
+  review: reviewCategories(),
+  shape: shapeCategories(),
+  money: moneyCategories(),
+  word: wordCategories(),
+  vertical: verticalCategories(),
 };
 
 // ===== 助手 =====
