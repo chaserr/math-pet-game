@@ -118,8 +118,41 @@
     <ul>
       <li><b>二上 数学</b> · 第1单元「表内乘法（九九乘法表）」→ practice: 九九乘法表（<code>mul/within10</code>）</li>
       <li><b>四上 数学</b> · 第1单元「万以内的减法（解题技巧）」→ lesson: 减1法（<code>borrow-trick</code>）</li>
-      <li><b>一上 语文</b> · 第1单元「汉语拼音」→ 拼音专项占位 + 看图识字（复用 <code>recognize/default</code>）</li>
     </ul>
+
+    <h3>🀄 语文一年级（v1.9.0 整册落地，2022 课标修订版）</h3>
+
+    <h4>📕 一上（入学准备 + 8 单元）</h4>
+    <table>
+      <thead><tr><th>第</th><th>单元</th><th>内容项</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>入学准备 · 我上学了</td><td><code>recognize</code> 看图识字</td></tr>
+        <tr><td>1</td><td>识字一（天地人/金木水火土/口耳目手足/日月山川）</td><td><code>recognize</code> + <code>compose</code></td></tr>
+        <tr><td>2</td><td>汉语拼音 · a o e / i u ü / b p m f / d t n l</td><td><code>pinyin</code>（汉字↔拼音双向）</td></tr>
+        <tr><td>3</td><td>汉语拼音 · g k h / j q x / z c s / zh ch sh r / y w</td><td><code>pinyin</code></td></tr>
+        <tr><td>4</td><td>汉语拼音 · 复韵母 / 鼻韵母</td><td><code>pinyin</code></td></tr>
+        <tr><td>5</td><td>阅读 · 秋天 / 江南 / 雪地里的小画家 / 四季</td><td><code>recognize</code> + <code>poem</code>（江南）</td></tr>
+        <tr><td>6</td><td>识字二 · 对韵歌 / 日月明 / 小书包 / 升国旗</td><td><code>recognize</code> + <code>compose</code></td></tr>
+        <tr><td>7</td><td>阅读 · 小小的船 / 影子 / 两件宝</td><td><code>compose</code></td></tr>
+        <tr><td>8</td><td>阅读 · 比尾巴 / 乌鸦喝水 / 雨点儿</td><td><code>compose</code></td></tr>
+      </tbody>
+    </table>
+
+    <h4>📗 一下（8 单元）</h4>
+    <table>
+      <thead><tr><th>第</th><th>单元</th><th>内容项</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>识字 · 春夏秋冬 / 姓氏歌 / 小青蛙 / 猜字谜</td><td><code>recognize</code> + <code>pinyin</code></td></tr>
+        <tr><td>2</td><td>阅读 · 热爱中国共产党 / 吃水不忘挖井人 / 我多想去看看</td><td><code>compose</code></td></tr>
+        <tr><td>3</td><td>阅读 · 小公鸡和小鸭子 / 树和喜鹊 / 怎么都快乐</td><td><code>recognize</code> + <code>compose</code></td></tr>
+        <tr><td>4</td><td>阅读 · 静夜思 / 夜色 / 端午粽</td><td><code>poem</code>（静夜思）+ <code>compose</code></td></tr>
+        <tr><td>5</td><td>识字 · 动物儿歌 / 古对今 / 操场上 / 人之初</td><td><code>recognize</code> + <code>pinyin</code> + <code>compose</code></td></tr>
+        <tr><td>6</td><td>阅读 · 古诗二首（池上 / 小池）/ 浪花 / 荷叶圆圆 / 要下雨了</td><td><code>poem</code>（池上 / 小池）+ <code>recognize</code></td></tr>
+        <tr><td>7</td><td>阅读 · 文具的家 / 一分钟 / 动物王国开大会 / 小猴子下山</td><td><code>compose</code></td></tr>
+        <tr><td>8</td><td>阅读 · 棉花姑娘 / 咕咚 / 小壁虎借尾巴</td><td><code>recognize</code>（动物字）+ <code>compose</code></td></tr>
+      </tbody>
+    </table>
+    <p class="files">语文 module 由 <code>chineseBank.js</code> 提供 <code>PINYIN_CHAR_BANK</code>（79 字）+ <code>POEM_BANK</code>（8 首必背诗）支撑。新 promptKind: <code>pk-chinese-char</code>（140px 大字）/ <code>pk-pinyin</code>（斜体）/ <code>pk-poem</code>（多行卡片）。</p>
 
     <h2>📖 游戏内查看课本 <span class="tag major">v1.7.0 新增</span></h2>
     <p>
