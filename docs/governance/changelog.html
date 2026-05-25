@@ -24,6 +24,84 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 21 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #21</span><span class="date">2026-05-25</span>
+        <span class="ver">v1.9.0 · 语文一年级整册落地（一上 9 + 一下 8 = 17 unit）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "/Users/tongxing/Person/教材/语文/一年级 这个是语文的，你可以同样继续设计并开发。"<br>
+        "开干"
+      </div>
+      <h4>方案</h4>
+      <p>按数学 v1.7-v1.8 经验，<b>5 个题型骨架 + 1 个数据库 + 17 unit 一次落地</b>。</p>
+
+      <h4>① 数据库 <code>client/src/lib/chineseBank.js</code>（新文件）</h4>
+      <ul>
+        <li><b><code>PINYIN_CHAR_BANK</code></b>：79 条汉字记录，每条 <code>{ char, pinyin, emoji?, words[4] }</code>。覆盖范围：
+          <ul>
+            <li>一上 U1 识字：天地人 / 金木水火土 / 口耳目手足 / 日月山川（17 字）</li>
+            <li>一上 U5-U8 阅读单元生字：秋风叶 / 江南鱼鸟 / 雪花草 / 云雨虫 / 书包国旗 / 船尾巴点（22 字）</li>
+            <li>一下 U1-U8：春夏冬 / 青蛙 / 李张王 / 鸡鸭 / 夜静思床光故乡粽 / 蜻蝶蜘蛛 / 古今初善 / 池荷叶浪 / 猴棉壁虎（33 字）</li>
+            <li>补充高频字：大小上下中白红（7 字）便于干扰项</li>
+          </ul>
+        </li>
+        <li><b><code>POEM_BANK</code></b>：8 首小学常背古诗。<code>blanks[]</code> 字段标注挖字位置 + 3 个干扰字：
+          <ul>
+            <li>《静夜思》李白（一下 U4）· 《江南》汉乐府（一上 U5）· 《池上》白居易（一下 U6）· 《小池》杨万里（一下 U6）</li>
+            <li>《咏鹅》骆宾王 · 《悯农》李绅 · 《登鹳雀楼》王之涣 · 《春晓》孟浩然（常背诗，可循环用）</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4>② 5 个新 / 升级的语文出题函数（<code>useQuizGen.js</code>）</h4>
+      <table class="roadmap-table">
+        <thead><tr><th>module</th><th>函数</th><th>玩法</th><th>题库</th></tr></thead>
+        <tbody>
+          <tr><td><code>recognize</code> <span class="tag major">升级</span></td><td><code>genChineseRecognize</code></td><td>emoji → 选汉字（4 选 1）</td><td>原 CHAR_BANK 48 条 + PINYIN_CHAR_BANK 带 emoji 的 ~70 条合并，约 118 字</td></tr>
+          <tr><td><code>pinyin</code> <span class="tag major">新激活</span></td><td><code>genChinesePinyin</code></td><td><b>双向</b>：偶数关给字选拼音，奇数关给拼音选字</td><td>PINYIN_CHAR_BANK 79 条</td></tr>
+          <tr><td><code>compose</code> <span class="tag major">新激活</span></td><td><code>genChineseCompose</code></td><td>给字 → 选含此字的词组（4 选 1，干扰项是别字的词）</td><td>每字 4 个词，共 79×4 ≈ 316 个词</td></tr>
+          <tr><td><code>poem</code> <span class="tag major">全新</span></td><td><code>genChinesePoem</code></td><td>显示完整诗 + 某句某字挖空 → 4 选 1 填字</td><td>POEM_BANK 8 首 × 2-3 个挖空位 = 17 道</td></tr>
+          <tr><td><code>idiom</code></td><td>—</td><td>—</td><td>仍占位（成语接龙待二年级及以上）</td></tr>
+        </tbody>
+      </table>
+
+      <h4>③ QuizView 新增 3 个 <code>promptKind</code></h4>
+      <ul>
+        <li><code>pk-chinese-char</code>：140px 大字 + PingFang/Songti 字体（拼音题给字 / 组词题给字）</li>
+        <li><code>pk-pinyin</code>：64px 斜体 Times New Roman + 字距 2px（拼音题给拼音）</li>
+        <li><code>pk-poem</code>（多行）：黄色卡片 + 标题 + 多行诗句（Songti 字体），<code>q.poemLines[]</code> 数组渲染</li>
+      </ul>
+
+      <h4>④ <code>textbook.js chinese.grade1</code> 全册铺开（一上 9 unit + 一下 8 unit）</h4>
+      <p>每个 unit 1-3 个 practice 项，按教材内容选最贴合的 module（识字单元 → recognize+compose / 拼音单元 → pinyin / 古诗单元 → poem / 阅读单元 → recognize+compose）。</p>
+
+      <h4>⑤ PDF 资源 + 查看课本</h4>
+      <ul>
+        <li><code>client/public/textbooks/chinese/grade1/grade1-{up,down}.pdf</code>（22+16 MB，gitignored）</li>
+        <li><code>PDF_AVAILABLE.chinese.grade1 = ['up','down']</code></li>
+        <li>原 <code>📖 查看课本</code> 按钮已通用，自动对语文生效</li>
+      </ul>
+
+      <h4>验证</h4>
+      <ul>
+        <li>5 题型样本全过：recognize 🐶→狗 · pinyin 双向 · compose "云"→白云 · poem 静夜思"低头思＿乡"→故 / 小池"小＿才露"→荷 ✓</li>
+        <li>语文一年级 17 unit 共 27 个 ref 全部能出题 ✓</li>
+        <li>一上 9 unit + 一下 8 unit 全部可玩，<b>无 placeholder</b> ✓</li>
+        <li><code>npm run build</code> 5.37s 通过 ✓（useQuizGen 10→21 kB，QuizView 24→24.6 kB）</li>
+      </ul>
+
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/lib/chineseBank.js</code>（79 字 + 8 诗）· <code>client/public/textbooks/chinese/grade1/grade1-{up,down}.pdf</code>（gitignored）<br>
+        改（代码）：<code>client/src/composables/useQuizGen.js</code>（4 个新 gen 函数 + recognize 合并题库 + 入口分发）· <code>client/src/catalog.js</code>（MODULES.chinese 移除 pinyin/compose 占位 + 新增 poem + idiom 改为 placeholder=true）· <code>client/src/lib/textbook.js</code>（chinese.grade1 整段重写 17 unit + PDF_AVAILABLE.chinese）· <code>client/src/views/QuizView.vue</code>（choice 模板加 poem 多行分支 + 3 个新 promptKind CSS）· <code>README.md</code>（教材资源章节加 chinese 路径）<br>
+        改（文档）：<code>docs/governance/changelog.html</code>（本条）· <code>docs/curriculum/textbook.html</code>（语文一年级表）· <code>docs/curriculum/curriculum.html</code>（chinese 模块状态更新）· <code>docs/governance/roadmap.html</code>（语文一年级 24 项标完成）· <code>docs/index.html</code>（最新变更卡 + 统计数字 13→14 模块）
+      </p>
+    </article>
+
     <!-- 回合 20 -->
     <article class="entry">
       <header>
