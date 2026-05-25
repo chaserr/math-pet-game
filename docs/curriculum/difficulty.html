@@ -34,7 +34,7 @@
         <tr><td><code>enum</code></td><td>穷举（10 以内）</td><td>9</td><td>9</td><td>固定算式，按 stage + qIdx 取</td></tr>
         <tr><td><code>range</code></td><td>给定范围随机（100 以内）</td><td>5</td><td>500</td><td>每次随机，加减大于 10 触发拆分引导</td></tr>
         <tr><td><code>multi</code></td><td>多个数连算（2/3/4 数）</td><td>5</td><td>500</td><td>tile-fill 多操作数</td></tr>
-        <tr><td><code>place</code></td><td>数位认知</td><td>1</td><td>500</td><td>tile-fill place 布局，标签 个/十/百/千…</td></tr>
+        <tr><td><code>place</code></td><td>数位认知</td><td>9</td><td>500</td><td>tile-fill place 布局，每关 9 题随机 d 位数，标签 个/十/百/千…</td></tr>
       </tbody>
     </table>
 
@@ -63,8 +63,8 @@
     </table>
     <div class="note">取题函数：<code>enumWithin10Fact(op, stage, qIdx)</code>；按钮标签：<code>enumLevelLabel(op, stage)</code>。</div>
 
-    <h2>🔢 数位认知（place 模块，8 分类）</h2>
-    <p>每个分类对应一个数位长度，关卡随机生成该位数的整数；玩家把数字积木拖到对应数位格子中。</p>
+    <h2>🔢 数位认知（place 模块，8 分类） <span class="tag major">v1.6.7 改为 9 题/关</span></h2>
+    <p>每个分类对应一个数位长度，每关 <b>9 题</b>，每题随机生成一个该位数的整数；玩家把数字积木拖到对应数位格子中。</p>
     <table>
       <thead><tr><th>id</th><th>位数</th><th>覆盖单位</th></tr></thead>
       <tbody>
