@@ -1,0 +1,5 @@
+# 课本 PDF 资源（70 MB+，不进 git；从原始来源本地复制）
+# 路径：client/public/textbooks/<subject>/<grade>/*.pdf
+# 获取方式见 README.md「教材资源」一节
+client/public/textbooks/**/*.pdf
+client/dist/textbooks/**/*.pdf

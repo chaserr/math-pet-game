@@ -43,6 +43,11 @@
               @click="selectVolume(v.id)"
             >{{ v.name }}</button>
           </div>
+          <button class="view-pdf"
+            :disabled="!currentPdfPath"
+            :title="currentPdfPath ? '在线查看课本 PDF' : '该册课本 PDF 未配置（见 README 教材资源）'"
+            @click="showPdf = true"
+          >📖 查看课本</button>
         </div>
 
         <div v-if="!units.length" class="empty-tip">
@@ -76,6 +81,19 @@
         </div>
       </template>
     </div>
+
+    <!-- 📖 查看课本 PDF 弹层 -->
+    <Teleport to="body">
+      <div v-if="showPdf && currentPdfPath" class="pdf-modal" @click.self="showPdf = false">
+        <div class="pdf-modal-inner">
+          <div class="pdf-modal-head">
+            <span>📖 {{ gradeName }}{{ volume === 'up' ? '上册' : '下册' }}（{{ subjectName }}）</span>
+            <button class="pdf-close" @click="showPdf = false" aria-label="关闭">✕</button>
+          </div>
+          <iframe :src="currentPdfPath" class="pdf-frame" loading="lazy"></iframe>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -87,6 +105,7 @@ import { SUBJECTS } from '../catalog.js';
 import {
   GRADES, VOLUMES, ITEM_TYPES,
   textbookHasSubject, getUnits, gradeHasContent,
+  pdfPath,
 } from '../lib/textbook.js';
 
 const router = useRouter();
@@ -99,7 +118,14 @@ const volume = ref(String(route.query.volume || 'up'));
 
 const subjects = computed(() => SUBJECTS.filter(s => textbookHasSubject(s.id)));
 const gradeName = computed(() => GRADES.find(g => g.id === grade.value)?.name || '');
+const subjectName = computed(() => SUBJECTS.find(s => s.id === subject.value)?.name || '');
 const units = computed(() => getUnits(subject.value, grade.value, volume.value));
+
+const showPdf = ref(false);
+const currentPdfPath = computed(() => grade.value ? pdfPath(subject.value, grade.value, volume.value) : null);
+
+// 切册或切年级时自动关闭 PDF 弹窗
+watch([subject, grade, volume], () => { showPdf.value = false; });
 
 function hasContent(gradeId) { return gradeHasContent(subject.value, gradeId); }
 
@@ -195,6 +221,42 @@ watch(() => route.query, (q) => {
   border-radius: 999px; box-shadow: 0 3px 0 var(--shadow); cursor: pointer;
 }
 .vol-tab.on { background: var(--primary); color: #fff; }
+
+.view-pdf {
+  background: #fffaf0; color: #b67517; padding: 6px 14px;
+  font-family: inherit; font-weight: 800; font-size: 13px;
+  border: 2px solid #f0a93a; border-radius: 999px; cursor: pointer;
+  margin-top: 2px;
+  transition: transform 0.15s;
+}
+.view-pdf:hover:not(:disabled) { background: #fff3d6; transform: translateY(-1px); }
+.view-pdf:disabled { opacity: 0.4; cursor: not-allowed; border-color: #d6c9b0; color: #b9a892; }
+
+/* PDF 弹层 */
+.pdf-modal {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.pdf-modal-inner {
+  background: #fff; border-radius: 16px;
+  width: min(960px, 95vw); height: min(90vh, 95vh);
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.pdf-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px; background: var(--primary); color: #fff;
+  font-weight: 900;
+}
+.pdf-close {
+  background: rgba(255,255,255,0.2); color: #fff;
+  width: 32px; height: 32px; border: none; border-radius: 50%;
+  font-size: 18px; font-weight: 900; cursor: pointer;
+}
+.pdf-close:hover { background: rgba(255,255,255,0.35); }
+.pdf-frame { flex: 1; border: 0; width: 100%; background: #f4f0e6; }
 
 .empty-tip { text-align: center; color: #9b8b7a; padding: 40px; }
 .et-emoji { font-size: 60px; margin-bottom: 10px; }
