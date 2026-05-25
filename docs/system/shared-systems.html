@@ -107,6 +107,41 @@ unlockConditions:
   'pet:panda':   mainLevel >= 5    // ⚠️ DB main_level，未由新关卡推进
   'pet:penguin': maxPetLevel >= 5</code></pre>
     </div>
+    <div class="module-card">
+      <h3>云端读缓存兜底 <span class="tag api">api</span> <span class="tag major">v1.6.6 新增</span></h3>
+      <div class="meta-row">
+        <span><b>文件：</b><span class="fp">src/lib/cloudCache.js</span> · <span class="fp">src/lib/cloudHealth.js</span> · <span class="fp">src/db.js</span>（withCache）</span>
+      </div>
+      <p>
+        国内→AWS（Supabase）链路抖动严重，<code>db.js</code> 的云端读会经常失败。为防止 UI 空白，引入 LocalStorage 缓存兜底。
+      </p>
+      <pre><code>cloudCache.js
+  key: mpg_cache_v1_&lt;uid|guest&gt;_&lt;topic&gt;
+  api: cacheGet / cacheSet / cacheClear / cacheAge
+
+cloudHealth.js (响应式单例)
+  cloudHealth.offline: boolean         // App.vue 顶部 banner 订阅
+  markCloudOnline() / markCloudOffline(topic)
+
+db.js withCache(topic, fetcher, fallback)
+  成功 → cacheSet + markCloudOnline + 返回 data
+  失败 + 有缓存 → markCloudOffline + 返回缓存
+  失败 + 无缓存 + 有 fallback → markCloudOffline + 返回 fallback
+  失败 + 无缓存 + 无 fallback → throw
+
+包装的 read 函数：
+  getProfile  → topic 'profile', fallback {points:0, mainLevel:1}
+  listMyPets  → topic 'myPets',  fallback []
+  listMyFoods → topic 'myFoods', fallback {}
+  getShop     → topic 'shop',    fallback 用静态 PETS/FOODS + owned=false
+
+UI：
+  App.vue offline=true 时滑下黄色 banner，点击可隐藏；
+  下次恢复在线再下次失败重新出现。</code></pre>
+      <p style="font-size:13px;color:var(--muted);">
+        写操作（buyPet / feed / submitRound 等）<b>不缓存</b>，失败仍抛错 + 走原有乐观 UI。多账号切换：cache key 按 userId 隔离，互不干扰。
+      </p>
+    </div>
   </main>
 </div>
 <footer class="page-foot">

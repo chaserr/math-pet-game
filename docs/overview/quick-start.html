@@ -31,10 +31,14 @@
     <h2>常用命令</h2>
     <pre><code>cd client
 npm install
-npm run dev               # http://localhost:5173
-npm run build             # → dist/
+npm run dev               # http://localhost:5173（自动跑 predev → scripts/preflight.cjs）
+npm run build             # → dist/（自动跑 prebuild → scripts/preflight.cjs）
 
-# 已知问题：构建报 @rollup/rollup-darwin-* MODULE_NOT_FOUND
+# 跨平台保护：scripts/preflight.cjs 会识别 darwin/linux/win × arm64/x64，
+# 自动补装当前平台对应的 @rollup/rollup-* 子包（--no-save，不污染 lock）。
+# 因此在本地 Mac ↔ Codex Linux 容器之间切换 node_modules 不再报 MODULE_NOT_FOUND。
+
+# 兜底（preflight 也失败时）：
 rm -rf node_modules package-lock.json &amp;&amp; npm install</code></pre>
     <h2>典型构建产物体积（v1.4.0）</h2>
     <table>

@@ -24,6 +24,97 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 16 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #16</span><span class="date">2026-05-23</span>
+        <span class="ver">v1.6.6 · 云端读失败本地缓存兜底</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "保持现状，但是如果云端同步失败或者读取数据失败，可以优先展示本地数据库内容，比如商店宠物展示。另外有么有国内访问流畅的免费云服务推荐。"
+      </div>
+      <h4>背景</h4>
+      <p>
+        Supabase 部署在 AWS（<code>*.supabase.co</code>），国内→AWS 链路丢包多 / TLS 握手慢，
+        <code>profiles</code> / <code>user_pets</code> / <code>user_foods</code> 等 select 调用经常 5-30s 抖动甚至 fail。
+        当前架构每个页面进入都 await 云端，失败时 UI 就空了。
+      </p>
+      <h4>决策</h4>
+      <ul>
+        <li><b>新增 <code>client/src/lib/cloudCache.js</code></b>：按 <code>mpg_cache_v1_&lt;uid&gt;_&lt;topic&gt;</code> 在 LocalStorage 缓存云端读响应。提供 <code>cacheGet / cacheSet / cacheClear / cacheAge</code>。</li>
+        <li><b>新增 <code>client/src/lib/cloudHealth.js</code></b>：响应式单例 <code>{ offline: boolean }</code>，<code>markCloudOffline(topic)</code> / <code>markCloudOnline()</code>。不放进 auth store 是为避免 <code>db.js ↔ stores/auth.js</code> 循环 import。</li>
+        <li><b>改造 <code>db.js</code></b>：4 个云端读函数（<code>getProfile / listMyPets / listMyFoods / getShop</code>）统一走新 helper <code>withCache(topic, fetcher, fallback)</code>：
+          <ul>
+            <li>成功 → 写缓存 + <code>markCloudOnline()</code> + 返回数据</li>
+            <li>失败 + 有缓存 → <code>markCloudOffline(topic)</code> + 返回缓存</li>
+            <li>失败 + 无缓存 + 有 <code>fallback</code> → <code>markCloudOffline(topic)</code> + 返回 fallback</li>
+            <li>失败 + 无缓存 + 无 fallback → 抛错（仅 <code>getHistory</code> 等场景）</li>
+          </ul>
+        </li>
+        <li><b>fallback 默认值</b>：<code>getProfile → {points:0, mainLevel:1}</code> · <code>listMyPets → []</code> · <code>listMyFoods → {}</code> · <code>getShop</code> 用静态 <code>PETS/FOODS</code> + <code>owned=false / 按 acquireType 决定 purchasable</code>，即使首次进入全离线也能浏览商店宠物。</li>
+        <li><b>App.vue 顶部 banner</b>：检测到 <code>cloudHealth.offline=true</code> 时滑下"📡 网络不稳，正在显示本地缓存数据"提示条；点击可隐藏；下次重新上线后再次离线时重新出现。</li>
+        <li><b>写操作（buyPet / feed / submitRound 等）保持不变</b>：失败时仍抛错（已有的乐观 UI + fire-and-forget 模式照旧）。</li>
+      </ul>
+      <h4>未做（保持现状）</h4>
+      <ul>
+        <li>不做"用户主动同步"按钮：当前架构云端是主源，缓存只兜底，没有"本地脏数据待上传"概念。</li>
+        <li>不迁云服务：保留 Supabase。未来若国内用户多，可考虑迁 LeanCloud 国际版 / 腾讯云 CloudBase（见 quick-start 推荐对照）。</li>
+      </ul>
+      <h4>国内访问推荐云服务对照</h4>
+      <table class="roadmap-table">
+        <thead><tr><th>服务</th><th>国内体验</th><th>免费额度</th><th>备案</th><th>适配度</th></tr></thead>
+        <tbody>
+          <tr><td><b>LeanCloud 国际版</b></td><td>流畅（HK 节点）</td><td>1GB / 30 QPS</td><td>❌ 无需</td><td>高（Auth+DB+文件）</td></tr>
+          <tr><td><b>腾讯云 CloudBase</b></td><td>最快（自家 CDN）</td><td>5 万读写/月 + 1GB</td><td>✅ 需实名</td><td>高（Auth+DB+函数+托管）</td></tr>
+          <tr><td>MongoDB Atlas (HK)</td><td>还行 50-150ms</td><td>512MB</td><td>❌</td><td>中（需自建 Auth）</td></tr>
+          <tr><td>Cloudflare Workers+D1</td><td>抖动</td><td>10 万请求/天 + 5GB</td><td>❌</td><td>中（适合反代层）</td></tr>
+          <tr><td>Supabase 自建</td><td>看 VPS</td><td>看 VPS</td><td>看 VPS</td><td>高（开源 Postgres）</td></tr>
+        </tbody>
+      </table>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/lib/cloudCache.js</code> · <code>client/src/lib/cloudHealth.js</code><br>
+        改（代码）：<code>client/src/db.js</code>（顶部 <code>withCache</code> + 4 个 read 改造）· <code>client/src/App.vue</code>（离线 banner + slide-down 过渡）<br>
+        改（文档）：<code>docs/governance/changelog.html</code>（本条）· <code>docs/system/shared-systems.html</code>（新增「云端读缓存兜底」章节）· <code>docs/index.html</code>（最新变更卡）
+      </p>
+    </article>
+
+    <!-- 回合 15 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #15</span><span class="date">2026-05-23</span>
+        <span class="ver">v1.6.5 · 跨平台 rollup 自愈预检</span>
+        <span class="tag fix">fix</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "npm run dev 失败，主要是我在 codex 上也会跑这个，每次跑完都会报这个错误。"
+      </div>
+      <h4>背景</h4>
+      <p>
+        npm 已知 bug <a href="https://github.com/npm/cli/issues/4828" target="_blank">#4828</a>：当 <code>node_modules</code> 在 macOS x64 / arm64 / Linux 容器之间反复切换（用户本地 Mac ↔ Codex 容器），
+        <code>package-lock.json</code> 只记录首次安装时那台机器的 <code>@rollup/rollup-&lt;platform&gt;-&lt;arch&gt;</code> 平台子包，切换平台后
+        vite 启动报 <code>Cannot find module @rollup/rollup-darwin-x64</code>（或对应 linux 包）。
+        之前每次都手动 <code>npm i @rollup/rollup-...@... --no-save</code>，效率太低。
+      </p>
+      <h4>决策</h4>
+      <ul>
+        <li><b>新增 <code>client/scripts/preflight.cjs</code></b>：识别当前 <code>process.platform-process.arch</code>，查 6 种主流平台对应包名（darwin-arm64/x64 · linux-arm64/x64 · win32-arm64/x64），
+            若 <code>node_modules/@rollup/rollup-...</code> 已存在则 5ms 退出；缺则读 <code>rollup</code> 主包版本，按同版本 <code>npm i &lt;pkg&gt;@&lt;ver&gt; --no-save --no-audit --no-fund --silent</code> 临时补装（不污染 lock）。</li>
+        <li><b>package.json 接入</b>：新增 <code>predev</code> / <code>prebuild</code> 钩子，<code>npm run dev</code> 与 <code>npm run build</code> 之前自动跑预检。失败时也 <code>process.exit(0)</code>，不阻塞 vite 报真错。</li>
+        <li><b>跨平台覆盖</b>：用户在 Codex 容器（多半是 linux-x64 或 linux-arm64）跑同一份代码，同一脚本会自动识别并补对应 <code>rollup-linux-*-gnu</code>，无需再手动修。</li>
+        <li><b>验证</b>：① 平台二进制已在 → 静默退出；② 手工 <code>mv</code> 移走 darwin-x64 → 预检自动补装到位；③ <code>npm run dev</code> → predev 触发，vite 315ms 启动。</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/scripts/preflight.cjs</code><br>
+        改（代码）：<code>client/package.json</code>（<code>scripts.predev/prebuild</code>）<br>
+        改（文档）：<code>docs/governance/changelog.html</code>（本条）· <code>docs/governance/roadmap.html</code>（占位清单不变；本修复属常驻防御层，不入 todo）
+      </p>
+    </article>
+
     <!-- 回合 14 -->
     <article class="entry">
       <header>
