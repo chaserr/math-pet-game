@@ -2,10 +2,10 @@
 // 结构：Subject(math) → Module(add/sub/mul/div/place) → Category → Level
 //
 // 每个分类 = 一组关卡：
-//   kind 'enum'  穷举（如 10 以内，逐个列出 1+1..9+9），每关 1 题，固定算式
+//   kind 'enum'  穷举（如 10 以内，逐个列出 1+1..9+9），每关 9 题，固定算式
 //   kind 'range' 指定范围内随机（含拆分引导），每关 5 题
 //   kind 'multi' 多个数连算（2/3/4 个数），每关 5 题
-//   kind 'place' 数位认知（拖数字到 个/十/百/千… 数位），每关 1 题
+//   kind 'place' 数位认知（拖数字到 个/十/百/千… 数位），每关 9 题（每题随机一个 d 位数）
 
 export const OP_OF = { add: '+', sub: '-', mul: '×', div: '÷' };
 const OP_WORD = { '+': '相加', '-': '相减', '×': '相乘', '÷': '相除' };
@@ -84,7 +84,7 @@ function placeCategories() {
     [10, '十位数', '到十亿位'],
   ];
   return defs.map(([digits, name, desc]) => ({
-    id: `d${digits}`, name, desc, kind: 'place', digits, perLevel: 1, count: GEN,
+    id: `d${digits}`, name, desc, kind: 'place', digits, perLevel: 9, count: GEN,
   }));
 }
 
