@@ -62,15 +62,18 @@ const finished    = ref(false);
 const tiles       = ref([]);
 const selected    = ref(null);
 let timerHandle   = null;
+let round         = 0;
 
 const activeTiles = computed(() => tiles.value.filter(t => !t.matched));
 
 function buildTiles() {
+  round++;
   const pool = [...PRACTICE_CHARS].sort(() => Math.random() - 0.5).slice(0, PAIR_COUNT);
   const arr = [];
   pool.forEach((item, i) => {
-    arr.push({ key: `c${i}`, type: 'char',   value: item.char,   pairId: i, matched: false, wrong: false });
-    arr.push({ key: `p${i}`, type: 'pinyin', value: item.pinyin, pairId: i, matched: false, wrong: false });
+    const pid = `${round}-${i}`;
+    arr.push({ key: `c${pid}`, type: 'char',   value: item.char,   pairId: pid, matched: false, wrong: false });
+    arr.push({ key: `p${pid}`, type: 'pinyin', value: item.pinyin, pairId: pid, matched: false, wrong: false });
   });
   // 洗牌
   return arr.sort(() => Math.random() - 0.5);

@@ -93,7 +93,7 @@
                   <span>{{ item.example.char }}</span>
                   <span class="py">{{ item.example.pinyin }}</span>
                 </div>
-                <button class="audio-btn" @click="audio.speak(item.tts)">🔊</button>
+                <button class="audio-btn" @click="audio.speak(item.example.char)">🔊</button>
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@
                 <span>{{ item.example.char }}</span>
                 <span class="py">{{ item.example.pinyin }}</span>
               </div>
-              <button class="audio-btn" @click="audio.speak(item.tts)">🔊</button>
+              <button class="audio-btn" @click="audio.speak(item.example.char)">🔊</button>
             </div>
           </div>
         </div>
@@ -161,8 +161,9 @@
       <!-- ========== 课本 tab ========== -->
       <template v-else-if="mainTab === 'books'">
         <h3 class="section-title" style="margin-bottom:14px">📚 拼音课本资源</h3>
+        <p class="tip-text">点击下方课本可在线翻阅；若本地未放置 PDF，会指引你下载并放到正确位置。</p>
         <div class="book-cards">
-          <button v-for="b in PINYIN_BOOKS" :key="b.id" class="book-card" @click="showPdf = b">
+          <button v-for="b in PINYIN_BOOKS" :key="b.id" class="book-card" @click="openPdf(b)">
             <span class="bc-emoji">{{ b.emoji }}</span>
             <div class="bc-info">
               <span class="bc-name">{{ b.name }}</span>
@@ -172,13 +173,34 @@
           </button>
         </div>
         <Teleport to="body">
-          <div v-if="showPdf" class="pdf-modal" @click.self="showPdf = null">
+          <div v-if="showPdf" class="pdf-modal" @click.self="closePdf">
             <div class="pdf-modal-inner">
               <div class="pdf-modal-head">
                 <span>{{ showPdf.name }}</span>
-                <button class="pdf-close" @click="showPdf = null">✕</button>
+                <button class="pdf-close" @click="closePdf">✕</button>
               </div>
-              <iframe :src="showPdf.path" class="pdf-frame" loading="lazy"></iframe>
+
+              <!-- 探测中 -->
+              <div v-if="pdfState === 'loading'" class="pdf-state">
+                <div class="ps-spinner">⏳</div>
+                <p>正在加载课本…</p>
+              </div>
+
+              <!-- 资源缺失：引导下载 + 放置路径 -->
+              <div v-else-if="pdfState === 'missing'" class="pdf-missing">
+                <div class="pm-emoji">📭</div>
+                <h4>本地暂无这本课本</h4>
+                <p class="pm-line">这本 PDF 体积较大，没有放进代码仓库。请到下面这个开源教材仓库下载：</p>
+                <a class="pm-repo" :href="TEXTBOOK_REPO" target="_blank" rel="noopener">
+                  {{ TEXTBOOK_REPO }}
+                </a>
+                <p class="pm-line">下载后把文件放到下面这个完整路径（文件名需保持一致）：</p>
+                <code class="pm-path">{{ missingLocalPath }}</code>
+                <button class="pm-retry" @click="openPdf(showPdf)">放好了，重新加载 ↻</button>
+              </div>
+
+              <!-- 正常预览 -->
+              <iframe v-else :src="showPdf.path" class="pdf-frame" loading="lazy"></iframe>
             </div>
           </div>
         </Teleport>
@@ -220,6 +242,7 @@ import {
   ALPHABET_TABLE, INITIALS_TABLE, FINALS_TABLE,
   WHOLE_SYLLABLES, TONES_TABLE,
 } from '../lib/pinyin-data.js';
+import { checkPdfExists, localPdfPath, TEXTBOOK_REPO } from '../lib/pdfResource.js';
 import FillPinyinSection from '../components/PinyinFillGame.vue';
 import MatchGame from '../components/PinyinMatchGame.vue';
 import SnakeGame from '../components/PinyinSnakeGame.vue';
@@ -253,7 +276,9 @@ const FINALS_LABELS = {
 const mainTab  = ref('learn');
 const learnTab = ref('alpha');
 const currentGame = ref(null);
-const showPdf = ref(null);
+const showPdf  = ref(null);
+const pdfState = ref('loading'); // 'loading' | 'ok' | 'missing'
+const missingLocalPath = ref('');
 
 const PINYIN_BOOKS = [
   { id: 'lesson-up',   name: '拼音课程（上）', desc: '幼儿拼音学习课程上册', emoji: '📗', path: '/textbooks/chinese/pinyin/拼音课程-上.pdf' },
@@ -261,6 +286,17 @@ const PINYIN_BOOKS = [
   { id: 'workbook-1',  name: '练习册①',       desc: '拼音练习册第一册',      emoji: '📙', path: '/textbooks/chinese/pinyin/练习册-上.pdf' },
   { id: 'workbook-2',  name: '练习册②',       desc: '拼音练习册第二册',      emoji: '📕', path: '/textbooks/chinese/pinyin/练习册-下.pdf' },
 ];
+
+async function openPdf(book) {
+  showPdf.value = book;
+  pdfState.value = 'loading';
+  missingLocalPath.value = localPdfPath(book.path);
+  const ok = await checkPdfExists(book.path);
+  // 期间用户可能已关闭弹窗
+  if (showPdf.value?.id !== book.id) return;
+  pdfState.value = ok ? 'ok' : 'missing';
+}
+function closePdf() { showPdf.value = null; }
 </script>
 
 <style scoped>
@@ -418,4 +454,40 @@ const PINYIN_BOOKS = [
 }
 .pdf-close:hover { background: rgba(255,255,255,0.35); }
 .pdf-frame { flex: 1; border: 0; width: 100%; background: #f4f0e6; }
+
+/* PDF 加载中 */
+.pdf-state {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; color: #9b8b7a; font-weight: 800;
+}
+.ps-spinner { font-size: 40px; animation: spin 1.4s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* PDF 缺失引导 */
+.pdf-missing {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 28px; text-align: center;
+}
+.pm-emoji { font-size: 56px; }
+.pdf-missing h4 { margin: 0; font-size: 20px; color: var(--ink); }
+.pm-line { margin: 0; font-size: 14px; color: #9b8b7a; max-width: 460px; }
+.pm-repo {
+  font-size: 15px; font-weight: 800; color: #3a92e0;
+  word-break: break-all; padding: 8px 16px;
+  background: #f0f8ff; border: 2px solid #b0d4f0; border-radius: 12px;
+  text-decoration: none;
+}
+.pm-repo:hover { background: #e0f0ff; }
+.pm-path {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px; color: #2e7a3c;
+  background: #f0fff4; border: 2px solid #b0e0c0; border-radius: 10px;
+  padding: 10px 14px; word-break: break-all; max-width: 520px;
+}
+.pm-retry {
+  margin-top: 4px; background: #54b85a; color: #fff;
+  padding: 10px 24px; font-family: inherit; font-weight: 900; font-size: 14px;
+  border-radius: 12px; cursor: pointer; box-shadow: 0 3px 0 #3a8a42;
+}
+.pm-retry:hover { transform: translateY(-2px); }
 </style>

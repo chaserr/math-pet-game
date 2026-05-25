@@ -56,7 +56,10 @@
         <button v-if="result === 'ok'" class="btn-next" @click="nextQuestion">
           下一字 →
         </button>
-        <button v-else class="btn-skip" @click="skipQuestion">跳过</button>
+        <div v-else class="card-actions">
+          <button class="btn-hint" @click="useHint">💡 提示</button>
+          <button class="btn-skip" @click="skipQuestion">跳过</button>
+        </div>
       </div>
     </div>
 
@@ -195,8 +198,6 @@ function buildPool() {
       y: Math.max(8, Math.min(y, usableH)),
       placed: false,
       walking: Math.random() > 0.4,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
     };
   });
 }
@@ -207,8 +208,21 @@ function unplace(si) {
   if (slots.value[si] === null) return;
   const letter = slots.value[si];
   slots.value[si] = null;
-  const tile = pool.value.find(t => t.placed && t.letter === letter && t.letter === letter);
+  const tile = pool.value.find(t => t.placed && t.letter === letter);
   if (tile) tile.placed = false;
+  checkResult();
+}
+
+// 提示：把下一个待填空槽的正确字母自动放进去
+function useHint() {
+  if (result.value === 'ok') return;
+  const si = slots.value.findIndex(s => s === null);
+  if (si === -1) return;
+  const need = current.value.letters[si];
+  const tile = pool.value.find(t => !t.placed && t.letter === need);
+  if (!tile) return;
+  slots.value[si] = need;
+  tile.placed = true;
   checkResult();
 }
 
@@ -472,6 +486,14 @@ onBeforeUnmount(() => {
 }
 .btn-next:hover { transform: translateY(-2px); }
 
+.card-actions { display: flex; gap: 14px; align-items: center; }
+.btn-hint {
+  background: #fff8e8; color: #d6920f;
+  font-family: inherit; font-weight: 800; font-size: 13px;
+  border: 2px solid #f0d99a; border-radius: 999px; cursor: pointer; padding: 6px 16px;
+  box-shadow: 0 2px 0 #e8c87a; transition: transform 0.1s;
+}
+.btn-hint:hover { transform: translateY(-2px); }
 .btn-skip {
   background: transparent; color: #b0a89a;
   font-family: inherit; font-weight: 800; font-size: 13px;

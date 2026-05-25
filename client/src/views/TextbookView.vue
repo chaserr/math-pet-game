@@ -46,7 +46,7 @@
           <button class="view-pdf"
             :disabled="!currentPdfPath"
             :title="currentPdfPath ? '在线查看课本 PDF' : '该册课本 PDF 未配置（见 README 教材资源）'"
-            @click="showPdf = true"
+            @click="openPdf"
           >📖 查看课本</button>
         </div>
 
@@ -90,7 +90,26 @@
             <span>📖 {{ gradeName }}{{ volume === 'up' ? '上册' : '下册' }}（{{ subjectName }}）</span>
             <button class="pdf-close" @click="showPdf = false" aria-label="关闭">✕</button>
           </div>
-          <iframe :src="currentPdfPath" class="pdf-frame" loading="lazy"></iframe>
+
+          <!-- 探测中 -->
+          <div v-if="pdfState === 'loading'" class="pdf-state">
+            <div class="ps-spinner">⏳</div>
+            <p>正在加载课本…</p>
+          </div>
+
+          <!-- 资源缺失：引导下载 + 放置路径 -->
+          <div v-else-if="pdfState === 'missing'" class="pdf-missing">
+            <div class="pm-emoji">📭</div>
+            <h4>本地暂无这册课本</h4>
+            <p class="pm-line">课本 PDF 体积较大，没有放进代码仓库。请到下面这个开源教材仓库下载：</p>
+            <a class="pm-repo" :href="TEXTBOOK_REPO" target="_blank" rel="noopener">{{ TEXTBOOK_REPO }}</a>
+            <p class="pm-line">下载后把文件放到下面这个完整路径（文件名需保持一致）：</p>
+            <code class="pm-path">{{ missingLocalPath }}</code>
+            <button class="pm-retry" @click="openPdf">放好了，重新加载 ↻</button>
+          </div>
+
+          <!-- 正常预览 -->
+          <iframe v-else :src="currentPdfPath" class="pdf-frame" loading="lazy"></iframe>
         </div>
       </div>
     </Teleport>
@@ -107,6 +126,7 @@ import {
   textbookHasSubject, getUnits, gradeHasContent,
   pdfPath,
 } from '../lib/textbook.js';
+import { checkPdfExists, localPdfPath, TEXTBOOK_REPO } from '../lib/pdfResource.js';
 
 const router = useRouter();
 const route = useRoute();
@@ -122,7 +142,20 @@ const subjectName = computed(() => SUBJECTS.find(s => s.id === subject.value)?.n
 const units = computed(() => getUnits(subject.value, grade.value, volume.value));
 
 const showPdf = ref(false);
+const pdfState = ref('loading'); // 'loading' | 'ok' | 'missing'
+const missingLocalPath = ref('');
 const currentPdfPath = computed(() => grade.value ? pdfPath(subject.value, grade.value, volume.value) : null);
+
+async function openPdf() {
+  if (!currentPdfPath.value) return;
+  showPdf.value = true;
+  pdfState.value = 'loading';
+  const path = currentPdfPath.value;
+  missingLocalPath.value = localPdfPath(path);
+  const ok = await checkPdfExists(path);
+  if (!showPdf.value || currentPdfPath.value !== path) return; // 期间已切换/关闭
+  pdfState.value = ok ? 'ok' : 'missing';
+}
 
 // 切册或切年级时自动关闭 PDF 弹窗
 watch([subject, grade, volume], () => { showPdf.value = false; });
@@ -257,6 +290,41 @@ watch(() => route.query, (q) => {
 }
 .pdf-close:hover { background: rgba(255,255,255,0.35); }
 .pdf-frame { flex: 1; border: 0; width: 100%; background: #f4f0e6; }
+
+/* PDF 加载中 */
+.pdf-state {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; color: #9b8b7a; font-weight: 800;
+}
+.ps-spinner { font-size: 40px; animation: spin 1.4s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* PDF 缺失引导 */
+.pdf-missing {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 28px; text-align: center;
+}
+.pm-emoji { font-size: 56px; }
+.pdf-missing h4 { margin: 0; font-size: 20px; color: var(--ink); }
+.pm-line { margin: 0; font-size: 14px; color: #9b8b7a; max-width: 460px; }
+.pm-repo {
+  font-size: 15px; font-weight: 800; color: #3a92e0; word-break: break-all;
+  padding: 8px 16px; background: #f0f8ff; border: 2px solid #b0d4f0;
+  border-radius: 12px; text-decoration: none;
+}
+.pm-repo:hover { background: #e0f0ff; }
+.pm-path {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px; color: #2e7a3c; background: #f0fff4;
+  border: 2px solid #b0e0c0; border-radius: 10px;
+  padding: 10px 14px; word-break: break-all; max-width: 520px;
+}
+.pm-retry {
+  margin-top: 4px; background: var(--primary); color: #fff;
+  padding: 10px 24px; font-family: inherit; font-weight: 900; font-size: 14px;
+  border-radius: 12px; cursor: pointer; box-shadow: 0 3px 0 var(--shadow);
+}
+.pm-retry:hover { transform: translateY(-2px); }
 
 .empty-tip { text-align: center; color: #9b8b7a; padding: 40px; }
 .et-emoji { font-size: 60px; margin-bottom: 10px; }

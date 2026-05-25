@@ -1,0 +1,1 @@
+const n="https://github.com/chaserr/ChinaTextbook";function s(t){const e=t.indexOf("textbooks/");return`client/public/${e>=0?t.slice(e):t.replace(/^\/+/,"")}`}async function r(t){try{const e=await fetch(t,{method:"HEAD"});return!(!e.ok||(e.headers.get("content-type")||"").includes("text/html"))}catch{return!1}}export{n as T,r as c,s as l};

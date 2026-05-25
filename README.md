@@ -24,16 +24,22 @@ npm run build         # 生产构建
 
 ## 教材资源（PDF）
 
-游戏内"📚 跟课本学 → 📖 查看课本"功能依赖原版 PDF 教材。**70 MB+ 不进 git**，需要本地手动放置：
+游戏内"📚 跟课本学 → 📖 查看课本"以及"🔠 拼音专区 → 📚 课本"功能依赖原版 PDF 教材。**体积大、不进 git**，需要本地手动放置：
 
 ```
-client/public/textbooks/math/grade1/grade1-up.pdf      ← 一年级数学上册（人教版 2022 课标修订）
-client/public/textbooks/math/grade1/grade1-down.pdf    ← 一年级数学下册（同上）
-client/public/textbooks/chinese/grade1/grade1-up.pdf   ← 一年级语文上册（人教版 2022 课标修订）
-client/public/textbooks/chinese/grade1/grade1-down.pdf ← 一年级语文下册（同上）
+client/public/textbooks/math/grade1/grade1-up.pdf        ← 一年级数学上册（人教版 2022 课标修订）
+client/public/textbooks/math/grade1/grade1-down.pdf      ← 一年级数学下册（同上）
+client/public/textbooks/chinese/grade1/grade1-up.pdf     ← 一年级语文上册（人教版 2022 课标修订）
+client/public/textbooks/chinese/grade1/grade1-down.pdf   ← 一年级语文下册（同上）
+client/public/textbooks/chinese/pinyin/拼音课程-上.pdf    ← 幼儿拼音学习课程（上）
+client/public/textbooks/chinese/pinyin/拼音课程-下.pdf    ← 幼儿拼音学习课程（下）
+client/public/textbooks/chinese/pinyin/练习册-上.pdf      ← 拼音练习册①
+client/public/textbooks/chinese/pinyin/练习册-下.pdf      ← 拼音练习册②
 ```
 
-PDF 已在 `.gitignore` 排除（避免 70 MB 进 git / 跨设备同步）。原始来源为人教版官方教材；切换设备 / Codex 容器时需重新放置。未放置时教材轴仍可用，"查看课本"按钮显示"PDF 未放置"提示。
+**下载来源**：开源教材仓库 <https://github.com/chaserr/ChinaTextbook>，从中找到对应册次下载，重命名后放到上面的完整路径。
+
+PDF 已在 `.gitignore` 排除（避免大文件进 git / 跨设备同步）。切换设备 / Codex 容器时需重新放置。**未放置时功能仍可用**：点击"查看课本"会弹出引导面板，直接给出仓库地址和该文件应放置的完整路径，放好后点"重新加载"即可。
 
 ## 学科与模块
 
