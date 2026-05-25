@@ -10,6 +10,7 @@ const routes = [
   { path: '/pets', name: 'pets', component: () => import('../views/PetHouseView.vue') },
   { path: '/textbook', name: 'textbook', component: () => import('../views/TextbookView.vue') },
   { path: '/lesson', name: 'lesson', component: () => import('../views/LessonView.vue') },
+  { path: '/pinyin', name: 'pinyin', component: () => import('../views/PinyinHubView.vue') },
 ];
 
 const router = createRouter({

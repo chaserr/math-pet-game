@@ -33,6 +33,16 @@
       </div>
       <p class="subj-desc">{{ subjectInfo.desc }}</p>
 
+      <!-- 拼音专区快捷入口（仅语文显示） -->
+      <div v-if="currentSubject === 'chinese'" class="pinyin-entry" @click="go('pinyin')">
+        <span class="pe-icon">🔠</span>
+        <div class="pe-text">
+          <span class="pe-title">拼音专区</span>
+          <span class="pe-desc">字母表 · 声母 · 韵母 · 练习 · 游戏</span>
+        </div>
+        <span class="pe-arrow">→</span>
+      </div>
+
       <!-- 浏览方式切换：按能力练 / 跟课本学 -->
       <div class="mode-switch">
         <button class="mode active" disabled>💪 按能力练</button>
@@ -234,6 +244,21 @@ onMounted(async () => {
 .subj-tab:hover:not(.active) { background: #fff8e8; }
 .subj-tab .se { font-size: 22px; }
 .subj-desc { text-align: center; color: #9b8b7a; font-size: 14px; margin: -4px 0 4px; }
+
+/* 拼音专区入口 */
+.pinyin-entry {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, #e8f8ee, #d8f0ff);
+  border: 3px solid #54b85a; border-radius: 18px; padding: 14px 18px;
+  cursor: pointer; box-shadow: 0 4px 0 #a8d8b0; transition: transform 0.12s;
+  max-width: 920px; width: 100%; margin: 0 auto;
+}
+.pinyin-entry:hover { transform: translateY(-3px); }
+.pe-icon  { font-size: 32px; }
+.pe-text  { flex: 1; display: flex; flex-direction: column; }
+.pe-title { font-size: 17px; font-weight: 900; color: #2e7a3c; }
+.pe-desc  { font-size: 12px; font-weight: 700; color: #5a9068; }
+.pe-arrow { font-size: 22px; font-weight: 900; color: #54b85a; }
 
 /* 浏览方式切换 */
 .mode-switch { display: flex; justify-content: center; gap: 8px; margin: -4px 0 2px; }
