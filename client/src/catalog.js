@@ -70,10 +70,11 @@ export const MODULES = {
     { id: 'place', name: '数位认知', emoji: '🔢', color: '#2bb3a3', desc: '个十百千万…拖数字认数位' },
   ],
   chinese: [
-    { id: 'recognize', name: '看图识字', emoji: '👀', color: '#f0a93a', desc: '看图选汉字' },
-    { id: 'pinyin',    name: '拼音匹配', emoji: '🔠', color: '#54b85a', desc: '汉字配拼音', placeholder: true },
-    { id: 'compose',   name: '组词造句', emoji: '📝', color: '#3a92e0', desc: '给字找词',   placeholder: true },
-    { id: 'idiom',     name: '成语接龙', emoji: '🏮', color: '#9b5cd6', desc: '首尾相接',   placeholder: true },
+    { id: 'recognize', name: '看图识字', emoji: '👀', color: '#f0a93a', desc: '看图选汉字（v1.9 扩到 78 字）' },
+    { id: 'pinyin',    name: '拼音匹配', emoji: '🔠', color: '#54b85a', desc: '汉字↔拼音双向选（v1.9 启用）' },
+    { id: 'compose',   name: '组词造句', emoji: '📝', color: '#3a92e0', desc: '4 选 1 选含该字的词（v1.9 启用）' },
+    { id: 'poem',      name: '必背古诗', emoji: '📜', color: '#9b5cd6', desc: '诗句填字（静夜思 / 江南 / 池上 等 8 首）' },
+    { id: 'idiom',     name: '成语接龙', emoji: '🏮', color: '#d83f7a', desc: '首尾相接（待二年级及以上）', placeholder: true },
   ],
   english: [
     { id: 'alphabet', name: '字母认知', emoji: '🅰️', color: '#f0a93a', desc: '大小写匹配' },

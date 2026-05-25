@@ -238,7 +238,7 @@
       </div>
     </template>
 
-    <!-- ========== choice 模式（识字 / 字母 / 图形） ========== -->
+    <!-- ========== choice 模式（识字 / 字母 / 图形 / 拼音 / 古诗） ========== -->
     <template v-else-if="q.mode === 'choice'">
       <div class="cz-area col center">
         <ShapeIcon
@@ -246,6 +246,10 @@
           :shape-id="q.prompt" :size="140"
           class="cz-shape"
         />
+        <div v-else-if="q.promptKind === 'poem'" class="cz-poem">
+          <div class="cz-poem-title">{{ q.prompt }}</div>
+          <div v-for="(line, li) in q.poemLines" :key="li" class="cz-poem-line">{{ line }}</div>
+        </div>
         <div v-else class="cz-prompt" :class="'pk-' + q.promptKind">{{ q.prompt }}</div>
         <p class="cz-sub">{{ q.sub }}</p>
         <div class="cz-options">
@@ -1101,6 +1105,38 @@ onBeforeUnmount(() => {
 }
 .cz-prompt.pk-emoji { font-size: 120px; line-height: 1; }
 .cz-prompt.pk-letter { font-size: 120px; line-height: 1; font-family: "Comic Sans MS", "Marker Felt", cursive; }
+.cz-prompt.pk-chinese-char {
+  font-size: 140px; line-height: 1;
+  font-family: "PingFang SC", "Songti SC", "STSong", -apple-system, serif;
+  color: var(--ink);
+}
+.cz-prompt.pk-pinyin {
+  font-size: 64px; line-height: 1.2;
+  font-family: "Times New Roman", "STSong", serif;
+  font-style: italic;
+  color: var(--primary-dark);
+  letter-spacing: 2px;
+}
+.cz-poem {
+  background: #fffaf0;
+  border: 3px solid #e8a217;
+  border-radius: 18px;
+  padding: 20px 32px;
+  box-shadow: 0 6px 0 var(--shadow);
+  text-align: center;
+  max-width: 560px;
+}
+.cz-poem-title {
+  font-size: 18px; font-weight: 900; color: var(--primary-dark);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px dashed #f0c46c;
+}
+.cz-poem-line {
+  font-size: 24px; font-weight: 700; color: var(--ink);
+  font-family: "Songti SC", "STSong", "PingFang SC", serif;
+  line-height: 1.8;
+  letter-spacing: 2px;
+}
 .cz-shape {
   background: #fff; border-radius: 24px; padding: 18px 30px;
   box-shadow: 0 6px 0 var(--shadow);

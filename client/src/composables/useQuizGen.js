@@ -9,6 +9,7 @@
 
 import { decomposeAdd, decomposeSub, decomposeBorrowTrick } from '../lib/decompose.js';
 import { OP_OF, PLACE_NAMES, enumWithin10Fact, findCategory } from '../lib/mathLevels.js';
+import { PINYIN_CHAR_BANK, POEM_BANK } from '../lib/chineseBank.js';
 
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function shuffle(arr) {
@@ -391,10 +392,15 @@ const CHAR_BANK = [
 ];
 
 function genChineseRecognize(stage) {
-  const total = CHAR_BANK.length;
+  // v1.9：合并 CHAR_BANK + PINYIN_CHAR_BANK 中带 emoji 的字，扩大题库
+  const merged = [
+    ...CHAR_BANK,
+    ...PINYIN_CHAR_BANK.filter(x => x.emoji).map(x => ({ emoji: x.emoji, char: x.char })),
+  ];
+  const total = merged.length;
   const idx = ((stage - 1) * 7 + Math.floor(Math.random() * 3)) % total;
-  const item = CHAR_BANK[idx];
-  const distractors = shuffle(CHAR_BANK.filter(x => x.char !== item.char)).slice(0, 3).map(x => x.char);
+  const item = merged[idx];
+  const distractors = shuffle(merged.filter(x => x.char !== item.char)).slice(0, 3).map(x => x.char);
   const options = shuffle([item.char, ...distractors]);
   return {
     mode: 'choice',
@@ -403,6 +409,86 @@ function genChineseRecognize(stage) {
     sub: '下面哪个是它的汉字？',
     options,
     correctIndex: options.indexOf(item.char),
+  };
+}
+
+// ============ 语文：拼音匹配（双向）============
+// 一题随机正反：① 给汉字 选拼音 ② 给拼音 选汉字
+function genChinesePinyin(stage) {
+  const item = PINYIN_CHAR_BANK[randInt(0, PINYIN_CHAR_BANK.length - 1)];
+  const askPinyin = stage % 2 === 0;   // 偶数关：给汉字选拼音；奇数关：给拼音选汉字
+  if (askPinyin) {
+    const distractors = shuffle(PINYIN_CHAR_BANK.filter(x => x.pinyin !== item.pinyin))
+      .slice(0, 3).map(x => x.pinyin);
+    const options = shuffle([item.pinyin, ...distractors]);
+    return {
+      mode: 'choice',
+      promptKind: 'chinese-char',
+      prompt: item.char,
+      sub: '它的拼音是？',
+      options,
+      correctIndex: options.indexOf(item.pinyin),
+    };
+  }
+  const distractors = shuffle(PINYIN_CHAR_BANK.filter(x => x.char !== item.char))
+    .slice(0, 3).map(x => x.char);
+  const options = shuffle([item.char, ...distractors]);
+  return {
+    mode: 'choice',
+    promptKind: 'pinyin',
+    prompt: item.pinyin,
+    sub: '这个拼音对应哪个字？',
+    options,
+    correctIndex: options.indexOf(item.char),
+  };
+}
+
+// ============ 语文：组词造句 ============
+// 给一个字，4 选 1 选含该字的正确词组（其他选项是别的字的词组）
+function genChineseCompose(_stage) {
+  const item = PINYIN_CHAR_BANK[randInt(0, PINYIN_CHAR_BANK.length - 1)];
+  // 正确选项：item.words 中随机一个
+  const correctWord = item.words[randInt(0, item.words.length - 1)];
+  // 干扰：从其他字的 words 中各取一个
+  const others = shuffle(PINYIN_CHAR_BANK.filter(x => x.char !== item.char));
+  const distractors = [];
+  for (const o of others) {
+    if (distractors.length >= 3) break;
+    // 干扰词不能包含目标字（否则也"正确"了）
+    const candidate = o.words.find(w => !w.includes(item.char));
+    if (candidate && !distractors.includes(candidate)) distractors.push(candidate);
+  }
+  const options = shuffle([correctWord, ...distractors]);
+  return {
+    mode: 'choice',
+    promptKind: 'chinese-char',
+    prompt: item.char,
+    sub: '下面哪个词里有这个字？',
+    options,
+    correctIndex: options.indexOf(correctWord),
+  };
+}
+
+// ============ 语文：必背古诗填空 ============
+// 显示完整诗 + 某句的某字挖空，4 选 1 填字
+function genChinesePoem(stage) {
+  const poem = POEM_BANK[(stage - 1) % POEM_BANK.length];
+  const blank = poem.blanks[randInt(0, poem.blanks.length - 1)];
+  const correctChar = poem.lines[blank.lineIdx][blank.charIdx];
+  const options = shuffle([correctChar, ...blank.distractors]);
+  // 把待填字替换为下划线，显示整首诗
+  const displayLines = poem.lines.map((line, li) => {
+    if (li !== blank.lineIdx) return line;
+    return line.slice(0, blank.charIdx) + '＿' + line.slice(blank.charIdx + 1);
+  });
+  return {
+    mode: 'choice',
+    promptKind: 'poem',
+    prompt: `《${poem.title}》${poem.author}`,
+    poemLines: displayLines,           // QuizView 据 promptKind=poem 渲染多行
+    sub: '空格里填哪个字？',
+    options,
+    correctIndex: options.indexOf(correctChar),
   };
 }
 
@@ -472,6 +558,9 @@ export function genQuestion(subjectId, moduleId, categoryId, stage, qIdx = 0) {
   }
   if (subjectId === 'chinese') {
     if (moduleId === 'recognize') return genChineseRecognize(s);
+    if (moduleId === 'pinyin') return genChinesePinyin(s);
+    if (moduleId === 'compose') return genChineseCompose(s);
+    if (moduleId === 'poem') return genChinesePoem(s);
     return genPlaceholder(subjectId, moduleId);
   }
   if (subjectId === 'english') {

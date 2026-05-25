@@ -18,6 +18,10 @@ export const PDF_AVAILABLE = {
     grade1: ['up', 'down'],
     // grade2..6 待添加
   },
+  chinese: {
+    grade1: ['up', 'down'],
+    // grade2..6 待添加
+  },
 };
 
 export function isPdfAvailable(subjectId, gradeId, volumeId) {
@@ -187,22 +191,131 @@ const MATH = {
   grade6: emptyGrade(),
 };
 
-// ===== 语文 =====（诗词 / 必学字 / 注音 / 拼音学字 —— 每年级一个，先占位）
+// ===== 语文 =====（一年级 2022 课标修订版整册落地：一上 8 单元 + 入学准备 / 一下 8 单元）
 const CHINESE = {
   grade1: {
+    // 一上：入学准备 + 8 单元
     up: {
       units: [
         {
-          unit: 1, title: '汉语拼音',
+          unit: 0, title: '入学准备 · 我上学了',
           items: [
-            { type: 'practice', id: 'g1c_pinyin', name: '拼音专项', placeholder: true },
-            { type: 'practice', id: 'g1c_recognize', name: '看图识字', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cu0_chars', name: '看图识字（入学准备）', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
           ],
         },
-        { unit: 2, title: '必学汉字 / 必背诗词', placeholder: true, items: [] },
+        {
+          unit: 1, title: '识字一 · 天地人 / 金木水火土 / 口耳目手足 / 日月山川',
+          items: [
+            { type: 'practice', id: 'g1cu1_chars', name: '看图识字', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cu1_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 2, title: '汉语拼音 · a o e / i u ü / b p m f / d t n l',
+          items: [
+            { type: 'practice', id: 'g1cu2_pinyin', name: '汉字拼音双向匹配', engine: 'choice', ref: { module: 'pinyin', category: 'default' } },
+          ],
+        },
+        {
+          unit: 3, title: '汉语拼音 · g k h / j q x / z c s / zh ch sh r / y w',
+          items: [
+            { type: 'practice', id: 'g1cu3_pinyin', name: '汉字拼音双向匹配', engine: 'choice', ref: { module: 'pinyin', category: 'default' } },
+          ],
+        },
+        {
+          unit: 4, title: '汉语拼音 · 复韵母 / 鼻韵母',
+          items: [
+            { type: 'practice', id: 'g1cu4_pinyin', name: '汉字拼音双向匹配', engine: 'choice', ref: { module: 'pinyin', category: 'default' } },
+          ],
+        },
+        {
+          unit: 5, title: '阅读 · 秋天 / 江南 / 雪地里的小画家 / 四季',
+          items: [
+            { type: 'practice', id: 'g1cu5_chars', name: '看图识字（阅读生字）', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cu5_poem', name: '必背古诗 · 江南', engine: 'choice', ref: { module: 'poem', category: 'default' } },
+          ],
+        },
+        {
+          unit: 6, title: '识字二 · 对韵歌 / 日月明 / 小书包 / 升国旗',
+          items: [
+            { type: 'practice', id: 'g1cu6_chars', name: '看图识字', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cu6_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 7, title: '阅读 · 小小的船 / 影子 / 两件宝',
+          items: [
+            { type: 'practice', id: 'g1cu7_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 8, title: '阅读 · 比尾巴 / 乌鸦喝水 / 雨点儿',
+          items: [
+            { type: 'practice', id: 'g1cu8_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
       ],
     },
-    down: emptyVolume(),
+    // 一下：8 单元
+    down: {
+      units: [
+        {
+          unit: 1, title: '识字 · 春夏秋冬 / 姓氏歌 / 小青蛙 / 猜字谜',
+          items: [
+            { type: 'practice', id: 'g1cd1_chars', name: '看图识字', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cd1_pinyin', name: '汉字拼音双向匹配', engine: 'choice', ref: { module: 'pinyin', category: 'default' } },
+          ],
+        },
+        {
+          unit: 2, title: '阅读 · 热爱中国共产党 / 吃水不忘挖井人 / 我多想去看看',
+          items: [
+            { type: 'practice', id: 'g1cd2_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 3, title: '阅读 · 小公鸡和小鸭子 / 树和喜鹊 / 怎么都快乐',
+          items: [
+            { type: 'practice', id: 'g1cd3_chars', name: '看图识字（动物字）', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cd3_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 4, title: '阅读 · 静夜思 / 夜色 / 端午粽',
+          items: [
+            { type: 'practice', id: 'g1cd4_poem', name: '必背古诗 · 静夜思', engine: 'choice', ref: { module: 'poem', category: 'default' } },
+            { type: 'practice', id: 'g1cd4_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 5, title: '识字 · 动物儿歌 / 古对今 / 操场上 / 人之初',
+          items: [
+            { type: 'practice', id: 'g1cd5_chars', name: '看图识字', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cd5_pinyin', name: '汉字拼音双向匹配', engine: 'choice', ref: { module: 'pinyin', category: 'default' } },
+            { type: 'practice', id: 'g1cd5_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 6, title: '阅读 · 古诗二首（池上 / 小池）/ 浪花 / 荷叶圆圆 / 要下雨了',
+          items: [
+            { type: 'practice', id: 'g1cd6_poem', name: '必背古诗 · 池上 / 小池', engine: 'choice', ref: { module: 'poem', category: 'default' } },
+            { type: 'practice', id: 'g1cd6_chars', name: '看图识字', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+          ],
+        },
+        {
+          unit: 7, title: '阅读 · 文具的家 / 一分钟 / 动物王国开大会 / 小猴子下山',
+          items: [
+            { type: 'practice', id: 'g1cd7_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+        {
+          unit: 8, title: '阅读 · 棉花姑娘 / 咕咚 / 小壁虎借尾巴',
+          items: [
+            { type: 'practice', id: 'g1cd8_chars', name: '看图识字（动物字）', engine: 'choice', ref: { module: 'recognize', category: 'default' } },
+            { type: 'practice', id: 'g1cd8_compose', name: '识字组词', engine: 'choice', ref: { module: 'compose', category: 'default' } },
+          ],
+        },
+      ],
+    },
   },
   grade2: emptyGrade(),
   grade3: emptyGrade(),

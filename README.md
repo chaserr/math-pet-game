@@ -27,8 +27,10 @@ npm run build         # 生产构建
 游戏内"📚 跟课本学 → 📖 查看课本"功能依赖原版 PDF 教材。**70 MB+ 不进 git**，需要本地手动放置：
 
 ```
-client/public/textbooks/math/grade1/grade1-up.pdf      ← 一年级上册（人教版 2022 课标修订）
-client/public/textbooks/math/grade1/grade1-down.pdf    ← 一年级下册（同上）
+client/public/textbooks/math/grade1/grade1-up.pdf      ← 一年级数学上册（人教版 2022 课标修订）
+client/public/textbooks/math/grade1/grade1-down.pdf    ← 一年级数学下册（同上）
+client/public/textbooks/chinese/grade1/grade1-up.pdf   ← 一年级语文上册（人教版 2022 课标修订）
+client/public/textbooks/chinese/grade1/grade1-down.pdf ← 一年级语文下册（同上）
 ```
 
 PDF 已在 `.gitignore` 排除（避免 70 MB 进 git / 跨设备同步）。原始来源为人教版官方教材；切换设备 / Codex 容器时需重新放置。未放置时教材轴仍可用，"查看课本"按钮显示"PDF 未放置"提示。
