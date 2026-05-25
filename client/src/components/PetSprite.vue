@@ -154,13 +154,89 @@
         </g>
       </g>
 
+      <!-- ===== 嘘嘘鬼王家族（自带专属脸） ===== -->
+      <g v-else-if="isGhost">
+        <!-- 两只小手 -->
+        <ellipse cx="22" cy="74" rx="11" ry="9" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
+        <ellipse cx="98" cy="74" rx="11" ry="9" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
+        <!-- 身体（圆顶 + 波浪下摆） -->
+        <path d="M20 60 Q20 20 60 20 Q100 20 100 60 L100 92 Q90 104 80 92 Q70 104 60 92 Q50 104 40 92 Q30 104 20 92 Z"
+              :fill="C.body" :stroke="C.dark" stroke-width="2.5" stroke-linejoin="round"/>
+
+        <!-- 王冠（嘘嘘鬼王） -->
+        <g v-if="petId === 'king_boo'">
+          <path d="M42 22 L42 6 L51 13 L60 3 L69 13 L78 6 L78 22 Z" fill="#ffd83b" stroke="#d4a017" stroke-width="1.6" stroke-linejoin="round"/>
+          <circle cx="60" cy="6" r="3.8" fill="#ff4d8d" stroke="#d4a017" stroke-width="1"/>
+          <circle cx="46" cy="17" r="2" fill="#ff4d8d"/>
+          <circle cx="74" cy="17" r="2" fill="#ff4d8d"/>
+        </g>
+
+        <!-- 南瓜灯（南瓜鬼） -->
+        <g v-if="petId === 'pumpkin_ghost'">
+          <ellipse cx="92" cy="98" rx="15" ry="13" fill="#ff8a1e" stroke="#d96e10" stroke-width="2"/>
+          <path d="M92 87 q3 -6 7 -3" stroke="#6b8e23" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M85 95 l5 5 -6 0 Z" fill="#5a2a00"/>
+          <path d="M99 95 l-5 5 6 0 Z" fill="#5a2a00"/>
+          <path d="M84 103 q8 5 16 0" stroke="#5a2a00" stroke-width="2" fill="none"/>
+        </g>
+
+        <!-- Boo 风格脸：怒眉 + 大嘴 + 獠牙 + 舌头 -->
+        <template v-if="ghostStyle === 'boo'">
+          <template v-if="mood === 'sad'">
+            <path d="M40 48 L52 45" :stroke="C.ink" stroke-width="4" stroke-linecap="round"/>
+            <path d="M80 48 L68 45" :stroke="C.ink" stroke-width="4" stroke-linecap="round"/>
+          </template>
+          <template v-else>
+            <path d="M38 42 L53 51" :stroke="C.ink" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M82 42 L67 51" :stroke="C.ink" stroke-width="4.5" stroke-linecap="round"/>
+          </template>
+          <ellipse cx="48" cy="56" rx="4.5" ry="7" :fill="C.ink"/>
+          <ellipse cx="72" cy="56" rx="4.5" ry="7" :fill="C.ink"/>
+          <circle cx="34" cy="66" r="5" :fill="C.cheek" opacity="0.8"/>
+          <circle cx="86" cy="66" r="5" :fill="C.cheek" opacity="0.8"/>
+          <template v-if="mood === 'sad'">
+            <ellipse cx="60" cy="76" rx="8" ry="6" fill="#6e1f33"/>
+            <path class="tear" d="M48 61 q-3 8 0 12 q3 -4 0 -12" fill="#7dd3fc"/>
+          </template>
+          <template v-else>
+            <path d="M44 68 Q60 63 76 68 Q73 92 60 92 Q47 92 44 68 Z" fill="#6e1f33"/>
+            <path d="M49 68 l4 8 4 -8 Z M58 68 l4 8 4 -8 Z M67 68 l4 7 3 -7 Z" fill="#fff"/>
+            <ellipse cx="60" cy="88" rx="9" ry="8" fill="#ff7aa8"/>
+          </template>
+        </template>
+
+        <!-- 可爱风格脸：大眼 + 腮红 + 小嘴（害羞鬼加捂嘴手） -->
+        <template v-else>
+          <template v-if="mood === 'happy'">
+            <path d="M42 56 q5 -7 10 0" fill="none" :stroke="C.ink" stroke-width="3" stroke-linecap="round"/>
+            <path d="M68 56 q5 -7 10 0" fill="none" :stroke="C.ink" stroke-width="3" stroke-linecap="round"/>
+          </template>
+          <template v-else>
+            <ellipse cx="47" cy="56" rx="6" ry="7.5" :fill="C.ink"/>
+            <ellipse cx="73" cy="56" rx="6" ry="7.5" :fill="C.ink"/>
+            <circle cx="49" cy="53" r="2" fill="#fff"/>
+            <circle cx="75" cy="53" r="2" fill="#fff"/>
+          </template>
+          <circle cx="35" cy="66" r="6" :fill="C.cheek" opacity="0.85"/>
+          <circle cx="85" cy="66" r="6" :fill="C.cheek" opacity="0.85"/>
+          <path v-if="mood === 'happy'" d="M52 70 Q60 80 68 70" fill="none" :stroke="C.ink" stroke-width="2.5" stroke-linecap="round"/>
+          <path v-else-if="mood === 'sad'" d="M54 74 Q60 68 66 74" fill="none" :stroke="C.ink" stroke-width="2.5" stroke-linecap="round"/>
+          <ellipse v-else cx="60" cy="71" rx="3.5" ry="4.5" fill="#ff7aa8"/>
+          <g v-if="petId === 'shy_ghost'">
+            <ellipse cx="52" cy="75" rx="7" ry="6" :fill="C.body" :stroke="C.dark" stroke-width="2"/>
+            <ellipse cx="68" cy="75" rx="7" ry="6" :fill="C.body" :stroke="C.dark" stroke-width="2"/>
+          </g>
+          <path v-if="mood === 'sad'" class="tear" d="M47 62 q-3 8 0 12 q3 -4 0 -12" fill="#7dd3fc"/>
+        </template>
+      </g>
+
       <!-- 兜底 -->
       <g v-else>
         <ellipse cx="60" cy="66" rx="38" ry="36" :fill="C.body" :stroke="C.dark" stroke-width="2.5"/>
       </g>
 
-      <!-- ===== 通用脸（随心情变化） ===== -->
-      <g class="face">
+      <!-- ===== 通用脸（随心情变化；鬼王自带脸，跳过） ===== -->
+      <g v-if="!isGhost" class="face">
         <template v-if="mood === 'happy'">
           <path d="M44 60 q5 -7 10 0" fill="none" stroke="#2a2a2a" stroke-width="3" stroke-linecap="round"/>
           <path d="M66 60 q5 -7 10 0" fill="none" stroke="#2a2a2a" stroke-width="3" stroke-linecap="round"/>
@@ -191,7 +267,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { growthStageResource, petStage } from '../catalog.js';
+import { growthStageResource, petStage, findPet } from '../catalog.js';
 
 const props = defineProps({
   petId: { type: String, required: true },
@@ -222,8 +298,19 @@ const COLORS = {
   sheep:   { body: '#fff7e8', dark: '#d8c7a7', cheek: '#ffd9c2' },
   duck:    { body: '#fff2a8', dark: '#d4a017', cheek: '#ffd6a3' },
   poop:    { body: '#9b6a3c', dark: '#6f4a26', cheek: '#c79166' },
+  // 嘘嘘鬼王家族
+  boo:           { body: '#f5f7ff', dark: '#aeb8d4', cheek: '#ffc2cf', ink: '#2a2a2a' },
+  king_boo:      { body: '#d8e6ff', dark: '#8aa0d6', cheek: '#ffc2cf', ink: '#2a2a2a' },
+  shadow_boo:    { body: '#3b4566', dark: '#222a44', cheek: '#7c6bd6', ink: '#e0c8ff' },
+  shy_ghost:     { body: '#fbfdff', dark: '#cdd6e8', cheek: '#ffb3c7', ink: '#2a2a2a' },
+  pumpkin_ghost: { body: '#fdfdf7', dark: '#cfc8b8', cheek: '#ffb3a0', ink: '#2a2a2a' },
 };
 const C = computed(() => COLORS[props.petId] || COLORS.cat);
+
+const isGhost = computed(() => findPet(props.petId)?.category === 'ghost');
+const ghostStyle = computed(() =>
+  ['boo', 'king_boo', 'shadow_boo'].includes(props.petId) ? 'boo' : 'cute'
+);
 </script>
 
 <style scoped>

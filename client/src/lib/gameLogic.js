@@ -52,5 +52,6 @@ export function unlockConditions(ctx) {
     'pet:fox': ctx.ownedCount >= 3,
     'pet:panda': ctx.mainLevel >= 5,
     'pet:penguin': ctx.maxPetLevel >= 5,
+    'pet:shadow_boo': (ctx.ghostCount || 0) >= 2,
   };
 }

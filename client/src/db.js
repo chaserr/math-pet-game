@@ -124,6 +124,7 @@ export async function evaluateUnlocks() {
     ownedCount: owned.length,
     mainLevel,
     maxPetLevel: owned.reduce((m, p) => Math.max(m, p.level), 0),
+    ghostCount: owned.filter(p => findPet(p.pet_id)?.category === 'ghost').length,
   };
   const conds = unlockConditions(ctx);
   const already = await unlockedKeys();

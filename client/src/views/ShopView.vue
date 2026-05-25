@@ -44,6 +44,9 @@
             <template v-else-if="p.purchasable">
               <button class="btn-primary buy" @click="buyPet(p)">🪙 {{ p.price }}</button>
             </template>
+            <template v-else-if="p.acquireType === 'gacha'">
+              <button class="gacha-tag" @click="tab = 'gacha'">🎰 去扭蛋</button>
+            </template>
             <template v-else>
               <button disabled class="locked">🔒 {{ p.unlockDesc }}</button>
             </template>
@@ -201,6 +204,12 @@ onMounted(load);
 .buy { padding: 8px 18px; font-size: 15px; }
 .item button:disabled { background: #eee; color: #999; box-shadow: none; padding: 8px 14px; border-radius: 999px; font-size: 13px; }
 .locked { font-size: 11px !important; line-height: 1.3; }
+.gacha-tag {
+  background: #f5f0ff; color: #9b5cd6; font-family: inherit; font-weight: 800;
+  font-size: 13px; padding: 8px 16px; border: 2px solid #d8c4f0; border-radius: 999px;
+  cursor: pointer; box-shadow: 0 2px 0 #c4a8e0;
+}
+.gacha-tag:hover { background: #ece0ff; }
 
 .gacha { gap: 18px; padding-top: 30px; text-align: center; }
 .egg { font-size: 90px; animation: wob 2s ease infinite; }

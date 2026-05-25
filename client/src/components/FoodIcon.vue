@@ -50,6 +50,37 @@
       <path d="M18 22 l-6 -4 M42 22 l6 -4 M30 16 v-6 M16 36 l-7 2 M44 36 l7 2"
             stroke="#6fcf6f" stroke-width="3" stroke-linecap="round"/>
     </g>
+    <!-- 灵魂果冻 -->
+    <g v-else-if="foodId === 'soul_jelly'">
+      <path d="M16 28 q14 -16 28 0 v10 q-14 12 -28 0 z" fill="#a5f3e0" stroke="#4fbfa8" stroke-width="2"/>
+      <circle cx="24" cy="30" r="2.5" fill="#2a2a2a"/>
+      <circle cx="36" cy="30" r="2.5" fill="#2a2a2a"/>
+      <ellipse cx="30" cy="22" rx="6" ry="3" fill="#fff" opacity="0.55"/>
+    </g>
+    <!-- 棉花糖 -->
+    <g v-else-if="foodId === 'shy_marshmallow'">
+      <rect x="22" y="16" width="16" height="28" rx="7" fill="#fff0f5" stroke="#f0b8cc" stroke-width="2"/>
+      <path d="M22 26 h16 M22 34 h16" stroke="#f0b8cc" stroke-width="1.5"/>
+      <rect x="28" y="10" width="4" height="36" rx="2" fill="#c79a6a"/>
+    </g>
+    <!-- 南瓜派 -->
+    <g v-else-if="foodId === 'pumpkin_pie'">
+      <path d="M12 40 L48 40 L40 24 Q30 18 20 24 Z" fill="#e8922e" stroke="#b86a14" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M12 40 L48 40 L46 44 L14 44 Z" fill="#d8a05a" stroke="#b86a14" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="30" cy="30" r="3" fill="#fff" opacity="0.7"/>
+    </g>
+    <!-- 暗夜糖 -->
+    <g v-else-if="foodId === 'night_candy'">
+      <circle cx="30" cy="30" r="11" fill="#5b4b8a" stroke="#3a2e5c" stroke-width="2"/>
+      <path d="M19 30 l-8 -5 v10 z" fill="#7c6bd6" stroke="#3a2e5c" stroke-width="2"/>
+      <path d="M41 30 l8 -5 v10 z" fill="#7c6bd6" stroke="#3a2e5c" stroke-width="2"/>
+      <path d="M27 27 l3 3 4 -4" stroke="#ffd83b" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    <!-- 紫水晶 -->
+    <g v-else-if="foodId === 'purple_gem'">
+      <path d="M30 10 L44 24 L30 50 L16 24 Z" fill="#c084fc" stroke="#8b3fd6" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M16 24 H44 M30 10 L30 50 M22 24 L30 50 M38 24 L30 50" stroke="#e9d5ff" stroke-width="1.5" fill="none" opacity="0.8"/>
+    </g>
     <g v-else>
       <circle cx="30" cy="32" r="14" fill="#ffd93b" stroke="#e0a500" stroke-width="2"/>
     </g>

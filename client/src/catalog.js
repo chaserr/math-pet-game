@@ -15,6 +15,12 @@ export const FOODS = [
   { id: 'alfalfa',     name: '苜蓿草', petId: 'sheep',   price: 18, exp: 22, intimacy: 5 },
   { id: 'corn',        name: '玉米粒', petId: 'duck',    price: 14, exp: 19, intimacy: 5 },
   { id: 'mint',        name: '薄荷叶', petId: 'poop',    price: 10, exp: 15, intimacy: 4 },
+  // 鬼王家族口粮
+  { id: 'soul_jelly',      name: '灵魂果冻', petId: 'boo',           price: 30, exp: 35, intimacy: 6 },
+  { id: 'shy_marshmallow', name: '棉花糖',   petId: 'shy_ghost',     price: 28, exp: 32, intimacy: 6 },
+  { id: 'pumpkin_pie',     name: '南瓜派',   petId: 'pumpkin_ghost', price: 32, exp: 38, intimacy: 6 },
+  { id: 'night_candy',     name: '暗夜糖',   petId: 'shadow_boo',    price: 38, exp: 42, intimacy: 7 },
+  { id: 'purple_gem',      name: '紫水晶',   petId: 'king_boo',      price: 55, exp: 60, intimacy: 8 },
 ];
 
 // ===== 宠物分类（用于商店 / 宠物之家分组展示）=====
@@ -24,6 +30,7 @@ export const PET_CATEGORIES = [
   { id: 'bird',      name: '鸟类',  emoji: '🐦' },
   { id: 'reptile',   name: '爬行',  emoji: '🐢' },
   { id: 'mythical',  name: '神话',  emoji: '🐉' },
+  { id: 'ghost',     name: '鬼王',  emoji: '👻' },
   { id: 'fun',       name: '趣味',  emoji: '🎈' },
 ];
 
@@ -41,13 +48,19 @@ export const PETS = [
   { id: 'sheep',   name: 'Mianmian', cnName: '小绵羊', category: 'mammal',   acquireType: 'buy',    price: 115, unlockKey: null,          foodId: 'alfalfa' },
   { id: 'duck',    name: 'Yaya',     cnName: '小鸭子', category: 'bird',     acquireType: 'buy',    price: 90,  unlockKey: null,          foodId: 'corn' },
   { id: 'poop',    name: 'Choucho',  cnName: '臭臭',   category: 'fun',      acquireType: 'buy',    price: 50,  unlockKey: null,          foodId: 'mint' },
+  // ===== 嘘嘘鬼王家族 =====
+  { id: 'boo',           name: 'Boo',      cnName: '嘘嘘鬼',  category: 'ghost', acquireType: 'buy',    price: 120, unlockKey: null,             foodId: 'soul_jelly' },
+  { id: 'shy_ghost',     name: 'Shyly',    cnName: '害羞鬼',  category: 'ghost', acquireType: 'buy',    price: 110, unlockKey: null,             foodId: 'shy_marshmallow' },
+  { id: 'pumpkin_ghost', name: 'Pumpky',   cnName: '南瓜鬼',  category: 'ghost', acquireType: 'buy',    price: 130, unlockKey: null,             foodId: 'pumpkin_pie' },
+  { id: 'shadow_boo',    name: 'Shadow',   cnName: '暗影鬼',  category: 'ghost', acquireType: 'unlock', price: 380, unlockKey: 'pet:shadow_boo', foodId: 'night_candy', unlockDesc: '拥有任意 2 只鬼王后解锁' },
+  { id: 'king_boo',      name: 'KingBoo',  cnName: '嘘嘘鬼王', category: 'ghost', acquireType: 'gacha',  price: null, unlockKey: null,            foodId: 'purple_gem' },
 ];
 
 export const findPetCategory = (id) => PET_CATEGORIES.find(c => c.id === id) || null;
 
 export const GACHA_COST = 50;
 export const GACHA_DUP_FOOD_QTY = 3;
-export const GACHA_POOL = ['dragon'];
+export const GACHA_POOL = ['dragon', 'king_boo'];
 export const MAX_LEVEL = 10;
 
 // ===== 学科 / 模块 / 关卡 =====
