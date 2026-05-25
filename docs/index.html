@@ -93,11 +93,10 @@
   <!-- 快速信息 -->
   <div class="home-info">
     <div class="panel">
-      <h3>🆕 最新变更（回合 #16）</h3>
+      <h3>🆕 最新变更（回合 #17）</h3>
       <p style="font-size:13.5px;margin:6px 0;">
-        <b>v1.6.6 · 云端读失败本地缓存兜底</b> — 新增 <code>cloudCache.js</code> + <code>cloudHealth.js</code>。
-        <code>db.js</code> 4 个读函数（profile / myPets / myFoods / shop）统一走 <code>withCache</code>：成功写缓存，失败用上次缓存或静态 catalog 兜底，
-        App.vue 顶部弹"网络不稳，正在显示本地缓存数据"提示条。商店即使全离线也能浏览。
+        <b>v1.6.7 · 数位认知关卡化</b> — <code>placeCategories.perLevel</code> 1→9，每关从 1 题变 9 题随机 d 位数；
+        通过线 <code>⌈9×0.6⌉=6 题</code>，9 题全对触发 <code>+30 完美奖励</code>。下游 <code>categoryPerLevel → QuizView.roundSize</code> 自动生效，<code>genPlace()</code> 不用改。
       </p>
       <p style="font-size:13px;color:var(--muted);">详见 <a href="governance/changelog.html" style="color:var(--primary-dark);font-weight:700;">沟通日志 →</a></p>
     </div>
@@ -114,7 +113,7 @@
   </div>
 
   <div class="home-foot">
-    项目根 <code>~/math-pet-game/</code> · 文档目录 <code>docs/</code> · 最后更新 2026-05-23<br>
+    项目根 <code>~/math-pet-game/</code> · 文档目录 <code>docs/</code> · 最后更新 2026-05-25<br>
     本知识库为多页静态网站，所有变更必须同步更新（见<a href="governance/change-protocol.html">变更协议</a>）
   </div>
 

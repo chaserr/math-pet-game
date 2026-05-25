@@ -24,6 +24,38 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 17 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #17</span><span class="date">2026-05-25</span>
+        <span class="ver">v1.6.7 · 数位认知关卡化（9 题/关）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">
+        "把数位认知也做成关卡形式，每个关卡 9 道题，而不是一道题。"
+      </div>
+      <h4>决策</h4>
+      <ul>
+        <li><b>核心改动一行</b>：<code>mathLevels.js</code> 里 <code>placeCategories()</code> 的 <code>perLevel: 1 → 9</code>。下游链路 <code>categoryPerLevel → QuizView.roundSize</code> 自动生效，进度条变成"第 X / 9"。</li>
+        <li><b>出题函数无需改</b>：<code>useQuizGen.js</code> 的 <code>genPlace(cat)</code> 本来就是每次随机生成一个 d 位数（不依赖 stage / qIdx），<code>QuizView</code> 循环调 9 次自然得到 9 道不同题。</li>
+        <li><b>分关数保持 500</b>：500 关 × 9 题 = 4500 题足够练；用户实际不会打完那么多关，无需缩。</li>
+        <li><b>通过线复用现有公式</b>：<code>passed = correctCount ≥ ⌈9 × 0.6⌉ = 6 题</code>。<code>perfect</code> 9 题全对触发 <code>+30</code> 完美奖励（之前 1 题模式没有这条路径）。</li>
+        <li><b>顺手修正注释 bug</b>：<code>mathLevels.js</code> 顶部注释里 <code>enum 每关 1 题</code> 一直是错的（实际 <code>ENUM_PER_LEVEL=9</code>），本次一并改成"每关 9 题"。</li>
+      </ul>
+      <h4>验证</h4>
+      <ul>
+        <li><code>categoryPerLevel('math','place','d3'/'d5'/'d10') === 9</code> ✓</li>
+        <li>调 9 次 <code>genQuestion('math','place','d3',1,i)</code> → 9 个 distinct answers ✓</li>
+        <li><code>npm run build</code> 2.13s 通过 ✓</li>
+      </ul>
+      <h4>影响文件</h4>
+      <p class="files">
+        改（代码）：<code>client/src/lib/mathLevels.js</code>（顶部注释 + <code>placeCategories.perLevel</code> 1→9）<br>
+        改（文档）：<code>docs/curriculum/difficulty.html</code>（kind 表 place 行 + 数位认知章节说明）· <code>docs/modules/module-quiz.html</code>（roundSize 可变值 1/5/9 → 5/9）· <code>docs/governance/changelog.html</code>（本条）· <code>docs/index.html</code>（最新变更卡）
+      </p>
+    </article>
+
     <!-- 回合 16 -->
     <article class="entry">
       <header>
