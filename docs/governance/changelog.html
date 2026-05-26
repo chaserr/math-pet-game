@@ -24,6 +24,42 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 23 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #23</span><span class="date">2026-05-25</span>
+        <span class="ver">v1.9.2 · 害羞鬼 4 阶段成长资源</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"为宠物「{害羞鬼 shy_ghost}」生成一套完整成长资源，包含 4 个成长阶段、资源描述 JSON、独立图片资源、图标、阶段标识、阶段标签、进化特效，以及一张宠物详情 UI 预览图。"</div>
+      <h4>方案</h4>
+      <p>基于 <code>/Users/tongxing/Person/教材/嘘嘘鬼王.pdf</code> 的害羞鬼视觉参考，生成 <code>shy_ghost</code> 的 4 阶段独立 PNG 资源：幼年小羞团、成长躲躲嘘、强壮羞盾灵、完全体星纱羞灵。每阶段拆分 portrait / model / icon / badge / label / effect，并补充详情页预览。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>pets/shy_ghost/**</code> · <code>client/public/pets/shy_ghost/**</code> · <code>client/dist/pets/shy_ghost/**</code><br>
+        改：<code>client/src/catalog.js</code>（注册 <code>shy_ghost</code> 成长资源定义）· <code>docs/system/assets.html</code>（新增害羞鬼资源清单）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
+    <!-- 回合 22 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #22</span><span class="date">2026-05-25</span>
+        <span class="ver">v1.9.1 · 嘘嘘鬼 4 阶段成长资源</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"为宠物「{嘘嘘鬼 boo}」生成一套完整成长资源，包含 4 个成长阶段、资源描述 JSON、独立图片资源、图标、阶段标识、阶段标签、进化特效，以及一张宠物详情 UI 预览图。"</div>
+      <h4>方案</h4>
+      <p>基于 <code>/Users/tongxing/Person/教材/嘘嘘鬼王.pdf</code> 的嘘嘘鬼视觉参考，生成 <code>boo</code> 的 4 阶段独立 PNG 资源：幼年小嘘团、成长探幽嘘、强壮守算嘘、完全体嘘嘘鬼王。每阶段拆分 portrait / model / icon / badge / label / effect，并补充详情页预览。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>pets/boo/**</code> · <code>client/public/pets/boo/**</code> · <code>client/dist/pets/boo/**</code><br>
+        改：<code>client/src/catalog.js</code>（注册 <code>boo</code> 成长资源定义）· <code>docs/system/assets.html</code>（新增嘘嘘鬼资源清单）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 21 -->
     <article class="entry">
       <header>
