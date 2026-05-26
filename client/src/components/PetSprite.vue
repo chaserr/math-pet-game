@@ -285,11 +285,13 @@ const props = defineProps({
 });
 
 const stage = computed(() => petStage(props.level));
-// 数字积木宠物（nb0..nb9）直接复用 /numberblocks/<n>.png（无进化差异）
+// 数字积木宠物（nb0..nb9）优先使用各自进化资源，缺图时回退原始素材。
 const isNumberBlock = computed(() => /^nb\d$/.test(props.petId));
+const stageResource = computed(() => growthStageResource(props.petId, props.level));
 const src = computed(() => {
+  if (stageResource.value.assetPath) return stageResource.value.assetPath;
   if (isNumberBlock.value) return `/numberblocks/${props.petId.slice(2)}.png`;
-  return growthStageResource(props.petId, props.level).assetPath || `/pets/${props.petId}/${stage.value}.png`;
+  return `/pets/${props.petId}/${stage.value}.png`;
 });
 
 const imgOk = ref(true);

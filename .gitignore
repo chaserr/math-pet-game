@@ -3,3 +3,6 @@
 # 获取方式见 README.md「教材资源」一节
 client/public/textbooks/**/*.pdf
 client/dist/textbooks/**/*.pdf
+
+# 临时参考图（PDF 抽取等），不进仓库
+tmp/

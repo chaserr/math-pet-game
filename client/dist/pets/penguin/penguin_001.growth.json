@@ -3,8 +3,8 @@
   "pet_name": "企鹅",
   "runtime_pet_id": "penguin",
   "food": "冰鲜鱼",
-  "resource_version": "penguin-growth-v1-2026-05-23",
-  "style_reference": "cute polished 3D mobile game pet, children arithmetic companion, clean centered full-body asset",
+  "resource_version": "penguin-growth-ai-v2-2026-05-26",
+  "style_reference": "cute polished 3D mobile game penguin pet, arctic ice accessories, children arithmetic companion, clean centered full-body assets",
   "stage_min_level": [
     1,
     3,
@@ -33,13 +33,13 @@
       ],
       "unlock_condition": "default",
       "min_level": 1,
-      "description": "刚被领养的企鹅，冰蓝围巾和极光冰冠还处在幼态阶段，体型小、眼睛圆，动作笨拙但非常依赖玩家。",
+      "description": "刚被领养的冰绒企鹅，抱着冰鲜鱼小零食，身体短圆、眼睛很大，动作笨拙又依赖玩家。",
       "appearance_keywords": [
         "小体型",
-        "圆眼睛",
-        "幼态特征",
-        "动作笨拙",
-        "冰蓝围巾和极光冰冠"
+        "大圆眼睛",
+        "短圆绒毛",
+        "抱着小鱼",
+        "动作笨拙"
       ],
       "status_role": "可爱、弱小、依赖玩家",
       "assets": {
@@ -64,13 +64,13 @@
       ],
       "unlock_condition": "level >= 3",
       "min_level": 3,
-      "description": "开始熟悉主人后变得活跃好奇，体型变大，加入轻量探索装饰，能主动陪玩家完成算术练习。",
+      "description": "熟悉主人后变得活跃好奇，身体更高更灵活，戴上冰蓝围巾和小背包，主动挥手陪玩家练习算术。",
       "appearance_keywords": [
-        "体型变大",
-        "主动姿态",
-        "探索装饰",
-        "行动力提升",
-        "冰蓝围巾和极光冰冠"
+        "体型变高",
+        "主动挥手",
+        "冰蓝围巾",
+        "探索背包",
+        "行动力提升"
       ],
       "status_role": "活跃、好奇、可以互动",
       "assets": {
@@ -95,13 +95,13 @@
       ],
       "unlock_condition": "level >= 6",
       "min_level": 6,
-      "description": "进入强壮阶段后站姿更稳，护甲、盾牌和冰蓝围巾和极光冰冠强化了能力感，能可靠协助任务。",
+      "description": "进入守护形态后身躯明显厚重，站姿稳固，穿上冰蓝护甲并举起雪花冰盾，可以可靠协助完成任务。",
       "appearance_keywords": [
         "厚实体型",
         "稳固站姿",
-        "护甲感",
-        "守护感",
-        "冰蓝围巾和极光冰冠"
+        "冰蓝护甲",
+        "雪花冰盾",
+        "守护姿态"
       ],
       "status_role": "可靠、强壮、能协助完成任务",
       "assets": {
@@ -126,15 +126,15 @@
       ],
       "unlock_condition": "level >= 9",
       "min_level": 9,
-      "description": "最终进化后的极光皇企鹅拥有成熟体型、专属饰品、光效与符文灵气，呈现稀有最终形态。",
+      "description": "最终进化为极光皇企鹅，拥有冰晶头冠、蓝银披风、发光符文和极光灵气，能用冰光引导算术思考。",
       "appearance_keywords": [
-        "成熟体型",
-        "专属饰品",
-        "光效符文",
-        "最终进化特征",
-        "冰蓝围巾和极光冰冠"
+        "成熟高挑体型",
+        "冰晶头冠",
+        "蓝银披风",
+        "发光符文",
+        "极光灵气"
       ],
-      "status_role": "成熟、稀有、有特殊能力的最终形态",
+      "status_role": "最终形态、稀有、成熟、有特殊能力",
       "assets": {
         "portrait": "/pets/penguin/3.png",
         "model": "/pets/penguin/models/penguin_final.png",

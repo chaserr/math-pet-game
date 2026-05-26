@@ -3,7 +3,7 @@
   "pet_name": "小兔",
   "runtime_pet_id": "rabbit",
   "food": "胡萝卜",
-  "resource_version": "rabbit-growth-v1-2026-05-23",
+  "resource_version": "rabbit-evolution-v1-2026-05-26",
   "style_reference": "cute polished 3D mobile game pet, children arithmetic companion, clean centered full-body asset",
   "stage_min_level": [
     1,
@@ -33,13 +33,14 @@
       ],
       "unlock_condition": "default",
       "min_level": 1,
-      "description": "刚被领养的小兔，长耳朵和胡萝卜盾牌还处在幼态阶段，体型小、眼睛圆，动作笨拙但非常依赖玩家。",
+      "description": "刚被领养的小兔，圆圆脑袋、大眼睛和短小四肢显得非常幼态，抱着小胡萝卜时动作笨拙又依赖玩家。",
       "appearance_keywords": [
         "小体型",
         "圆眼睛",
-        "幼态特征",
-        "动作笨拙",
-        "长耳朵和胡萝卜盾牌"
+        "幼态比例",
+        "短小四肢",
+        "软耳朵",
+        "动作笨拙"
       ],
       "status_role": "可爱、弱小、依赖玩家",
       "assets": {
@@ -59,18 +60,19 @@
       "icon": "icon_rabbit_growing",
       "animation": [
         "idle_growing",
-        "walk_growing",
+        "hop_growing",
         "play_growing"
       ],
       "unlock_condition": "level >= 3",
       "min_level": 3,
-      "description": "开始熟悉主人后变得活跃好奇，体型变大，加入轻量探索装饰，能主动陪玩家完成算术练习。",
+      "description": "熟悉主人后变得活跃好奇，耳朵挺立，带上探索背包和算珠围巾，姿态更主动，像是随时准备陪玩家开始算术练习。",
       "appearance_keywords": [
         "体型变大",
-        "主动姿态",
-        "探索装饰",
-        "行动力提升",
-        "长耳朵和胡萝卜盾牌"
+        "主动跳跃姿态",
+        "探索背包",
+        "算珠围巾",
+        "耳朵挺立",
+        "行动力提升"
       ],
       "status_role": "活跃、好奇、可以互动",
       "assets": {
@@ -95,13 +97,14 @@
       ],
       "unlock_condition": "level >= 6",
       "min_level": 6,
-      "description": "进入强壮阶段后站姿更稳，护甲、盾牌和长耳朵和胡萝卜盾牌强化了能力感，能可靠协助任务。",
+      "description": "身体更厚重结实，站姿稳定，佩戴蓝金护甲和胡萝卜盾牌，呈现可靠守护感，能够协助玩家完成更难的算术挑战。",
       "appearance_keywords": [
         "厚实体型",
         "稳固站姿",
-        "护甲感",
-        "守护感",
-        "长耳朵和胡萝卜盾牌"
+        "蓝金护甲",
+        "胡萝卜盾牌",
+        "守护光环",
+        "能力感增强"
       ],
       "status_role": "可靠、强壮、能协助完成任务",
       "assets": {
@@ -126,13 +129,15 @@
       ],
       "unlock_condition": "level >= 9",
       "min_level": 9,
-      "description": "最终进化后的月华灵兔拥有成熟体型、专属饰品、光效与符文灵气，呈现稀有最终形态。",
+      "description": "最终进化后的稀有形态，拥有月冠、宝石、长耳光环和星月灵气，整体轮廓更成熟华丽，像能激发算术灵感的陪伴伙伴。",
       "appearance_keywords": [
         "成熟体型",
-        "专属饰品",
-        "光效符文",
-        "最终进化特征",
-        "长耳朵和胡萝卜盾牌"
+        "月冠宝石",
+        "长耳轮廓",
+        "蓝金灵饰",
+        "漂浮星光",
+        "符文灵气",
+        "最终进化特征"
       ],
       "status_role": "成熟、稀有、有特殊能力的最终形态",
       "assets": {

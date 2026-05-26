@@ -8,5 +8,12 @@
     "build": "npm --prefix client run build",
     "preview": "npm --prefix client run preview",
     "install:all": "npm --prefix client install"
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
