@@ -24,6 +24,24 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 24 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #24</span><span class="date">2026-05-26</span>
+        <span class="ver">v1.9.3 · 星辉鬼王 4 阶段成长资源</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"为宠物「{星辉鬼王 boo_star}」生成一套完整成长资源，包含 4 个成长阶段、资源描述 JSON、独立图片资源、图标、阶段标识、阶段标签、进化特效，以及一张宠物详情 UI 预览图。"</div>
+      <h4>方案</h4>
+      <p>基于 <code>/Users/tongxing/Person/教材/嘘嘘鬼王.pdf</code> 的嘘嘘鬼王视觉参考，生成 <code>boo_star</code> 的 4 阶段独立 PNG 资源：幼年星芽小嘘、成长星游嘘、强壮星盾鬼、完全体星辉鬼王。每阶段拆分 portrait / model / icon / badge / label / effect，并补充详情页预览。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>pets/boo_star/**</code> · <code>client/public/pets/boo_star/**</code> · <code>client/dist/pets/boo_star/**</code><br>
+        改：<code>client/src/catalog.js</code>（注册 <code>boo_star</code> 成长资源定义）· <code>docs/system/assets.html</code>（新增星辉鬼王资源清单）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 23 -->
     <article class="entry">
       <header>
