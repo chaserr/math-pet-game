@@ -221,12 +221,18 @@
               <div class="gc-name">拼音贪吃蛇</div>
               <div class="gc-desc">控制蛇吃字母，拼出汉字的拼音</div>
             </button>
+            <button class="game-card" @click="currentGame = 'magnet'">
+              <div class="gc-emoji">🧲</div>
+              <div class="gc-name">拼音磁力链</div>
+              <div class="gc-desc">拖第一个字母，磁吸串起整串拼音</div>
+            </button>
           </div>
         </div>
         <template v-else>
           <button class="btn-back-game" @click="currentGame = null">‹ 返回游戏列表</button>
           <MatchGame v-if="currentGame === 'match'" />
           <SnakeGame v-else-if="currentGame === 'snake'" />
+          <MagnetGame v-else-if="currentGame === 'magnet'" />
         </template>
       </template>
     </div>
@@ -246,6 +252,7 @@ import { checkPdfExists, localPdfPath, TEXTBOOK_REPO } from '../lib/pdfResource.
 import FillPinyinSection from '../components/PinyinFillGame.vue';
 import MatchGame from '../components/PinyinMatchGame.vue';
 import SnakeGame from '../components/PinyinSnakeGame.vue';
+import MagnetGame from '../components/PinyinMagnetGame.vue';
 
 const router = useRouter();
 const auth = useAuthStore();
