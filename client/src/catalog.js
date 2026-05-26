@@ -517,6 +517,22 @@ const GENERATED_STAGE_ROLES = [
   '成熟、稀有、有特殊能力的最终形态',
 ];
 const GENERATED_GROWTH_RESOURCE_DEFS = {
+  boo: {
+    pet_id: 'boo_001',
+    pet_name: '嘘嘘鬼',
+    food: '灵魂果冻',
+    theme: 'ghost',
+    display_names: ['小嘘团', '探幽嘘', '守算嘘', '嘘嘘鬼王'],
+    feature: '圆润幽灵身体和柔和蓝色幽光',
+  },
+  shy_ghost: {
+    pet_id: 'shy_ghost_001',
+    pet_name: '害羞鬼',
+    food: '棉花糖',
+    theme: 'blush',
+    display_names: ['小羞团', '躲躲嘘', '羞盾灵', '星纱羞灵'],
+    feature: '捂嘴害羞姿态和粉紫羞光',
+  },
   dog: {
     pet_id: 'dog_001',
     pet_name: '小狗',
