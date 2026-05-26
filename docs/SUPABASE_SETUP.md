@@ -24,6 +24,8 @@
 3. 粘贴到 SQL 编辑器，点右下角 **Run**。
 4. 看到 `Success. No rows returned` 就对了（建表 + 权限 + 触发器都装好了）。
 
+> 💡 脚本用 `create table if not exists`，**升级后可安全重跑**：新增了 `user_fragments`（稀有宠物碎片）表时，重跑一次 schema.sql 即可补建。
+
 ---
 
 ## 第 3 步：关闭邮箱验证（很重要）

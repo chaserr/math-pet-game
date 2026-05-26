@@ -47,6 +47,9 @@
             <template v-else-if="p.acquireType === 'gacha'">
               <button class="gacha-tag" @click="tab = 'gacha'">🎰 去扭蛋</button>
             </template>
+            <template v-else-if="p.acquireType === 'fragment'">
+              <button disabled class="frag-tag">🧩 碎片 {{ fragCount(p.id) }}/{{ fragmentGoal }}</button>
+            </template>
             <template v-else>
               <button disabled class="locked">🔒 {{ p.unlockDesc }}</button>
             </template>
@@ -60,7 +63,7 @@
         <div v-for="f in foods" :key="f.id" class="card item col center">
           <FoodIcon :food-id="f.id" :size="64" />
           <div class="iname">{{ f.name }}</div>
-          <div class="forwhom">给{{ petName(f.petId) }}</div>
+          <div class="forwhom">给{{ f.forLabel || petName(f.petId) }}</div>
           <button class="btn-primary buy" @click="buyFood(f)">🪙 {{ f.price }}</button>
         </div>
       </div>
@@ -97,9 +100,14 @@ const petCat = ref('all');
 const pets = ref([]);
 const foods = ref([]);
 const gachaCost = ref(50);
+const fragments = ref({});
+const fragmentGoal = ref(20);
 const msg = ref('');
 const msgType = ref('');
 const gachaResult = ref(null);
+
+function fragKeyOf(petId) { return `frag:${petId}`; }
+function fragCount(petId) { return fragments.value[fragKeyOf(petId)] || 0; }
 
 function catCount(catId) { return pets.value.filter(p => p.category === catId).length; }
 const buyablePets = computed(() =>
@@ -119,6 +127,8 @@ async function load() {
   pets.value = res.pets;
   foods.value = res.foods;
   gachaCost.value = res.gachaCost;
+  fragments.value = res.fragments || {};
+  fragmentGoal.value = res.fragmentGoal || fragmentGoal.value;
 }
 
 async function buyPet(p) {
@@ -210,6 +220,11 @@ onMounted(load);
   cursor: pointer; box-shadow: 0 2px 0 #c4a8e0;
 }
 .gacha-tag:hover { background: #ece0ff; }
+.frag-tag {
+  background: #fff3d6 !important; color: #b5790f !important;
+  font-size: 12px !important; font-weight: 900; padding: 8px 14px; border-radius: 999px;
+  border: 2px solid #f0d066; box-shadow: none;
+}
 
 .gacha { gap: 18px; padding-top: 30px; text-align: center; }
 .egg { font-size: 90px; animation: wob 2s ease infinite; }

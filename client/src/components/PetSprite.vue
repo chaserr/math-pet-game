@@ -171,6 +171,14 @@
           <circle cx="74" cy="17" r="2" fill="#ff4d8d"/>
         </g>
 
+        <!-- 星辉鬼王：金色星冠 + 环绕星星 -->
+        <g v-if="petId === 'boo_star'">
+          <path d="M60 2 l3.4 7 7.6 0.6 -5.8 5 1.8 7.4 -7 -4 -7 4 1.8 -7.4 -5.8 -5 7.6 -0.6 Z"
+                fill="#ffd83b" stroke="#e0aa3c" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M18 30 l1.6 3.4 3.8 0.3 -2.9 2.5 0.9 3.7 -3.4 -2 -3.4 2 0.9 -3.7 -2.9 -2.5 3.8 -0.3 Z" fill="#fff3b0"/>
+          <path d="M100 34 l1.6 3.4 3.8 0.3 -2.9 2.5 0.9 3.7 -3.4 -2 -3.4 2 0.9 -3.7 -2.9 -2.5 3.8 -0.3 Z" fill="#fff3b0"/>
+        </g>
+
         <!-- 南瓜灯（南瓜鬼） -->
         <g v-if="petId === 'pumpkin_ghost'">
           <ellipse cx="92" cy="98" rx="15" ry="13" fill="#ff8a1e" stroke="#d96e10" stroke-width="2"/>
@@ -277,9 +285,12 @@ const props = defineProps({
 });
 
 const stage = computed(() => petStage(props.level));
-const src = computed(() => (
-  growthStageResource(props.petId, props.level).assetPath || `/pets/${props.petId}/${stage.value}.png`
-));
+// 数字积木宠物（nb0..nb9）直接复用 /numberblocks/<n>.png（无进化差异）
+const isNumberBlock = computed(() => /^nb\d$/.test(props.petId));
+const src = computed(() => {
+  if (isNumberBlock.value) return `/numberblocks/${props.petId.slice(2)}.png`;
+  return growthStageResource(props.petId, props.level).assetPath || `/pets/${props.petId}/${stage.value}.png`;
+});
 
 const imgOk = ref(true);
 watch(src, () => { imgOk.value = true; });
@@ -304,12 +315,13 @@ const COLORS = {
   shadow_boo:    { body: '#3b4566', dark: '#222a44', cheek: '#7c6bd6', ink: '#e0c8ff' },
   shy_ghost:     { body: '#fbfdff', dark: '#cdd6e8', cheek: '#ffb3c7', ink: '#2a2a2a' },
   pumpkin_ghost: { body: '#fdfdf7', dark: '#cfc8b8', cheek: '#ffb3a0', ink: '#2a2a2a' },
+  boo_star:      { body: '#ffe7a0', dark: '#e0aa3c', cheek: '#ffd24d', ink: '#7a4e12' },
 };
 const C = computed(() => COLORS[props.petId] || COLORS.cat);
 
 const isGhost = computed(() => findPet(props.petId)?.category === 'ghost');
 const ghostStyle = computed(() =>
-  ['boo', 'king_boo', 'shadow_boo'].includes(props.petId) ? 'boo' : 'cute'
+  ['boo', 'king_boo', 'shadow_boo', 'boo_star'].includes(props.petId) ? 'boo' : 'cute'
 );
 </script>
 

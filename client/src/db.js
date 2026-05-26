@@ -3,6 +3,7 @@ import { supabase } from './supabase.js';
 import {
   PETS, FOODS, findPet, findFood, expForLevel, MAX_LEVEL,
   GACHA_COST, GACHA_DUP_FOOD_QTY, GACHA_POOL,
+  FRAGMENT_PET, FRAGMENT_KEY, FRAGMENT_GOAL,
 } from './catalog.js';
 import { scoreRound, petMood, unlockConditions } from './lib/gameLogic.js';
 import { cacheGet, cacheSet } from './lib/cloudCache.js';
@@ -145,12 +146,13 @@ export async function getShop() {
   return withCache('shop', async () => {
     const owned = new Set((await ownedPetIds()).map(p => p.pet_id));
     const unlocked = await unlockedKeys();
+    const fragments = await getFragments();
     const pets = PETS.map(p => ({
       ...p,
       owned: owned.has(p.id),
       purchasable: p.acquireType === 'buy' || (p.acquireType === 'unlock' && unlocked.has(p.unlockKey)),
     }));
-    return { pets, foods: FOODS, gachaCost: GACHA_COST };
+    return { pets, foods: FOODS, gachaCost: GACHA_COST, fragments, fragmentGoal: FRAGMENT_GOAL };
   }, {
     // 完全离线（首次进入即失败、无缓存）：所有宠物默认未拥有，按 acquireType 决定可购买
     pets: PETS.map(p => ({
@@ -160,6 +162,8 @@ export async function getShop() {
     })),
     foods: FOODS,
     gachaCost: GACHA_COST,
+    fragments: {},
+    fragmentGoal: FRAGMENT_GOAL,
   });
 }
 
@@ -174,10 +178,33 @@ async function addFood(foodId, qty) {
   if (error) throw new Error(error.message);
 }
 
+// 碎片：累加并返回累加后的总数
+async function addFragments(fragKey, qty) {
+  const userId = await uid();
+  const { data: existing } = await supabase
+    .from('user_fragments').select('quantity').eq('frag_key', fragKey).maybeSingle();
+  const newQty = (existing?.quantity || 0) + qty;
+  const { error } = await supabase
+    .from('user_fragments')
+    .upsert({ user_id: userId, frag_key: fragKey, quantity: newQty }, { onConflict: 'user_id,frag_key' });
+  if (error) throw new Error(error.message);
+  return newQty;
+}
+
+export async function getFragments() {
+  return withCache('myFragments', async () => {
+    const { data, error } = await supabase
+      .from('user_fragments').select('frag_key, quantity');
+    if (error) throw new Error(error.message);
+    return Object.fromEntries(data.map(r => [r.frag_key, r.quantity]));
+  }, {});
+}
+
 export async function buyPet(petId) {
   const pet = findPet(petId);
   if (!pet) throw new Error('宠物不存在');
   if (pet.acquireType === 'gacha') throw new Error('该宠物仅限抽卡获得');
+  if (pet.acquireType === 'fragment') throw new Error('该宠物需集齐碎片召唤');
   const unlocked = await unlockedKeys();
   if (pet.acquireType === 'unlock' && !unlocked.has(pet.unlockKey)) throw new Error('该宠物尚未解锁');
 
@@ -265,28 +292,10 @@ export async function feed(petId) {
 }
 
 // ===== 提交一轮 =====
-// 服务端口粮掉落：以「展示宠物」对应口粮为掉落源；份数与本地 rollFoodDropsLocal 一致。
-async function rollFoodDrops(score, featuredPetId) {
-  let qty = 0;
-  if (score.perfect) qty = 3;
-  else if (score.passed) qty = 2;
-  else if (score.correctCount > 0) qty = 1;
-  if (!qty) return [];
-
-  let foodId = featuredPetId ? findPet(featuredPetId)?.foodId : null;
-  if (!foodId) {
-    // fallback：用任一已拥有宠物的口粮
-    const owned = await ownedPetIds();
-    if (!owned.length) return [];
-    foodId = findPet(owned[0].pet_id)?.foodId;
-  }
-  if (!foodId) return [];
-
-  await addFood(foodId, qty);
-  return [{ foodId, qty, name: findFood(foodId)?.name || foodId }];
-}
-
-export async function submitRound(results, context = null, featuredPetId = null) {
+// 掉落由前端 rollRoundDrops 一次性决定（保证「显示=入账」），此处只负责落库：
+//   drops = { foods: [{foodId, qty}], fragments: [{fragKey, qty}] }
+// 碎片累加后若达标且尚未拥有该稀有宠物 → 自动召唤。
+export async function submitRound(results, context = null, drops = null) {
   // context: { subjectId, moduleId, categoryId, stage } | null
   const score = scoreRound(results);
   const userId = await uid();
@@ -305,9 +314,38 @@ export async function submitRound(results, context = null, featuredPetId = null)
   const { error } = await supabase.from('answer_history').insert(rows);
   if (error) throw new Error(error.message);
   const points = await addPoints(score.total);
-  const foodDrops = await rollFoodDrops(score, featuredPetId);
+
+  // 口粮落库
+  const foodDrops = [];
+  for (const d of (drops?.foods || [])) {
+    if (!d?.foodId || !d.qty) continue;
+    await addFood(d.foodId, d.qty);
+    foodDrops.push({ foodId: d.foodId, qty: d.qty, name: findFood(d.foodId)?.name || d.foodId });
+  }
+
+  // 碎片落库 + 集齐召唤
+  let fragmentTotal = null;
+  let rarePetGranted = false;
+  const fragQty = (drops?.fragments || []).reduce((s, f) => s + (f?.qty || 0), 0);
+  if (fragQty > 0) {
+    const owned = new Set((await ownedPetIds()).map(p => p.pet_id));
+    if (!owned.has(FRAGMENT_PET)) {
+      fragmentTotal = await addFragments(FRAGMENT_KEY, fragQty);
+      if (fragmentTotal >= FRAGMENT_GOAL) {
+        const { error: e2 } = await supabase.from('user_pets')
+          .insert({ user_id: userId, pet_id: FRAGMENT_PET });
+        if (!e2) rarePetGranted = true;
+      }
+    }
+  }
+
   const newlyUnlocked = await evaluateUnlocks();
-  return { score, points, foodDrops, newlyUnlocked };
+  return {
+    score, points, foodDrops,
+    fragmentDrop: fragQty, fragmentTotal, fragmentGoal: FRAGMENT_GOAL,
+    rarePetGranted, rarePetId: FRAGMENT_PET,
+    newlyUnlocked,
+  };
 }
 
 export async function getHistory() {

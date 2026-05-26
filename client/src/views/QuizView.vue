@@ -287,6 +287,23 @@
             </div>
           </div>
 
+          <!-- 鬼王碎片掉落 -->
+          <div v-if="fragmentDrop > 0 && !rarePetGranted" class="frag-drop">
+            <span class="frag-icon">🧩</span>
+            <div class="frag-info">
+              <span class="frag-title">获得鬼王碎片 ×{{ fragmentDrop }}</span>
+              <span v-if="fragmentTotal != null" class="frag-prog">
+                已集 {{ fragmentTotal }} / {{ fragmentGoal }} 枚
+              </span>
+            </div>
+          </div>
+
+          <!-- 集齐召唤稀有宠物 -->
+          <div v-if="rarePetGranted" class="rare-get">
+            <PetSprite :pet-id="FRAGMENT_PET" :level="10" :size="92" mood="happy" />
+            <p class="rare-title">🎉 碎片集齐！<b>{{ rarePetName }}</b> 降临！</p>
+          </div>
+
           <p v-if="stageAdvanced" class="adv">
             ✨ 第 {{ stageAdvanced }} 关已通关！这一关按钮会变灰，仍可重玩
           </p>
@@ -308,6 +325,7 @@ import { useRouter, useRoute } from 'vue-router';
 import NumberBlock from '../components/NumberBlock.vue';
 import FoodIcon from '../components/FoodIcon.vue';
 import ShapeIcon from '../components/ShapeIcon.vue';
+import PetSprite from '../components/PetSprite.vue';
 import {
   genQuestion, checkTileFill, checkChoice, checkStepCalc, checkStepSplit,
 } from '../composables/useQuizGen.js';
@@ -316,10 +334,11 @@ import { useAuthStore } from '../stores/auth.js';
 import {
   SUBJECTS, MODULES, STAGES_PER_MODULE, ROUND_SIZE as DEFAULT_ROUND_SIZE,
   findSubject, findModule, findPet, findFood,
+  FRAGMENT_PET, FRAGMENT_GOAL,
 } from '../catalog.js';
 import { findCategory, categoryCount, categoryPerLevel } from '../lib/mathLevels.js';
 import { markCleared } from '../lib/progress.js';
-import { scoreRound, rollFoodDropsLocal } from '../lib/gameLogic.js';
+import { scoreRound, rollRoundDrops } from '../lib/gameLogic.js';
 
 const BASE = 180;
 const router = useRouter();
@@ -360,6 +379,11 @@ const hintType = ref('');
 const finished = ref(false);
 const score = ref({ total: 0, correctCount: 0, count: 0, passed: false, perfect: false, bonus: 0 });
 const foodDrops = ref([]);
+const fragmentDrop = ref(0);            // 本轮掉落的碎片数
+const fragmentTotal = ref(null);        // 后端返回的累计碎片数
+const fragmentGoal = ref(FRAGMENT_GOAL);
+const rarePetGranted = ref(false);      // 碎片集齐召唤稀有宠物
+const rarePetName = findPet(FRAGMENT_PET)?.cnName || '稀有鬼王';
 const stageAdvanced = ref(null);
 const finishedQuestion = ref(false);
 
@@ -775,20 +799,18 @@ function nextQuestion() {
   loadQuestion();
 }
 async function endRound() {
-  // 1) 立即用本地数据计算分数、口粮、通关标记 —— 弹框马上出现，不等后端
+  // 1) 立即用本地数据计算分数 + 掉落（口粮/碎片）—— 弹框马上出现，不等后端
   const sc = scoreRound(results);
   score.value = sc;
 
-  // 展示宠物 = HomeView 加载到 auth.pets 的首只；找不到就回退到第一个静态食物
-  const featuredPetId = auth.pets?.[0]?.petId || null;
-  const featuredFoodId = featuredPetId
-    ? findPet(featuredPetId)?.foodId
-    : null;
-  const localDrops = rollFoodDropsLocal(sc, featuredFoodId);
-  foodDrops.value = localDrops.map(d => ({
+  // 掉落本地决定一次，再交后端落库，保证「显示=入账」
+  const ownedPets = auth.pets || [];
+  const drops = rollRoundDrops(sc, ownedPets);
+  foodDrops.value = drops.foods.map(d => ({
     ...d,
     name: findFood(d.foodId)?.name || d.foodId,
   }));
+  fragmentDrop.value = drops.fragments.reduce((s, f) => s + (f.qty || 0), 0);
 
   if (sc.passed && markCleared(subjectId.value, moduleId.value, category.value, stage.value)) {
     stageAdvanced.value = stage.value;
@@ -798,13 +820,16 @@ async function endRound() {
   auth.setPoints((auth.points || 0) + sc.total);
   finished.value = true;
 
-  // 2) 后台持久化：成功就把积分同步到服务端权威值；失败就告警，不阻塞 UI
+  // 2) 后台持久化：积分同步 + 碎片累计/集齐召唤；失败告警，不阻塞 UI
   submitRound(
     results,
     { subjectId: subjectId.value, moduleId: moduleId.value, categoryId: category.value, stage: stage.value },
-    featuredPetId,
+    drops,
   ).then((res) => {
     if (res?.points != null) auth.setPoints(res.points);
+    if (res?.fragmentTotal != null) fragmentTotal.value = res.fragmentTotal;
+    if (res?.fragmentGoal != null) fragmentGoal.value = res.fragmentGoal;
+    if (res?.rarePetGranted) rarePetGranted.value = true;
   }).catch((e) => {
     console.warn('[round] persistence failed:', e?.message || e);
   });
@@ -813,6 +838,7 @@ async function endRound() {
 function restart() {
   index.value = 0; hearts.value = 3; results.length = 0;
   finished.value = false; foodDrops.value = []; stageAdvanced.value = null;
+  fragmentDrop.value = 0; fragmentTotal.value = null; rarePetGranted.value = false;
   loadQuestion();
 }
 function goNextStage() {
@@ -822,6 +848,7 @@ function goNextStage() {
 watch(() => `${subjectId.value}.${moduleId.value}.${category.value}.${stage.value}`, () => {
   index.value = 0; hearts.value = 3; results.length = 0;
   finished.value = false; foodDrops.value = []; stageAdvanced.value = null;
+  fragmentDrop.value = 0; fragmentTotal.value = null; rarePetGranted.value = false;
   loadQuestion();
 });
 
@@ -1170,6 +1197,25 @@ onBeforeUnmount(() => {
 .drop-name { font-size: 12px; color: #6f5a45; font-weight: 800; }
 .drop-qty { font-size: 13px; color: var(--primary-dark); font-weight: 900; }
 .adv { font-weight: 900; color: #9b5cd6; font-size: 14px; background: #f3e6ff; padding: 6px 12px; border-radius: 999px; text-align: center; }
+
+/* 鬼王碎片掉落 */
+.frag-drop {
+  width: 100%; margin-top: 6px; display: flex; align-items: center; gap: 10px;
+  background: #f3e6ff; border-radius: 16px; padding: 10px 14px; box-shadow: inset 0 0 0 2px #e0c4f5;
+}
+.frag-icon { font-size: 30px; }
+.frag-info { display: flex; flex-direction: column; align-items: flex-start; }
+.frag-title { font-weight: 900; color: #7d3fc0; font-size: 14px; }
+.frag-prog { font-size: 12px; color: #9b6fd0; font-weight: 800; }
+
+/* 集齐召唤稀有宠物 */
+.rare-get {
+  width: 100%; margin-top: 6px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: linear-gradient(160deg, #fff7d6, #ffe9a8); border-radius: 16px; padding: 14px;
+  box-shadow: inset 0 0 0 2px #f0d066;
+}
+.rare-title { font-weight: 900; color: #b5790f; font-size: 15px; }
+
 .pop-enter-active { transition: all 0.3s cubic-bezier(.34,1.56,.64,1); }
 .pop-enter-from { opacity: 0; transform: scale(0.8); }
 </style>

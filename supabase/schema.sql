@@ -42,6 +42,15 @@ create table if not exists public.user_unlocks (
   unique (user_id, unlock_key)
 );
 
+-- 4b. 玩家碎片库存（稀有宠物碎片，集齐召唤）
+create table if not exists public.user_fragments (
+  id        bigint generated always as identity primary key,
+  user_id   uuid not null references auth.users(id) on delete cascade,
+  frag_key  text not null,
+  quantity  integer not null default 0,
+  unique (user_id, frag_key)
+);
+
 -- 5. 答题历史（错题本基础）
 create table if not exists public.answer_history (
   id          bigint generated always as identity primary key,
@@ -83,6 +92,7 @@ alter table public.profiles      enable row level security;
 alter table public.user_pets     enable row level security;
 alter table public.user_foods    enable row level security;
 alter table public.user_unlocks  enable row level security;
+alter table public.user_fragments enable row level security;
 alter table public.answer_history enable row level security;
 
 drop policy if exists "own profile" on public.profiles;
@@ -99,6 +109,10 @@ create policy "own foods" on public.user_foods
 
 drop policy if exists "own unlocks" on public.user_unlocks;
 create policy "own unlocks" on public.user_unlocks
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+drop policy if exists "own fragments" on public.user_fragments;
+create policy "own fragments" on public.user_fragments
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 drop policy if exists "own history" on public.answer_history;

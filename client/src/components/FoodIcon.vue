@@ -81,6 +81,18 @@
       <path d="M30 10 L44 24 L30 50 L16 24 Z" fill="#c084fc" stroke="#8b3fd6" stroke-width="2" stroke-linejoin="round"/>
       <path d="M16 24 H44 M30 10 L30 50 M22 24 L30 50 M38 24 L30 50" stroke="#e9d5ff" stroke-width="1.5" fill="none" opacity="0.8"/>
     </g>
+    <!-- 星之尘 -->
+    <g v-else-if="foodId === 'star_dust'">
+      <path d="M30 8 l5 14 15 1 -11.5 10 3.5 14.5 -12 -8 -12 8 3.5 -14.5 -11.5 -10 15 -1 Z"
+            fill="#ffe066" stroke="#e0aa3c" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="14" cy="14" r="2" fill="#fff3b0"/>
+      <circle cx="48" cy="16" r="1.6" fill="#fff3b0"/>
+    </g>
+    <!-- 能量块 -->
+    <g v-else-if="foodId === 'energy_cube'">
+      <rect x="18" y="18" width="24" height="24" rx="5" fill="#5ad1e0" stroke="#2b9aa8" stroke-width="2"/>
+      <path d="M32 22 l-7 11 h6 l-2 8 9 -12 h-6 z" fill="#fff5b0"/>
+    </g>
     <g v-else>
       <circle cx="30" cy="32" r="14" fill="#ffd93b" stroke="#e0a500" stroke-width="2"/>
     </g>

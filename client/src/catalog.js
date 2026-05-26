@@ -21,6 +21,9 @@ export const FOODS = [
   { id: 'pumpkin_pie',     name: '南瓜派',   petId: 'pumpkin_ghost', price: 32, exp: 38, intimacy: 6 },
   { id: 'night_candy',     name: '暗夜糖',   petId: 'shadow_boo',    price: 38, exp: 42, intimacy: 7 },
   { id: 'purple_gem',      name: '紫水晶',   petId: 'king_boo',      price: 55, exp: 60, intimacy: 8 },
+  { id: 'star_dust',       name: '星之尘',   petId: 'boo_star',      price: 60, exp: 65, intimacy: 9 },
+  // 数字积木家族共享口粮
+  { id: 'energy_cube',     name: '能量块',   petId: 'nb1', forLabel: '数字积木', price: 16, exp: 22, intimacy: 5 },
 ];
 
 // ===== 宠物分类（用于商店 / 宠物之家分组展示）=====
@@ -31,10 +34,11 @@ export const PET_CATEGORIES = [
   { id: 'reptile',   name: '爬行',  emoji: '🐢' },
   { id: 'mythical',  name: '神话',  emoji: '🐉' },
   { id: 'ghost',     name: '鬼王',  emoji: '👻' },
+  { id: 'number',    name: '积木',  emoji: '🔢' },
   { id: 'fun',       name: '趣味',  emoji: '🎈' },
 ];
 
-export const PETS = [
+const BASE_PETS = [
   { id: 'cat',     name: 'Mimi',     cnName: '小猫',   category: 'mammal',   acquireType: 'buy',    price: 80,  unlockKey: null,          foodId: 'fish_dry' },
   { id: 'dog',     name: 'Wangwang', cnName: '小狗',   category: 'mammal',   acquireType: 'buy',    price: 100, unlockKey: null,          foodId: 'bone' },
   { id: 'rabbit',  name: 'Tutu',     cnName: '小兔',   category: 'mammal',   acquireType: 'buy',    price: 130, unlockKey: null,          foodId: 'carrot' },
@@ -54,7 +58,23 @@ export const PETS = [
   { id: 'pumpkin_ghost', name: 'Pumpky',   cnName: '南瓜鬼',  category: 'ghost', acquireType: 'buy',    price: 130, unlockKey: null,             foodId: 'pumpkin_pie' },
   { id: 'shadow_boo',    name: 'Shadow',   cnName: '暗影鬼',  category: 'ghost', acquireType: 'unlock', price: 380, unlockKey: 'pet:shadow_boo', foodId: 'night_candy', unlockDesc: '拥有任意 2 只鬼王后解锁' },
   { id: 'king_boo',      name: 'KingBoo',  cnName: '嘘嘘鬼王', category: 'ghost', acquireType: 'gacha',  price: null, unlockKey: null,            foodId: 'purple_gem' },
+  // 稀有：仅靠闯关掉落碎片集齐召唤
+  { id: 'boo_star',      name: 'StarBoo',  cnName: '星辉鬼王', category: 'ghost', acquireType: 'fragment', price: null, unlockKey: null,          foodId: 'star_dust', unlockDesc: '集齐 20 枚鬼王碎片召唤' },
 ];
+
+// 数字积木家族（0-9，复用 /numberblocks/<n>.png，共享能量块口粮）
+const NUMBER_PETS = Array.from({ length: 10 }, (_, n) => ({
+  id: `nb${n}`,
+  name: `Block${n}`,
+  cnName: `${n} 号积木`,
+  category: 'number',
+  acquireType: 'buy',
+  price: 50 + n * 5,
+  unlockKey: null,
+  foodId: 'energy_cube',
+}));
+
+export const PETS = [...BASE_PETS, ...NUMBER_PETS];
 
 export const findPetCategory = (id) => PET_CATEGORIES.find(c => c.id === id) || null;
 
@@ -62,6 +82,12 @@ export const GACHA_COST = 50;
 export const GACHA_DUP_FOOD_QTY = 3;
 export const GACHA_POOL = ['dragon', 'king_boo'];
 export const MAX_LEVEL = 10;
+
+// ===== 稀有碎片宠物 =====
+// 闯关通关按概率掉落碎片，集齐 FRAGMENT_GOAL 枚自动召唤 FRAGMENT_PET。
+export const FRAGMENT_PET = 'boo_star';
+export const FRAGMENT_GOAL = 20;
+export const FRAGMENT_KEY = `frag:${FRAGMENT_PET}`;
 
 // ===== 学科 / 模块 / 关卡 =====
 // 三层：Subject → Module → Stage（每 Module 1000 关），每关 5 题。
