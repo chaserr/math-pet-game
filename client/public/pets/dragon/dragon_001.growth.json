@@ -1,10 +1,10 @@
 {
   "pet_id": "dragon_001",
-  "pet_name": "萌龙",
+  "pet_name": "粉龙",
   "runtime_pet_id": "dragon",
-  "food": "火龙果",
-  "resource_version": "dragon-growth-v1-2026-05-23",
-  "style_reference": "cute polished 3D mobile game pet, children arithmetic companion, clean centered full-body asset",
+  "food": "桃花糕",
+  "resource_version": "pink-chinese-dragon-ai-v3-2026-05-22",
+  "style_reference": "cute polished 3D mobile game pet, pink Chinese long dragon, clouds, pearl, deer antlers, whiskers, carp scales",
   "stage_min_level": [
     1,
     3,
@@ -23,7 +23,7 @@
     {
       "stage": 0,
       "name": "幼年",
-      "display_name": "果芽小龙",
+      "display_name": "粉团小龙",
       "model": "dragon_baby",
       "icon": "icon_dragon_baby",
       "animation": [
@@ -33,13 +33,13 @@
       ],
       "unlock_condition": "default",
       "min_level": 1,
-      "description": "刚被领养的萌龙，短角、小翅膀和发光数珠还处在幼态阶段，体型小、眼睛圆，动作笨拙但非常依赖玩家。",
+      "description": "刚被领养的粉色小龙，卷在祥云上抱着龙珠，鹿角、龙须和鬃毛都还偏幼态，眼神亲近又依赖玩家。",
       "appearance_keywords": [
         "小体型",
-        "圆眼睛",
-        "幼态特征",
-        "动作笨拙",
-        "短角、小翅膀和发光数珠"
+        "卷身祥云",
+        "粉色鳞片",
+        "短鹿角",
+        "抱着龙珠"
       ],
       "status_role": "可爱、弱小、依赖玩家",
       "assets": {
@@ -54,7 +54,7 @@
     {
       "stage": 1,
       "name": "成长",
-      "display_name": "云游萌龙",
+      "display_name": "云游桃龙",
       "model": "dragon_growing",
       "icon": "icon_dragon_growing",
       "animation": [
@@ -64,13 +64,13 @@
       ],
       "unlock_condition": "level >= 3",
       "min_level": 3,
-      "description": "开始熟悉主人后变得活跃好奇，体型变大，加入轻量探索装饰，能主动陪玩家完成算术练习。",
+      "description": "身体明显拉长，开始在祥云间主动游动，鬃毛和龙须更飘逸，带着小荷包追逐龙珠，互动感更强。",
       "appearance_keywords": [
-        "体型变大",
-        "主动姿态",
-        "探索装饰",
-        "行动力提升",
-        "短角、小翅膀和发光数珠"
+        "蛇形长身",
+        "主动游动",
+        "桃粉鬃毛",
+        "小荷包",
+        "追逐龙珠"
       ],
       "status_role": "活跃、好奇、可以互动",
       "assets": {
@@ -85,7 +85,7 @@
     {
       "stage": 2,
       "name": "强壮",
-      "display_name": "龙甲守卫",
+      "display_name": "灵甲守龙",
       "model": "dragon_strong",
       "icon": "icon_dragon_strong",
       "animation": [
@@ -95,13 +95,13 @@
       ],
       "unlock_condition": "level >= 6",
       "min_level": 6,
-      "description": "进入强壮阶段后站姿更稳，护甲、盾牌和短角、小翅膀和发光数珠强化了能力感，能可靠协助任务。",
+      "description": "进入守护形态后身躯更厚实，鹿角分叉，穿上蓝金云纹护甲，爪与鳞片更有力量，能用龙珠守护玩家。",
       "appearance_keywords": [
-        "厚实体型",
-        "稳固站姿",
-        "护甲感",
-        "守护感",
-        "短角、小翅膀和发光数珠"
+        "厚实长身",
+        "分叉鹿角",
+        "蓝金护甲",
+        "金色利爪",
+        "守护龙珠"
       ],
       "status_role": "可靠、强壮、能协助完成任务",
       "assets": {
@@ -116,7 +116,7 @@
     {
       "stage": 3,
       "name": "完全体",
-      "display_name": "数珠天龙",
+      "display_name": "桃华天龙",
       "model": "dragon_final",
       "icon": "icon_dragon_final",
       "animation": [
@@ -126,15 +126,15 @@
       ],
       "unlock_condition": "level >= 9",
       "min_level": 9,
-      "description": "最终进化后的数珠天龙拥有成熟体型、专属饰品、光效与符文灵气，呈现稀有最终形态。",
+      "description": "最终进化为华丽的粉色天龙，长身盘绕祥云，金角高挑，鬃毛与龙须飘逸，蓝金云甲、宝石额饰和发光龙珠展现稀有灵气。",
       "appearance_keywords": [
-        "成熟体型",
-        "专属饰品",
-        "光效符文",
-        "最终进化特征",
-        "短角、小翅膀和发光数珠"
+        "盘云长身",
+        "大型鹿角",
+        "华丽鬃毛",
+        "蓝金云甲",
+        "龙珠灵气"
       ],
-      "status_role": "成熟、稀有、有特殊能力的最终形态",
+      "status_role": "最终形态、稀有、成熟、有特殊能力",
       "assets": {
         "portrait": "/pets/dragon/3.png",
         "model": "/pets/dragon/models/dragon_final.png",
