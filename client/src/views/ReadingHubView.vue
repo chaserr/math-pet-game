@@ -4,7 +4,10 @@
     <div class="topbar">
       <button class="back" @click="router.push({ name: 'home' })">‹ 首页</button>
       <div class="hub-title">📖 阅读乐园</div>
-      <span class="coin-pill">🪙 {{ auth.points }}</span>
+      <div class="top-right">
+        <button class="album-btn" @click="showAlbum = true">🗂️ 集字册</button>
+        <span class="coin-pill">🪙 {{ auth.points }}</span>
+      </div>
     </div>
 
     <div class="body">
@@ -61,6 +64,37 @@
       </div>
     </Teleport>
 
+    <!-- 集字册：跨词包收集墙 -->
+    <Teleport to="body">
+      <div v-if="showAlbum" class="overlay" @click.self="showAlbum = false">
+        <div class="album col">
+          <button class="close" @click="showAlbum = false">✕</button>
+          <h3 class="album-title">🗂️ 我的集字册</h3>
+          <p class="album-sum">已收集 <b>{{ albumDone }}</b> / {{ albumTotal }} 个词</p>
+          <div class="album-body">
+            <div v-for="p in allPacks" :key="p.id" class="album-pack">
+              <div class="ap-head">
+                <span>{{ p.emoji }} {{ p.name }}</span>
+                <span class="ap-count">{{ doneOf(p) }}/{{ p.words.length }}</span>
+              </div>
+              <div class="sticker-row">
+                <div v-for="w in p.words" :key="w.id"
+                  class="sticker" :class="{ got: albumSet(p.id).has(w.id) }"
+                  :title="albumSet(p.id).has(w.id) ? w.text : '还没探索'"
+                >
+                  <template v-if="albumSet(p.id).has(w.id)">
+                    <span class="st-emoji">{{ w.image?.value || '✨' }}</span>
+                    <span class="st-text">{{ w.text }}</span>
+                  </template>
+                  <span v-else class="st-lock">？</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- 阅读管线全屏浮层 -->
     <Teleport to="body">
       <div v-if="playWord" class="fullscreen col">
@@ -70,12 +104,17 @@
           v-if="!finished"
           :word="playWord"
           :pack="activePack"
+          :companion-pet-id="companion.petId"
+          :companion-level="companion.level"
           @finished="onFinished"
         />
 
         <!-- 完成庆祝 -->
         <div v-else class="celebrate col">
-          <span class="cele-emoji">{{ playWord.image?.value || '🎉' }}</span>
+          <div class="cele-stage">
+            <span class="cele-emoji">{{ playWord.image?.value || '🎉' }}</span>
+            <PetSprite class="cele-pet" :pet-id="companion.petId" mood="happy" :level="companion.level" :size="96" />
+          </div>
           <h2 class="cele-word">{{ playWord.text }}</h2>
           <p class="cele-msg">{{ celeMsg }}</p>
 
@@ -101,9 +140,10 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth.js';
 import ReadingPlayer from '../components/reading/ReadingPlayer.vue';
-import { packsByLang, packReward } from '../lib/reading/packs.js';
+import { packsByLang, packReward, READING_PACKS } from '../lib/reading/packs.js';
 import { exploredSet, exploredCount, markExplored, isPackRewarded, markPackRewarded } from '../lib/reading/explored.js';
-import { grantReward } from '../db.js';
+import { grantReward, listMyPets } from '../db.js';
+import PetSprite from '../components/PetSprite.vue';
 
 const auth = useAuthStore();
 const route = useRoute();
@@ -124,6 +164,14 @@ const playWord = ref(null);
 const finished = ref(false);
 const exploredIds = ref(new Set());
 const rewardInfo = ref(null); // 整包完成时的奖励 { coins, food }
+const companion = ref({ petId: 'cat', level: 1 }); // 陪读宠物
+const showAlbum = ref(false);
+const albumTick = ref(0); // 探索后自增，刷新集字册的收集状态
+
+const allPacks = computed(() => READING_PACKS);
+function albumSet(packId) { albumTick.value; return exploredSet(packId); }
+const albumTotal = computed(() => READING_PACKS.reduce((s, p) => s + p.words.length, 0));
+const albumDone = computed(() => { albumTick.value; return READING_PACKS.reduce((s, p) => s + exploredCount(p.id), 0); });
 
 const celeMsg = computed(() => {
   const total = activePack.value?.words.length || 0;
@@ -157,6 +205,7 @@ async function onFinished(word) {
   const pack = activePack.value;
   markExplored(pack.id, word.id);
   exploredIds.value = exploredSet(pack.id);
+  albumTick.value += 1;
   finished.value = true;
 
   // 整包首次探索完成 → 发一次温和奖励（金币 + 口粮），轻度连到宠物经济
@@ -179,7 +228,13 @@ function goChallenge(p) {
   router.push({ name: 'quiz', query: { ...p.challenge } });
 }
 
-onMounted(() => { auth.refreshProfile?.().catch(() => {}); });
+onMounted(async () => {
+  auth.refreshProfile?.().catch(() => {});
+  try {
+    const pets = await listMyPets();
+    if (pets?.[0]) companion.value = { petId: pets[0].petId, level: pets[0].level || 1 };
+  } catch { /* 无宠物则用默认 cat */ }
+});
 </script>
 
 <style scoped>
@@ -190,6 +245,9 @@ onMounted(() => { auth.refreshProfile?.().catch(() => {}); });
   border: none; border-radius: 999px; box-shadow: 0 3px 0 var(--shadow); cursor: pointer;
 }
 .hub-title { font-size: 20px; font-weight: 900; color: var(--primary-dark); }
+.top-right { display: flex; align-items: center; gap: 10px; }
+.album-btn { background: #fff; color: #cf8c25; border: 2px solid #f0d99a; padding: 8px 14px; border-radius: 999px; font-family: inherit; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 3px 0 #f0d99a; }
+.album-btn:hover { background: #fff7e0; }
 .coin-pill { background: #fff; padding: 8px 14px; border-radius: 999px; font-weight: 900; box-shadow: 0 3px 0 var(--shadow); }
 
 .body { flex: 1; padding: 8px 22px 28px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
@@ -232,12 +290,30 @@ onMounted(() => { auth.refreshProfile?.().catch(() => {}); });
 .wc-text { font-size: 17px; font-weight: 900; color: var(--ink); }
 .wc-badge { position: absolute; top: 4px; right: 6px; font-size: 14px; }
 
+/* 集字册 */
+.album { position: relative; width: 640px; max-width: 92vw; max-height: 86vh; overflow-y: auto; background: #fffdf6; border-radius: 24px; padding: 26px; gap: 8px; box-shadow: 0 18px 40px rgba(0,0,0,0.3); align-items: center; }
+.album-title { margin: 0; font-size: 20px; color: var(--ink); }
+.album-sum { margin: 0; color: #9b8b7a; font-weight: 700; font-size: 14px; }
+.album-sum b { color: #54b85a; }
+.album-body { width: 100%; display: flex; flex-direction: column; gap: 16px; margin-top: 10px; }
+.album-pack { display: flex; flex-direction: column; gap: 8px; }
+.ap-head { display: flex; justify-content: space-between; font-weight: 900; color: var(--ink); font-size: 15px; }
+.ap-count { color: #9b8b7a; font-weight: 800; font-size: 13px; }
+.sticker-row { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
+.sticker { aspect-ratio: 1; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #f3ece0; border: 2px dashed #d8c9b3; }
+.sticker.got { background: #f3fbf1; border: 2px solid #8fd49a; box-shadow: 0 3px 0 #cdeccf; }
+.st-emoji { font-size: 30px; }
+.st-text { font-size: 13px; font-weight: 900; color: var(--ink); }
+.st-lock { font-size: 26px; font-weight: 900; color: #c9b9a3; }
+
 /* 全屏管线 */
 .fullscreen { position: fixed; inset: 0; background: #fffdf6; z-index: 70; display: flex; flex-direction: column; }
 .fs-close { position: absolute; top: 16px; right: 18px; width: 40px; height: 40px; border-radius: 50%; background: #f0e6d8; color: #8a7a66; font-size: 20px; font-weight: 900; border: none; cursor: pointer; z-index: 2; }
 
 .celebrate { flex: 1; align-items: center; justify-content: center; gap: 14px; padding: 24px; }
+.cele-stage { display: flex; align-items: flex-end; gap: 6px; }
 .cele-emoji { font-size: 110px; animation: bounce 1s ease infinite alternate; }
+.cele-pet { animation: bounce 1s ease infinite alternate 0.3s; }
 @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-14px); } }
 .cele-word { font-size: 48px; font-weight: 900; color: var(--ink); margin: 0; }
 .cele-msg { font-size: 18px; font-weight: 800; color: #54b85a; margin: 0; }

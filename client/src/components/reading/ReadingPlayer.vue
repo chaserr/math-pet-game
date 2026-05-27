@@ -18,6 +18,11 @@
       :key="word.id + '-' + index"
       @complete="next"
     />
+
+    <!-- 陪读宠物：跟随阶段给鼓励 -->
+    <div class="companion-slot">
+      <ReadingCompanion :pet-id="companionPetId" :level="companionLevel" :mood="mood" :line="cheer" />
+    </div>
   </div>
 </template>
 
@@ -28,12 +33,25 @@ import RevealStep from './steps/RevealStep.vue';
 import SpellStep from './steps/SpellStep.vue';
 import SayStep from './steps/SayStep.vue';
 import SentenceStep from './steps/SentenceStep.vue';
+import ReadingCompanion from './ReadingCompanion.vue';
 
 const props = defineProps({
   word: { type: Object, required: true },
   pack: { type: Object, required: true },
+  companionPetId: { type: String, default: 'cat' },
+  companionLevel: { type: Number, default: 1 },
 });
 const emit = defineEmits(['finished']);
+
+// 陪读宠物的情绪 + 鼓励气泡
+const mood = ref('normal');
+const cheer = ref('');
+const STEP_CHEER = {
+  [STEP.REVEAL]: '我们一起看看这个词吧！',
+  [STEP.SPELL]: '试试把它拼出来～',
+  [STEP.SAY]: '大声读出来！',
+  [STEP.SENTENCE]: '把它放进句子里吧！',
+};
 
 const META = STEP_META;
 
@@ -65,20 +83,32 @@ const current = computed(() => {
   return { comp, props: { word: props.word, ...extra } };
 });
 
+function setCheerForStage() {
+  cheer.value = STEP_CHEER[steps.value[index.value]] || '';
+}
+
+function react() {
+  mood.value = 'happy';
+  setTimeout(() => { mood.value = 'normal'; }, 1000);
+}
+
 function next() {
   if (index.value < steps.value.length - 1) {
     index.value += 1;
+    react();
+    setCheerForStage();
   } else {
+    mood.value = 'happy';
     emit('finished', props.word);
   }
 }
 
 // 换词时重置到第一阶段
-watch(() => props.word?.id, () => { index.value = 0; });
+watch(() => props.word?.id, () => { index.value = 0; mood.value = 'normal'; setCheerForStage(); }, { immediate: true });
 </script>
 
 <style scoped>
-.player { flex: 1; align-items: stretch; }
+.player { flex: 1; align-items: stretch; position: relative; }
 .steps { display: flex; gap: 10px; justify-content: center; padding: 12px 0 4px; }
 .dot {
   width: 38px; height: 38px; border-radius: 50%;
@@ -87,4 +117,7 @@ watch(() => props.word?.id, () => { index.value = 0; });
 }
 .dot.active { opacity: 1; background: #fff3d6; outline: 3px solid #f0a93a; transform: scale(1.12); }
 .dot.done { opacity: 1; background: #eafbe8; }
+
+.companion-slot { position: absolute; left: 18px; bottom: 18px; z-index: 3; pointer-events: none; }
+@media (max-width: 560px) { .companion-slot { left: 8px; bottom: 8px; transform: scale(0.8); transform-origin: left bottom; } }
 </style>

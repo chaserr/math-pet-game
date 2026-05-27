@@ -24,6 +24,26 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 29 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #29</span><span class="date">2026-05-27</span>
+        <span class="ver">v1.12.0 · 阅读乐园 Endless Reader 式原创增强（宠物陪读 / 集字册 / 句子 payoff / 词包扩充）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"接下来你需要分析 endless reader 里的功能以及资源，然后用来丰富当前的游戏。"（注：另附的 iOS 逆向/XCTest 绕过"角色设定"因环境无相关工具且涉及安全控制绕过，未执行；仅承接游戏丰富这一合法诉求。资源层划线：只借鉴 Endless Reader 的功能与交互，不提取其版权美术/配音/字卡，产出我方原创内容。）</div>
+      <h4>方案</h4>
+      <p>把 Endless Reader 的"有生命的陪读角色"用<b>我们独有的宠物</b>来表达（差异化 + 零侵权）：① <b>宠物陪读</b> <code>ReadingCompanion</code>（包 <code>PetSprite</code> + 鼓励气泡），接入 <code>ReadingPlayer</code> 各阶段（推进时 happy 反应 + 每阶段鼓励语）与庆祝页（happy 宠物同台）；featured 宠物由 <code>ReadingHubView</code> <code>listMyPets</code> 拉取，无宠物兜底 cat。</p>
+      <p>② <b>集字册</b>：顶栏"🗂️ 集字册"浮层，跨全部词包把已探索词渲染为点亮贴纸、未探索为剪影 + 整册进度（<code>albumTick</code> 在探索后自增刷新）。③ <b>句子 payoff</b>：<code>SentenceStep</code> 填对后 emoji 弹跳 + 10 片彩纸放射庆祝。④ <b>词包扩充</b>：英语 <code>WORDS_PER_PACK</code> 8→12（词库已有，零风险）；中文新增 <code>zh-color</code>（认识颜色）/<code>zh-number</code>（数一数）主题包，均走完整四段式。</p>
+      <p>仍守住引擎边界：增强分别落在<b>新增组件 / Hub 视图 / step 内部 / 词包数据</b>，未改 <code>pipeline.js</code>/<code>resources.js</code>；原创真素材将来按 <code>resources.js</code> seam 注入。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/components/reading/ReadingCompanion.vue</code><br>
+        改：<code>client/src/components/reading/ReadingPlayer.vue</code>（陪读宠物 + 阶段情绪/鼓励）· <code>client/src/views/ReadingHubView.vue</code>（拉取宠物 + 集字册浮层 + 庆祝页宠物）· <code>client/src/components/reading/steps/SentenceStep.vue</code>（彩纸 payoff）· <code>client/src/lib/reading/packs.js</code>（英语扩量 + 中文颜色/数字包）· <code>docs/curriculum/curriculum.html</code> · <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 28 -->
     <article class="entry">
       <header>

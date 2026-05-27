@@ -2,8 +2,12 @@
   <!-- 阶段④·入句：把目标词送回句子里。点错只弹回，无惩罚；填对后朗读整句 -->
   <div class="sentence col">
     <div class="meaning">
-      <span v-if="img.type === 'emoji'" class="emoji">{{ img.value }}</span>
+      <span v-if="img.type === 'emoji'" class="emoji" :class="{ pop: filled }">{{ img.value }}</span>
       <img v-else class="pic" :src="img.src" :alt="img.alt" />
+      <!-- 填对后的彩纸庆祝 -->
+      <div v-if="filled" class="confetti">
+        <span v-for="i in 10" :key="i" class="c" :style="confettiStyle(i)"></span>
+      </div>
     </div>
 
     <p class="lead">{{ filled ? '读一读这句话～' : '把小词送回句子里' }}</p>
@@ -90,6 +94,18 @@ function pick(c) {
   }
 }
 
+const CONFETTI_COLORS = ['#f0a93a', '#e85b5b', '#54b85a', '#3a92e0', '#9b5cd6', '#e8529a'];
+function confettiStyle(i) {
+  const angle = (i / 10) * 360;
+  const dist = 70 + (i % 3) * 18;
+  return {
+    '--cx': Math.round(Math.cos(angle * Math.PI / 180) * dist) + 'px',
+    '--cy': Math.round(Math.sin(angle * Math.PI / 180) * dist) + 'px',
+    background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+    animationDelay: (i % 5) * 0.03 + 's',
+  };
+}
+
 function speakSentence() {
   audio.speakSentence(sentenceText.value, props.word.lang);
 }
@@ -104,8 +120,17 @@ onBeforeUnmount(() => audio.cancel());
 
 <style scoped>
 .sentence { flex: 1; align-items: center; justify-content: center; gap: 16px; padding: 22px 18px; }
-.meaning .emoji { font-size: 72px; line-height: 1; }
+.meaning { position: relative; }
+.meaning .emoji { font-size: 72px; line-height: 1; transition: transform 0.3s; }
+.meaning .emoji.pop { animation: emoji-pop 0.6s ease-out; }
+@keyframes emoji-pop { 0%{transform:scale(1);} 40%{transform:scale(1.3) rotate(-8deg);} 70%{transform:scale(1.15) rotate(6deg);} 100%{transform:scale(1.12);} }
 .meaning .pic { width: 110px; height: 110px; object-fit: contain; }
+.confetti { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.confetti .c { position: absolute; width: 10px; height: 10px; border-radius: 2px; opacity: 0; animation: burst 0.8s ease-out forwards; }
+@keyframes burst {
+  0% { opacity: 1; transform: translate(0,0) scale(1) rotate(0); }
+  100% { opacity: 0; transform: translate(var(--cx), var(--cy)) scale(0.3) rotate(220deg); }
+}
 .lead { color: #9b8b7a; font-weight: 800; font-size: 15px; margin: 0; }
 
 .sent {

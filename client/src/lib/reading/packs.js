@@ -24,7 +24,7 @@
 import { TIERS, PHONICS_WORDS } from '../phonics-en-bank.js';
 
 // 每个英语词包从对应 tier 取前 N 个词（探索友好的体量；想全量改大即可）。
-const WORDS_PER_PACK = 8;
+const WORDS_PER_PACK = 12;
 
 // 英文 phonics 词 → 规范 ReadingWord
 function fromPhonics(w) {
@@ -82,6 +82,43 @@ const CHINESE_PACKS = [
       mkZh('huā', '花', '🌸', '花园里开满了花。', ['h', 'uā']),
       mkZh('shù', '树', '🌳', '大树下面真凉快。', ['sh', 'ù']),
       mkZh('yuè', '月', '🌙', '月亮挂在天上。', ['y', 'uè']),
+    ],
+  },
+  {
+    id: 'zh-color',
+    lang: 'zh-CN',
+    name: '认识颜色',
+    emoji: '🎨',
+    color: '#e8862e',
+    pipeline: ['reveal', 'spell', 'say', 'sentence'],
+    spell: 'syllable',
+    challenge: { subject: 'chinese', module: 'pinyin', stage: 1 },
+    reward: { coins: 20, foodId: 'carrot', qty: 1 },
+    words: [
+      mkZh('hóng', '红', '🔴', '红色的太阳真好看。', ['h', 'óng']),
+      mkZh('huáng', '黄', '🟡', '黄色的小鸭子。', ['h', 'uáng']),
+      mkZh('lán', '蓝', '🔵', '蓝色的天空很美。', ['l', 'án']),
+      mkZh('lǜ', '绿', '🟢', '绿色的小草。', ['l', 'ǜ']),
+      mkZh('bái', '白', '⚪', '白色的云朵。', ['b', 'ái']),
+      mkZh('hēi', '黑', '⚫', '黑色的夜晚。', ['h', 'ēi']),
+    ],
+  },
+  {
+    id: 'zh-number',
+    lang: 'zh-CN',
+    name: '数一数',
+    emoji: '🔢',
+    color: '#3a92e0',
+    pipeline: ['reveal', 'spell', 'say', 'sentence'],
+    spell: 'syllable',
+    challenge: { subject: 'chinese', module: 'pinyin', stage: 1 },
+    reward: { coins: 20, foodId: 'millet', qty: 1 },
+    words: [
+      mkZh('yī', '一', '1️⃣', '一只小猫。', ['y', 'ī']),
+      mkZh('èr', '二', '2️⃣', '二只小鸟。', ['èr']),
+      mkZh('sān', '三', '3️⃣', '三个苹果。', ['s', 'ān']),
+      mkZh('sì', '四', '4️⃣', '四条小鱼。', ['s', 'ì']),
+      mkZh('wǔ', '五', '5️⃣', '五朵花。', ['w', 'ǔ']),
     ],
   },
 ];
