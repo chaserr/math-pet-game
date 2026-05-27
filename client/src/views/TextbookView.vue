@@ -82,14 +82,12 @@
       </template>
     </div>
 
-    <!-- 📖 查看课本 PDF 弹层 -->
+    <!-- 📖 查看课本 PDF 沉浸式全屏 -->
     <Teleport to="body">
-      <div v-if="showPdf && currentPdfPath" class="pdf-modal" @click.self="showPdf = false">
+      <div v-if="showPdf && currentPdfPath" class="pdf-modal">
         <div class="pdf-modal-inner">
-          <div class="pdf-modal-head">
-            <span>📖 {{ gradeName }}{{ volume === 'up' ? '上册' : '下册' }}（{{ subjectName }}）</span>
-            <button class="pdf-close" @click="showPdf = false" aria-label="关闭">✕</button>
-          </div>
+          <!-- 右上角悬浮 X，唯一退出入口 -->
+          <button class="pdf-close-float" @click="showPdf = false" aria-label="关闭课本">✕</button>
 
           <!-- 探测中 -->
           <div v-if="pdfState === 'loading'" class="pdf-state">
@@ -265,31 +263,33 @@ watch(() => route.query, (q) => {
 .view-pdf:hover:not(:disabled) { background: #fff3d6; transform: translateY(-1px); }
 .view-pdf:disabled { opacity: 0.4; cursor: not-allowed; border-color: #d6c9b0; color: #b9a892; }
 
-/* PDF 弹层 */
+/* PDF 弹层 — 沉浸式全屏，仅留右上角悬浮 X */
 .pdf-modal {
   position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  background: #fff;
+  display: flex;
 }
 .pdf-modal-inner {
-  background: #fff; border-radius: 16px;
-  width: min(960px, 95vw); height: min(90vh, 95vh);
+  position: relative;
+  background: #fff;
+  width: 100vw; height: 100vh;
   display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
-.pdf-modal-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 18px; background: var(--primary); color: #fff;
-  font-weight: 900;
+.pdf-close-float {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 10;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55); color: #fff;
+  border: none; font-size: 20px; font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, transform 0.15s;
 }
-.pdf-close {
-  background: rgba(255,255,255,0.2); color: #fff;
-  width: 32px; height: 32px; border: none; border-radius: 50%;
-  font-size: 18px; font-weight: 900; cursor: pointer;
-}
-.pdf-close:hover { background: rgba(255,255,255,0.35); }
-.pdf-frame { flex: 1; border: 0; width: 100%; background: #f4f0e6; }
+.pdf-close-float:hover { background: rgba(0, 0, 0, 0.75); transform: scale(1.05); }
+.pdf-frame { flex: 1; border: 0; width: 100%; height: 100%; background: #f4f0e6; }
 
 /* PDF 加载中 */
 .pdf-state {

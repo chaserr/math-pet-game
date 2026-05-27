@@ -16,6 +16,12 @@
       <button class="btn-primary" @click="goBack">返回</button>
     </div>
 
+    <!-- 跳板型 trick：onMounted 已 router.replace；这里只作为过渡时的占位 -->
+    <div v-else-if="info.redirectRoute" class="placeholder-stage center col">
+      <div class="ph-emoji">⏳</div>
+      <h2>正在进入…</h2>
+    </div>
+
     <div v-else class="body">
       <!-- 讲解语 -->
       <p class="intro">{{ info.intro }}</p>
@@ -111,7 +117,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import NumberBlock from '../components/NumberBlock.vue';
 import { lessonInfo, genTrickQuiz } from '../composables/useQuizGen.js';
@@ -121,6 +127,17 @@ const route = useRoute();
 
 const trickId = computed(() => String(route.query.trick || ''));
 const info = computed(() => lessonInfo(trickId.value));
+
+// 跳板型 trick：onMounted 时透明重定向到自定义视图，保留 query。
+// 这让课本单元只需配 { trickId: 'division-intro' } 就能挂上完全自定义的页面。
+onMounted(() => {
+  const meta = info.value;
+  if (meta?.redirectRoute) {
+    const target = meta.redirectRoute;
+    const { trick, ...rest } = route.query;
+    router.replace({ ...target, query: { ...(target.query || {}), ...rest } });
+  }
+});
 
 const phase = ref('demo'); // 'demo' | 'self'
 const revealed = ref(0);

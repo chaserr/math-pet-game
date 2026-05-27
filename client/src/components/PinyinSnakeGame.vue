@@ -336,7 +336,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.snake-wrap { gap: 10px; user-select: none; }
+/* 默认 flex: 1 让组件能填充 flex column 父容器（如沉浸式全屏）；
+   嵌入到普通块级容器中也不会出问题，仅按内容高度展开。 */
+.snake-wrap { gap: 10px; user-select: none; flex: 1; min-height: 0; }
 
 .snake-header {
   display: flex; align-items: center; justify-content: space-between;

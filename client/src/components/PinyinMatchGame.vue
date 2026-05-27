@@ -145,7 +145,9 @@ onBeforeUnmount(() => clearInterval(timerHandle));
 </script>
 
 <style scoped>
-.match-game { gap: 12px; }
+/* 默认 flex: 1 让组件填充 flex column 父容器（如沉浸式全屏）；
+   嵌入到普通块级容器中不受影响（flex: 1 在非 flex 父级下无效）。 */
+.match-game { gap: 12px; flex: 1; min-height: 0; }
 
 .match-header {
   display: flex; align-items: center; justify-content: space-between;

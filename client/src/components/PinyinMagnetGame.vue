@@ -250,7 +250,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.magnet-wrap { gap: 10px; user-select: none; }
+/* 默认 flex: 1 让组件填充 flex column 父容器（如沉浸式全屏）；
+   嵌入到普通块级容器中不受影响。 */
+.magnet-wrap { gap: 10px; user-select: none; flex: 1; min-height: 0; }
 
 .mg-header {
   display: flex; align-items: center; justify-content: space-between;

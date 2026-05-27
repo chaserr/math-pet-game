@@ -173,12 +173,10 @@
           </button>
         </div>
         <Teleport to="body">
-          <div v-if="showPdf" class="pdf-modal" @click.self="closePdf">
+          <div v-if="showPdf" class="pdf-modal">
             <div class="pdf-modal-inner">
-              <div class="pdf-modal-head">
-                <span>{{ showPdf.name }}</span>
-                <button class="pdf-close" @click="closePdf">✕</button>
-              </div>
+              <!-- 右上角悬浮 X，唯一的退出入口 -->
+              <button class="pdf-close-float" @click="closePdf" aria-label="关闭课本">✕</button>
 
               <!-- 探测中 -->
               <div v-if="pdfState === 'loading'" class="pdf-state">
@@ -208,7 +206,8 @@
 
       <!-- ========== 游戏天地 tab ========== -->
       <template v-else-if="mainTab === 'games'">
-        <div class="game-selector" v-if="!currentGame">
+        <!-- 列表始终显示：所有游戏都用 Teleport 走沉浸式全屏，关闭后落回列表 -->
+        <div class="game-selector">
           <h3 class="section-title">🎮 游戏天地</h3>
           <div class="game-cards">
             <button class="game-card" @click="currentGame = 'match'">
@@ -228,14 +227,18 @@
             </button>
           </div>
         </div>
-        <template v-else>
-          <button class="btn-back-game" @click="currentGame = null">‹ 返回游戏列表</button>
-          <MatchGame v-if="currentGame === 'match'" />
-          <SnakeGame v-else-if="currentGame === 'snake'" />
-          <MagnetGame v-else-if="currentGame === 'magnet'" />
-        </template>
       </template>
     </div>
+
+    <!-- 沉浸式游戏全屏层（脱离 .body 容器的 padding/滚动限制，三种游戏共用） -->
+    <Teleport to="body">
+      <div v-if="currentGame" class="game-fullscreen">
+        <button class="game-close" @click="currentGame = null" aria-label="关闭游戏">✕</button>
+        <SnakeGame  v-if="currentGame === 'snake'" />
+        <MatchGame  v-else-if="currentGame === 'match'" />
+        <MagnetGame v-else-if="currentGame === 'magnet'" />
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -415,13 +418,6 @@ function closePdf() { showPdf.value = null; }
 .gc-name  { font-size: 18px; font-weight: 900; color: var(--ink); margin: 8px 0 4px; }
 .gc-desc  { font-size: 13px; color: #9b8b7a; }
 
-.btn-back-game {
-  background: #fff; color: var(--ink); padding: 8px 18px;
-  font-family: inherit; font-weight: 800; border-radius: 12px;
-  border: 2px solid #e0d8cc; box-shadow: 0 3px 0 var(--shadow);
-  cursor: pointer; margin-bottom: 14px;
-}
-
 /* 课本资源 */
 .book-cards { display: flex; flex-direction: column; gap: 10px; max-width: 600px; }
 .book-card {
@@ -437,30 +433,33 @@ function closePdf() { showPdf.value = null; }
 .bc-desc  { font-size: 12px; color: #9b8b7a; font-weight: 700; }
 .bc-go    { font-size: 20px; }
 
-/* PDF 弹层 */
+/* PDF 弹层 — 沉浸式全屏，仅留右上角悬浮 X */
 .pdf-modal {
   position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0,0,0,0.55);
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  background: #fff;
+  display: flex;
 }
 .pdf-modal-inner {
-  background: #fff; border-radius: 16px;
-  width: min(960px, 95vw); height: min(90vh, 95vh);
+  position: relative;
+  background: #fff;
+  width: 100vw; height: 100vh;
   display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
-.pdf-modal-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 18px; background: #54b85a; color: #fff; font-weight: 900;
+.pdf-close-float {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 10;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55); color: #fff;
+  border: none; font-size: 20px; font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, transform 0.15s;
 }
-.pdf-close {
-  background: rgba(255,255,255,0.2); color: #fff;
-  width: 32px; height: 32px; border: none; border-radius: 50%;
-  font-size: 18px; font-weight: 900; cursor: pointer;
-}
-.pdf-close:hover { background: rgba(255,255,255,0.35); }
-.pdf-frame { flex: 1; border: 0; width: 100%; background: #f4f0e6; }
+.pdf-close-float:hover { background: rgba(0, 0, 0, 0.75); transform: scale(1.05); }
+.pdf-frame { flex: 1; border: 0; width: 100%; height: 100%; background: #f4f0e6; }
 
 /* PDF 加载中 */
 .pdf-state {
@@ -497,4 +496,51 @@ function closePdf() { showPdf.value = null; }
   border-radius: 12px; cursor: pointer; box-shadow: 0 3px 0 #3a8a42;
 }
 .pm-retry:hover { transform: translateY(-2px); }
+
+/* 游戏沉浸式全屏层（贪吃蛇 / 消消乐 / 磁力链共用） */
+.game-fullscreen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: #fffdf6;
+  display: flex; flex-direction: column;
+  padding:
+    max(14px, env(safe-area-inset-top))
+    max(14px, env(safe-area-inset-right))
+    max(14px, env(safe-area-inset-bottom))
+    max(14px, env(safe-area-inset-left));
+}
+/* 右上角悬浮 X，唯一退出入口 */
+.game-close {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 10;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5); color: #fff;
+  border: none; font-size: 20px; font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+.game-close:hover { background: rgba(0, 0, 0, 0.72); transform: scale(1.05); }
+/* 给各游戏 header 右侧让出 60px，避免与悬浮 X 重叠盖住自带按钮 */
+.game-fullscreen :deep(.snake-header),
+.game-fullscreen :deep(.match-header),
+.game-fullscreen :deep(.mg-header) { padding-right: 60px; }
+/* 消消乐：大屏下牌格收紧居中，避免一行拉得太长 */
+.game-fullscreen :deep(.tiles-area) {
+  display: flex; align-items: flex-start; justify-content: center;
+  overflow-y: auto;
+}
+.game-fullscreen :deep(.tiles-grid) {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+/* 磁力链：场地居中，避免在超宽屏上字母散得过开 */
+.game-fullscreen :deep(.field) {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+}
 </style>
