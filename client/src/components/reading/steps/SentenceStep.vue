@@ -38,7 +38,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { usePhonicsAudio } from '../../../composables/usePhonicsAudio.js';
+import { useReadingAudio } from '../../../composables/useReadingAudio.js';
 import { resolveImage } from '../../../lib/reading/resources.js';
 
 const props = defineProps({
@@ -47,7 +47,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['complete']);
 
-const audio = usePhonicsAudio();
+const audio = useReadingAudio();
 const img = computed(() => resolveImage(props.word));
 const filled = ref(false);
 const wrongChip = ref('');
@@ -89,7 +89,7 @@ function pick(c) {
     setTimeout(speakSentence, 250);
   } else {
     wrongChip.value = c.text;
-    audio.speakWord(c.text, props.word.lang);
+    audio.speakText(c.text, props.word.lang);
     setTimeout(() => { if (wrongChip.value === c.text) wrongChip.value = ''; }, 600);
   }
 }
@@ -107,7 +107,7 @@ function confettiStyle(i) {
 }
 
 function speakSentence() {
-  audio.speakSentence(sentenceText.value, props.word.lang);
+  audio.playSentence(props.word);
 }
 function emitDone() { audio.cancel(); emit('complete'); }
 

@@ -24,6 +24,25 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 30 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #30</span><span class="date">2026-05-27</span>
+        <span class="ver">v1.12.1 · 阅读乐园真素材注入 seam（音频收口 useReadingAudio）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"好的"（承接上一回合"继续接真人录音/原创插画的资源注入示例，走 resources.js 那个 seam"的提议）</div>
+      <h4>方案</h4>
+      <p>把散在各 step 的 TTS 直连收口到统一入口 <code>composables/useReadingAudio.js</code>，让"换资源只改一处"落到实处：词数据声明 <code>audio</code>（真人录音 key）→ 优先 <code>&lt;audio&gt;</code> 播放，<b>文件缺失/加载失败自动回退 Web Speech TTS</b>（英文 usePhonicsAudio / 中文 usePinyinAudio），绝不静默；<code>image.kind='asset'</code> → 原创插画替代 emoji（<code>resolveImage</code> 已支持）。</p>
+      <p>阶段组件 Reveal/Say/Sentence/SyllableSpell 全部改为只调 <code>playWord/playUnit/playSentence/speakText</code>，对"真音频还是 TTS"完全无感。当前词数据未声明 <code>audio</code> → 行为不变（仍 TTS、无 404）；放入素材并补 key 即激活，<b>零业务改动</b>。素材目录约定与 cat 示例见新增 <code>client/public/reading/README.md</code>。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/composables/useReadingAudio.js</code> · <code>client/public/reading/README.md</code><br>
+        改：<code>client/src/components/reading/steps/{RevealStep,SayStep,SentenceStep,SyllableSpellStep}.vue</code>（音频改用 useReadingAudio）· <code>docs/curriculum/curriculum.html</code> · <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 29 -->
     <article class="entry">
       <header>

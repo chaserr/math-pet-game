@@ -25,20 +25,19 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { usePhonicsAudio } from '../../../composables/usePhonicsAudio.js';
+import { useReadingAudio } from '../../../composables/useReadingAudio.js';
 import { resolveImage } from '../../../lib/reading/resources.js';
 
 const props = defineProps({ word: { type: Object, required: true } });
 const emit = defineEmits(['complete']);
 
-const audio = usePhonicsAudio();
+const audio = useReadingAudio();
 const img = computed(() => resolveImage(props.word));
 const litIndex = ref(-1);
 
 function tapUnit(u, i) {
   litIndex.value = i;
-  if (u.silent) audio.speakPhoneme('shh', props.word.lang);
-  else audio.speakPhoneme(u.sound, props.word.lang);
+  audio.playUnit(props.word, i);
   setTimeout(() => { if (litIndex.value === i) litIndex.value = -1; }, 600);
 }
 
@@ -49,7 +48,7 @@ function emitDone() {
 
 onMounted(() => {
   // 单元飞入完成后朗读整词，给孩子一个"它念什么"的预期
-  setTimeout(() => audio.speakWord(props.word.text, props.word.lang), 700);
+  setTimeout(() => audio.playWord(props.word), 700);
 });
 onBeforeUnmount(() => audio.cancel());
 </script>

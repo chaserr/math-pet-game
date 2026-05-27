@@ -42,14 +42,14 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
-import { usePinyinAudio } from '../../../composables/usePinyinAudio.js';
+import { useReadingAudio } from '../../../composables/useReadingAudio.js';
 import { resolveImage } from '../../../lib/reading/resources.js';
 import { INITIALS_TABLE, FINALS_TABLE } from '../../../lib/pinyin-data.js';
 
 const props = defineProps({ word: { type: Object, required: true } });
 const emit = defineEmits(['complete']);
 
-const audio = usePinyinAudio();
+const audio = useReadingAudio();
 const img = computed(() => resolveImage(props.word));
 
 // 干扰 piece 取自真实声母 / 韵母库（pinyin-data.js）
@@ -102,7 +102,7 @@ function reset() {
 function tap(p) {
   if (done.value) return;
   // 触碰反馈：用整字读音作为锚点（孤立拼音 piece 不宜单独 TTS）
-  audio.speakChar(props.word.text);
+  audio.playWord(props.word);
 
   if (p.partIndex === currentSlot.value) {
     slots.value = [
@@ -138,7 +138,7 @@ function complete() {
 }
 
 function speakWhole() {
-  audio.speakChar(props.word.text);
+  audio.playWord(props.word);
 }
 
 watch(() => props.word?.id, reset);

@@ -14,19 +14,19 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { usePhonicsAudio } from '../../../composables/usePhonicsAudio.js';
+import { useReadingAudio } from '../../../composables/useReadingAudio.js';
 import { resolveImage } from '../../../lib/reading/resources.js';
 
 const props = defineProps({ word: { type: Object, required: true } });
 const emit = defineEmits(['complete']);
 
-const audio = usePhonicsAudio();
+const audio = useReadingAudio();
 const img = computed(() => resolveImage(props.word));
 const pulse = ref(false);
 
 function play() {
   pulse.value = true;
-  audio.speakWord(props.word.text, props.word.lang);
+  audio.playWord(props.word);
   setTimeout(() => { pulse.value = false; }, 500);
 }
 function emitDone() { audio.cancel(); emit('complete'); }
