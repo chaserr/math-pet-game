@@ -264,6 +264,15 @@
       </div>
     </template>
 
+    <!-- 自然拼读：英语 spell 模块 -->
+    <template v-else-if="q.mode === 'phonics'">
+      <PhonicsGame
+        :word="q.word"
+        @correct="onPhonicsCorrect"
+        @skip="skip"
+      />
+    </template>
+
     <!-- 结算弹层 -->
     <Transition name="pop">
       <div v-if="finished" class="overlay center">
@@ -326,6 +335,7 @@ import NumberBlock from '../components/NumberBlock.vue';
 import FoodIcon from '../components/FoodIcon.vue';
 import ShapeIcon from '../components/ShapeIcon.vue';
 import PetSprite from '../components/PetSprite.vue';
+import PhonicsGame from '../components/PhonicsGame.vue';
 import {
   genQuestion, checkTileFill, checkChoice, checkStepCalc, checkStepSplit,
 } from '../composables/useQuizGen.js';
@@ -707,6 +717,7 @@ function qLabel() {
   if (x.mode === 'choice') return x.prompt || '';
   if (x.mode === 'multi-step') return `${x.a}${x.op}${x.b}`;
   if (x.mode === 'vertical') return `${x.a}${x.op}${x.b}`;
+  if (x.mode === 'phonics') return x.word?.word || '';
   return x.exprText || x.numberText || '';
 }
 function loadQuestion() {
@@ -716,6 +727,7 @@ function loadQuestion() {
             : data.mode === 'vertical' ? '从右到左：先算个位，再算十位'
             : data.mode === 'multi-step' ? '按提示一步步填空'
             : data.mode === 'choice' ? '请选择正确答案'
+            : data.mode === 'phonics' ? '听音 → 按顺序点对字母'
             : '';
   hintType.value = '';
   errorCount = 0;
@@ -755,6 +767,13 @@ function onCorrect(answer) {
     isCorrect: true, errorCount, timeMs: Date.now() - qStartTime,
   });
   setTimeout(nextQuestion, 1100);
+}
+
+// 自然拼读：PhonicsGame 组件已自带"听-拼-朗读"全闭环，完成时透传到 onCorrect。
+// 内部 wrongCount 仅作埋点用，不扣红心（避免学龄前儿童反复试错被惩罚）。
+function onPhonicsCorrect(payload) {
+  errorCount = payload?.wrongCount || 0;
+  onCorrect(0);
 }
 function onWrong() {
   errorCount += 1;

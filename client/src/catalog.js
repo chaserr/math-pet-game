@@ -118,7 +118,7 @@ export const MODULES = {
   english: [
     { id: 'alphabet', name: '字母认知', emoji: '🅰️', color: '#f0a93a', desc: '大小写匹配' },
     { id: 'vocab',    name: '看图选词', emoji: '📚', color: '#54b85a', desc: '图片对单词',     placeholder: true },
-    { id: 'spell',    name: '拼写组词', emoji: '✍️', color: '#3a92e0', desc: '拖字母拼单词',   placeholder: true },
+    { id: 'spell',    name: '自然拼读', emoji: '✍️', color: '#3a92e0', desc: '听音拆词 · 拼字成词' },
     { id: 'sentence', name: '看图选句', emoji: '💬', color: '#9b5cd6', desc: '看图选完整句子', placeholder: true },
   ],
 };

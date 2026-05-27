@@ -5,11 +5,13 @@
 //   'tile-fill'    数字积木拖拽填空（数学直接模式 + 乘除全程）
 //   'multi-step'   多步引导填空（数学加减拆分模式，含 split/calc/done 步骤）
 //   'choice'       四选一选择题（语文识字 / 英语字母）
+//   'phonics'      自然拼读：听音 → 拼字 → 整词朗读（英语拼写）
 //   'placeholder'  占位（敬请期待）
 
 import { decomposeAdd, decomposeSub, decomposeBorrowTrick } from '../lib/decompose.js';
 import { OP_OF, PLACE_NAMES, enumWithin10Fact, findCategory } from '../lib/mathLevels.js';
 import { PINYIN_CHAR_BANK, POEM_BANK } from '../lib/chineseBank.js';
+import { pickWordForStage as pickPhonicsWord } from '../lib/phonics-en-bank.js';
 
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function shuffle(arr) {
@@ -520,6 +522,14 @@ function genEnglishAlphabet(stage) {
   };
 }
 
+// ============ 英语：自然拼读（phonics） ============
+// 关卡 → tier 分层在 phonics-en-bank.js 内部完成。
+// 出题对象：{ mode:'phonics', word:{whole, parts:[{letter,phoneme,silent}], emoji, sentence, lang} }
+function genEnglishSpell(stage, qIdx) {
+  const w = pickPhonicsWord(stage, qIdx);
+  return { mode: 'phonics', word: w };
+}
+
 // ============ 占位 ============
 function genPlaceholder(subjectId, moduleId) {
   return { mode: 'placeholder', subjectId, moduleId };
@@ -565,6 +575,7 @@ export function genQuestion(subjectId, moduleId, categoryId, stage, qIdx = 0) {
   }
   if (subjectId === 'english') {
     if (moduleId === 'alphabet') return genEnglishAlphabet(s);
+    if (moduleId === 'spell') return genEnglishSpell(s, qIdx);
     return genPlaceholder(subjectId, moduleId);
   }
   return genPlaceholder(subjectId, moduleId);
@@ -590,6 +601,14 @@ const LESSON_META = {
     intro: '20 以内退位减法：被减数个位不够减时，先把个位减完凑到 10，再用 10 减剩下的。',
     op: '-',
   },
+  // 跳板式 trick：本身不在 LessonView 里渲染，而是把用户透明转送到自定义视图。
+  // 这样课本单元（textbook.js）只需配 { trickId: 'division-intro' } 就能挂上整套 5 步式课件。
+  'division-intro': {
+    title: '除法启蒙：分一分',
+    intro: '把东西公平地分一分，就是除法。这节课用拖拽的方式带孩子建立"等分"的直觉，再过渡到算式与乘除互逆。',
+    op: '÷',
+    redirectRoute: { name: 'division-intro' },
+  },
 };
 
 function buildBorrowTrick(a, b) {
@@ -605,6 +624,8 @@ function buildBreakTen(a, b) {
 export function lessonInfo(trickId) {
   const meta = LESSON_META[trickId];
   if (!meta) return null;
+  // 跳板型 trick：不生成演示题，由 LessonView 透明重定向到 redirectRoute
+  if (meta.redirectRoute) return { trickId, ...meta, demo: null };
   let demo;
   if (trickId === 'borrow-trick') demo = buildBorrowTrick(10000, 3847);
   else if (trickId === 'break-ten') demo = buildBreakTen(14, 9);
