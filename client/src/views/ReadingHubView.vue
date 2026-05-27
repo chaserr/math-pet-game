@@ -21,6 +21,17 @@
         >{{ l.emoji }} {{ l.name }}</button>
       </div>
 
+      <!-- 进度统计 + 一键继续 -->
+      <div class="stats">
+        <div class="stat"><span class="s-num">{{ langExplored }}</span><span class="s-lab">已集字</span></div>
+        <div class="stat"><span class="s-num">{{ langPacksDone }} / {{ packs.length }}</span><span class="s-lab">词包集齐 🏅</span></div>
+        <div class="stat"><span class="s-num">{{ langPct }}%</span><span class="s-lab">总进度</span></div>
+        <button v-if="recommendation" class="btn-continue" @click="continueExplore">
+          ▶️ {{ langExplored ? '继续探索' : '开始探索' }}
+        </button>
+        <span v-else class="all-done">🎉 全部集齐！</span>
+      </div>
+
       <!-- 词包网格 -->
       <div class="pack-grid">
         <div v-for="p in packs" :key="p.id" class="pack-card" :style="{ borderColor: p.color }">
@@ -194,6 +205,29 @@ const nextWord = computed(() => {
 
 function selectLang(id) { lang.value = id; activePack.value = null; }
 function doneOf(p) { albumTick.value; return exploredCount(p.id); }
+
+// 当前语言进度统计
+const langExplored = computed(() => { albumTick.value; return packs.value.reduce((s, p) => s + exploredCount(p.id), 0); });
+const langTotal = computed(() => packs.value.reduce((s, p) => s + p.words.length, 0));
+const langPct = computed(() => langTotal.value ? Math.round(langExplored.value / langTotal.value * 100) : 0);
+const langPacksDone = computed(() => { albumTick.value; return packs.value.filter(isPackDone).length; });
+
+// 推荐：当前语言下首个含未探索词的词包及该词
+const recommendation = computed(() => {
+  albumTick.value;
+  for (const p of packs.value) {
+    const set = exploredSet(p.id);
+    const w = p.words.find(x => !set.has(x.id));
+    if (w) return { pack: p, word: w };
+  }
+  return null;
+});
+function continueExplore() {
+  const r = recommendation.value;
+  if (!r) return;
+  openPack(r.pack);
+  startWord(r.word);
+}
 function pctOf(p) { return p.words.length ? Math.round(doneOf(p) / p.words.length * 100) : 0; }
 function isPackDone(p) { return p.words.length > 0 && doneOf(p) >= p.words.length; }
 
@@ -275,6 +309,23 @@ onMounted(async () => {
   border: 3px solid transparent; border-radius: 999px; box-shadow: 0 3px 0 var(--shadow); cursor: pointer;
 }
 .lang-tab.active { background: var(--primary); color: #fff; }
+
+.stats {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center;
+  background: #fffdf6; border: 2px solid #ffe0a8; border-radius: 16px;
+  padding: 12px 20px; max-width: 920px; width: 100%; margin: 0 auto;
+  box-shadow: 0 3px 0 #f0e6d8;
+}
+.stat { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
+.s-num { font-size: 20px; font-weight: 900; color: var(--primary-dark); }
+.s-lab { font-size: 12px; font-weight: 700; color: #9b8b7a; }
+.btn-continue {
+  margin-left: auto; background: #54b85a; color: #fff; border: none;
+  padding: 11px 22px; border-radius: 14px; font-family: inherit; font-weight: 900; font-size: 15px;
+  cursor: pointer; box-shadow: 0 4px 0 #3d9a43; transition: transform 0.12s;
+}
+.btn-continue:hover { transform: translateY(-2px); }
+.all-done { margin-left: auto; font-weight: 900; color: #cf8c25; }
 
 .pack-grid {
   display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

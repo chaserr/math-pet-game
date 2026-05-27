@@ -24,6 +24,23 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 33 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #33</span><span class="date">2026-05-27</span>
+        <span class="ver">v1.12.4 · 阅读统计 + 一键继续探索</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"继续"（承接上一回合提议的：阅读数据小统计 + 推荐下一个）</div>
+      <h4>方案</h4>
+      <p>阅读乐园语言切换下方加进度统计条：当前语言「已集字 / 词包集齐 🏅 / 总进度%」三项，全部经 <code>albumTick</code> 即时刷新。右侧「▶️ 继续探索 / 开始探索」按钮按当前语言推荐<b>首个含未探索词的词包及该词</b>（<code>recommendation</code> 计算属性），点击直接开包并进入该词的阅读管线；当前语言全集齐则显示「🎉 全部集齐」。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        改：<code>client/src/views/ReadingHubView.vue</code>（统计条 + recommendation + continueExplore + 样式）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 32 -->
     <article class="entry">
       <header>

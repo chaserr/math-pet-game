@@ -1,0 +1,240 @@
+{
+  "source": "/Users/tongxing/Downloads/dhtxoje-ecce2fb5-ce6b-4ee9-a179-371d428e8e05.png",
+  "description": "26 transparent lowercase alphabet character sprites cropped from the user-provided reference screenshot.",
+  "letters": {
+    "a": {
+      "file": "a.png",
+      "sourceBox": [
+        79,
+        48,
+        155,
+        130
+      ]
+    },
+    "b": {
+      "file": "b.png",
+      "sourceBox": [
+        386,
+        0,
+        479,
+        132
+      ]
+    },
+    "c": {
+      "file": "c.png",
+      "sourceBox": [
+        0,
+        154,
+        75,
+        226
+      ]
+    },
+    "d": {
+      "file": "d.png",
+      "sourceBox": [
+        724,
+        4,
+        805,
+        126
+      ]
+    },
+    "e": {
+      "file": "e.png",
+      "sourceBox": [
+        76,
+        154,
+        155,
+        244
+      ]
+    },
+    "f": {
+      "file": "f.png",
+      "sourceBox": [
+        264,
+        126,
+        324,
+        239
+      ]
+    },
+    "g": {
+      "file": "g.png",
+      "sourceBox": [
+        382,
+        164,
+        462,
+        258
+      ]
+    },
+    "h": {
+      "file": "h.png",
+      "sourceBox": [
+        548,
+        130,
+        628,
+        238
+      ]
+    },
+    "i": {
+      "file": "i.png",
+      "sourceBox": [
+        629,
+        158,
+        661,
+        238
+      ]
+    },
+    "j": {
+      "file": "j.png",
+      "sourceBox": [
+        684,
+        126,
+        758,
+        260
+      ]
+    },
+    "k": {
+      "file": "k.png",
+      "sourceBox": [
+        764,
+        124,
+        863,
+        239
+      ]
+    },
+    "l": {
+      "file": "l.png",
+      "sourceBox": [
+        394,
+        0,
+        424,
+        132
+      ]
+    },
+    "m": {
+      "file": "m.png",
+      "sourceBox": [
+        78,
+        246,
+        200,
+        350
+      ]
+    },
+    "n": {
+      "file": "n.png",
+      "sourceBox": [
+        304,
+        266,
+        388,
+        350
+      ]
+    },
+    "o": {
+      "file": "o.png",
+      "sourceBox": [
+        580,
+        270,
+        652,
+        350
+      ]
+    },
+    "p": {
+      "file": "p.png",
+      "sourceBox": [
+        118,
+        348,
+        226,
+        475
+      ]
+    },
+    "q": {
+      "file": "q.png",
+      "sourceBox": [
+        314,
+        372,
+        416,
+        480
+      ]
+    },
+    "r": {
+      "file": "r.png",
+      "sourceBox": [
+        420,
+        386,
+        500,
+        462
+      ]
+    },
+    "s": {
+      "file": "s.png",
+      "sourceBox": [
+        573,
+        372,
+        648,
+        462
+      ]
+    },
+    "t": {
+      "file": "t.png",
+      "sourceBox": [
+        648,
+        350,
+        716,
+        464
+      ]
+    },
+    "u": {
+      "file": "u.png",
+      "sourceBox": [
+        722,
+        390,
+        836,
+        466
+      ]
+    },
+    "v": {
+      "file": "v.png",
+      "sourceBox": [
+        360,
+        498,
+        426,
+        568
+      ]
+    },
+    "w": {
+      "file": "w.png",
+      "sourceBox": [
+        448,
+        498,
+        545,
+        568
+      ]
+    },
+    "x": {
+      "file": "x.png",
+      "sourceBox": [
+        648,
+        496,
+        728,
+        578
+      ]
+    },
+    "y": {
+      "file": "y.png",
+      "sourceBox": [
+        738,
+        496,
+        814,
+        595
+      ]
+    },
+    "z": {
+      "file": "z.png",
+      "sourceBox": [
+        802,
+        498,
+        882,
+        576
+      ]
+    }
+  }
+}
