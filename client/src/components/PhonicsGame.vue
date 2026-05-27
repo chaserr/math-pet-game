@@ -69,6 +69,10 @@ import { TIERS } from '../lib/phonics-en-bank.js';
 
 const props = defineProps({
   word: { type: Object, required: true },   // 来自 phonics-en-bank 的 word
+  // 可选音频适配器：{ word(), unit(partIndex), sentence(), cancel() }
+  // 传入则用它播音（如阅读乐园走 useReadingAudio，可流入真人录音）；
+  // 不传则用内部 usePhonicsAudio（QuizView 计分流保持原样，零影响）。
+  audioAdapter: { type: Object, default: null },
 });
 const emit = defineEmits(['correct', 'skip']);
 
@@ -128,10 +132,12 @@ function resetWithWord(w) {
 
 function playWhole() {
   if (!props.word) return;
+  if (props.audioAdapter) { props.audioAdapter.word(); return; }
   audio.speakWord(props.word.word, props.word.lang || 'en-US');
 }
 
 function playPart(tile) {
+  if (props.audioAdapter) { props.audioAdapter.unit(tile.partIndex); return; }
   if (tile.silent) {
     // 静默字母：用更柔和的"嘘"音示意
     audio.speakPhoneme('shh', props.word?.lang || 'en-US');
@@ -188,6 +194,7 @@ function completeWord() {
   // 朗读整词，再过一会儿通知外层
   setTimeout(() => playWhole(), 200);
   setTimeout(() => {
+    if (props.audioAdapter) { props.audioAdapter.sentence(); return; }
     if (props.word?.sentence) {
       audio.speakSentence(props.word.sentence, props.word.lang || 'en-US');
     }
@@ -196,7 +203,7 @@ function completeWord() {
 }
 
 function onSkip() {
-  audio.cancel();
+  props.audioAdapter ? props.audioAdapter.cancel?.() : audio.cancel();
   emit('skip');
 }
 
@@ -206,7 +213,7 @@ onMounted(() => {
   // 已在 watch immediate 里 reset
 });
 
-onBeforeUnmount(() => audio.cancel());
+onBeforeUnmount(() => { props.audioAdapter?.cancel?.(); audio.cancel(); });
 </script>
 
 <style scoped>

@@ -24,6 +24,24 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 31 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #31</span><span class="date">2026-05-27</span>
+        <span class="ver">v1.12.2 · 拼词阶段音频统一 + 原创词包扩充</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"把 SpellStep 里的 PhonicsGame 也接进 useReadingAudio 统一音频，或扩更多原创词包。继续"</div>
+      <h4>方案</h4>
+      <p>① <b>拼词音频统一</b>：<code>PhonicsGame</code> 是共享组件（QuizView 计分流 + 阅读 SpellStep 双用），故加<b>可选 <code>audioAdapter</code> prop</b>——传入则用它播音、不传则保持内部 <code>usePhonicsAudio</code>。SpellStep 用 <code>useReadingAudio</code> 包出适配器（<code>word/unit/sentence/cancel</code>）传入，真人录音可经此流入拼词阶段；QuizView 不传适配器，计分流行为零变化（无回归风险）。</p>
+      <p>② <b>原创词包扩充</b>：新增手写英语「农场动物」包（dog/pig/hen/duck/fox/bug，<code>mkEn</code> 助手，音素沿用 phonics-en-bank 口径）+ 中文「常见字」包（人/口/手/目/山/水）。当前词包：英语 5 tier(各 12 词)+农场动物；中文 生活小词/认识颜色/数一数/常见字。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        改：<code>client/src/components/PhonicsGame.vue</code>（可选 audioAdapter，全部播音点接入）· <code>client/src/components/reading/steps/SpellStep.vue</code>（构造并传入适配器）· <code>client/src/lib/reading/packs.js</code>（mkEn + en-farm + zh-common）· <code>docs/curriculum/curriculum.html</code> · <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 30 -->
     <article class="entry">
       <header>

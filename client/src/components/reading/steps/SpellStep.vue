@@ -4,6 +4,7 @@
     <PhonicsGame
       v-if="variant === 'phonics'"
       :word="phonicsWord"
+      :audio-adapter="audioAdapter"
       @correct="onDone"
       @skip="onDone"
     />
@@ -30,6 +31,7 @@ import { computed } from 'vue';
 import PhonicsGame from '../../PhonicsGame.vue';
 import SyllableSpellStep from './SyllableSpellStep.vue';
 import { toPhonicsWord } from '../../../lib/reading/packs.js';
+import { useReadingAudio } from '../../../composables/useReadingAudio.js';
 
 const props = defineProps({
   word: { type: Object, required: true },
@@ -39,6 +41,15 @@ const props = defineProps({
 const emit = defineEmits(['complete']);
 
 const phonicsWord = computed(() => toPhonicsWord(props.word));
+
+// 把统一音频包成 PhonicsGame 的适配器：真人录音可经此流入拼词阶段
+const ra = useReadingAudio();
+const audioAdapter = {
+  word: () => ra.playWord(props.word),
+  unit: (i) => ra.playUnit(props.word, i),
+  sentence: () => ra.playSentence(props.word),
+  cancel: () => ra.cancel(),
+};
 
 function onDone() { emit('complete'); }
 </script>

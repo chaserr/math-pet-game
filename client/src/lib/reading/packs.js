@@ -60,6 +60,40 @@ const ENGLISH_PACKS = TIERS.map((tier, i) => {
   };
 });
 
+// 手写英语主题包：units = [[glyph, sound, silent?], ...]（音素沿用 phonics-en-bank 口径）
+function mkEn(text, emoji, sentence, units) {
+  return {
+    id: `en-x-${text}`,
+    lang: 'en-US',
+    text,
+    image: { kind: 'emoji', value: emoji },
+    units: units.map(([glyph, sound, silent = false]) => ({ glyph, sound, silent })),
+    sentence: { text: sentence, focus: text },
+  };
+}
+
+const EXTRA_ENGLISH_PACKS = [
+  {
+    id: 'en-farm',
+    lang: 'en-US',
+    name: '农场动物',
+    emoji: '🐾',
+    color: '#54b85a',
+    pipeline: ['reveal', 'spell', 'say', 'sentence'],
+    spell: 'phonics',
+    challenge: { subject: 'english', module: 'spell', stage: 151 },
+    reward: { coins: 20, foodId: 'berry', qty: 1 },
+    words: [
+      mkEn('dog', '🐶', 'The dog can run.', [['d', 'duh'], ['o', 'ahh'], ['g', 'guh']]),
+      mkEn('pig', '🐷', 'A pig is pink.', [['p', 'puh'], ['i', 'ihh'], ['g', 'guh']]),
+      mkEn('hen', '🐔', 'The hen sits down.', [['h', 'huh'], ['e', 'ehh'], ['n', 'nnn']]),
+      mkEn('duck', '🦆', 'A duck can swim.', [['d', 'duh'], ['u', 'uhh'], ['ck', 'kuh']]),
+      mkEn('fox', '🦊', 'The fox is red.', [['f', 'fff'], ['o', 'ahh'], ['x', 'kss']]),
+      mkEn('bug', '🐛', 'A bug is small.', [['b', 'buh'], ['u', 'uhh'], ['g', 'guh']]),
+    ],
+  },
+];
+
 // 中文体验包：证明引擎语言无关。
 // 中文"拼字"用 'syllable' 变体——把拼音 piece（声母/韵母）按序拼成整字读音
 // （见 SyllableSpellStep.vue），故走完整四段式，与英文并列验证引擎可插拔。
@@ -121,6 +155,25 @@ const CHINESE_PACKS = [
       mkZh('wǔ', '五', '5️⃣', '五朵花。', ['w', 'ǔ']),
     ],
   },
+  {
+    id: 'zh-common',
+    lang: 'zh-CN',
+    name: '常见字',
+    emoji: '📖',
+    color: '#9b5cd6',
+    pipeline: ['reveal', 'spell', 'say', 'sentence'],
+    spell: 'syllable',
+    challenge: { subject: 'chinese', module: 'pinyin', stage: 1 },
+    reward: { coins: 20, foodId: 'bamboo', qty: 1 },
+    words: [
+      mkZh('rén', '人', '🧍', '马路上有很多人。', ['r', 'én']),
+      mkZh('kǒu', '口', '👄', '张开口大声读。', ['k', 'ǒu']),
+      mkZh('shǒu', '手', '✋', '我用手拿苹果。', ['sh', 'ǒu']),
+      mkZh('mù', '目', '👁️', '目是眼睛的意思。', ['m', 'ù']),
+      mkZh('shān', '山', '⛰️', '山上有一棵树。', ['sh', 'ān']),
+      mkZh('shuǐ', '水', '💧', '小鱼在水里游。', ['sh', 'uǐ']),
+    ],
+  },
 ];
 
 function mkZh(pinyin, char, emoji, sentence, syllableUnits) {
@@ -135,7 +188,7 @@ function mkZh(pinyin, char, emoji, sentence, syllableUnits) {
   };
 }
 
-export const READING_PACKS = [...ENGLISH_PACKS, ...CHINESE_PACKS];
+export const READING_PACKS = [...ENGLISH_PACKS, ...EXTRA_ENGLISH_PACKS, ...CHINESE_PACKS];
 
 export function findPack(packId) {
   return READING_PACKS.find(p => p.id === packId) || null;
