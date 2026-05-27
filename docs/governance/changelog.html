@@ -24,6 +24,24 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 32 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #32</span><span class="date">2026-05-27</span>
+        <span class="ver">v1.12.3 · 集字册成就徽章 + 再扩两个主题包</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"继续"（承接上一回合提议的：集字册整册成就徽章 + 再扩主题包）</div>
+      <h4>方案</h4>
+      <p>① <b>成就徽章</b>：词包集齐（已探索数 = 词数）后词包卡与集字册均显示 🏅；集字册顶部「总成就」横幅显示「已集齐 X / N 个词包」+ 里程碑文案（1 个 / 过半 / 全集齐）。进度与徽章统一靠 <code>albumTick</code> 响应，探索后即时刷新（<code>doneOf</code> 也接 albumTick）。</p>
+      <p>② <b>再扩主题包</b>：英语手写「做动作」包（run/sit/hop/nap/dig/cut）；中文「大自然」包（日/火/土/石/田/雨，象形字）。现有词包：英语 5 tier + 农场动物 + 做动作；中文 生活小词/认识颜色/数一数/常见字/大自然。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        改：<code>client/src/lib/reading/packs.js</code>（en-action + zh-nature）· <code>client/src/views/ReadingHubView.vue</code>（成就徽章 + 总成就横幅 + doneOf 接 albumTick）· <code>docs/curriculum/curriculum.html</code> · <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 31 -->
     <article class="entry">
       <header>

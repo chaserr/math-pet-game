@@ -92,6 +92,25 @@ const EXTRA_ENGLISH_PACKS = [
       mkEn('bug', '🐛', 'A bug is small.', [['b', 'buh'], ['u', 'uhh'], ['g', 'guh']]),
     ],
   },
+  {
+    id: 'en-action',
+    lang: 'en-US',
+    name: '做动作',
+    emoji: '🏃',
+    color: '#e8529a',
+    pipeline: ['reveal', 'spell', 'say', 'sentence'],
+    spell: 'phonics',
+    challenge: { subject: 'english', module: 'spell', stage: 151 },
+    reward: { coins: 20, foodId: 'berry', qty: 1 },
+    words: [
+      mkEn('run', '🏃', 'I can run fast.', [['r', 'rrr'], ['u', 'uhh'], ['n', 'nnn']]),
+      mkEn('sit', '🪑', 'Please sit down.', [['s', 'sss'], ['i', 'ihh'], ['t', 'tuh']]),
+      mkEn('hop', '🐰', 'Rabbits hop high.', [['h', 'huh'], ['o', 'ahh'], ['p', 'puh']]),
+      mkEn('nap', '😴', 'The cat takes a nap.', [['n', 'nnn'], ['a', 'aah'], ['p', 'puh']]),
+      mkEn('dig', '🕳️', 'Dogs dig in the yard.', [['d', 'duh'], ['i', 'ihh'], ['g', 'guh']]),
+      mkEn('cut', '✂️', 'Cut the paper.', [['c', 'kuh'], ['u', 'uhh'], ['t', 'tuh']]),
+    ],
+  },
 ];
 
 // 中文体验包：证明引擎语言无关。
@@ -172,6 +191,25 @@ const CHINESE_PACKS = [
       mkZh('mù', '目', '👁️', '目是眼睛的意思。', ['m', 'ù']),
       mkZh('shān', '山', '⛰️', '山上有一棵树。', ['sh', 'ān']),
       mkZh('shuǐ', '水', '💧', '小鱼在水里游。', ['sh', 'uǐ']),
+    ],
+  },
+  {
+    id: 'zh-nature',
+    lang: 'zh-CN',
+    name: '大自然',
+    emoji: '🌿',
+    color: '#2bb3a3',
+    pipeline: ['reveal', 'spell', 'say', 'sentence'],
+    spell: 'syllable',
+    challenge: { subject: 'chinese', module: 'pinyin', stage: 1 },
+    reward: { coins: 20, foodId: 'grass', qty: 1 },
+    words: [
+      mkZh('rì', '日', '☀️', '太阳又叫日。', ['r', 'ì']),
+      mkZh('huǒ', '火', '🔥', '火很烫，别碰。', ['h', 'uǒ']),
+      mkZh('tǔ', '土', '🟫', '种子种在土里。', ['t', 'ǔ']),
+      mkZh('shí', '石', '🪨', '河边有大石头。', ['sh', 'í']),
+      mkZh('tián', '田', '🌾', '田里种着稻子。', ['t', 'ián']),
+      mkZh('yǔ', '雨', '🌧️', '下雨要打伞。', ['y', 'ǔ']),
     ],
   },
 ];

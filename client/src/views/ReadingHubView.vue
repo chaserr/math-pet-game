@@ -27,7 +27,7 @@
           <div class="pc-head">
             <span class="pc-emoji" :style="{ background: p.color + '22' }">{{ p.emoji }}</span>
             <div class="pc-meta">
-              <h3>{{ p.name }}</h3>
+              <h3>{{ p.name }} <span v-if="isPackDone(p)" class="done-badge" title="已集齐">🏅</span></h3>
               <span class="pc-count">{{ doneOf(p) }} / {{ p.words.length }} 个词</span>
             </div>
           </div>
@@ -71,10 +71,14 @@
           <button class="close" @click="showAlbum = false">✕</button>
           <h3 class="album-title">🗂️ 我的集字册</h3>
           <p class="album-sum">已收集 <b>{{ albumDone }}</b> / {{ albumTotal }} 个词</p>
+          <div class="album-achieve">
+            <span class="ach-badges">{{ completedPackCount }} / {{ totalPackCount }} 🏅</span>
+            <span class="ach-msg">{{ albumMilestone }}</span>
+          </div>
           <div class="album-body">
             <div v-for="p in allPacks" :key="p.id" class="album-pack">
               <div class="ap-head">
-                <span>{{ p.emoji }} {{ p.name }}</span>
+                <span>{{ p.emoji }} {{ p.name }} <span v-if="isPackDone(p)" class="done-badge">🏅</span></span>
                 <span class="ap-count">{{ doneOf(p) }}/{{ p.words.length }}</span>
               </div>
               <div class="sticker-row">
@@ -189,8 +193,20 @@ const nextWord = computed(() => {
 });
 
 function selectLang(id) { lang.value = id; activePack.value = null; }
-function doneOf(p) { return exploredCount(p.id); }
+function doneOf(p) { albumTick.value; return exploredCount(p.id); }
 function pctOf(p) { return p.words.length ? Math.round(doneOf(p) / p.words.length * 100) : 0; }
+function isPackDone(p) { return p.words.length > 0 && doneOf(p) >= p.words.length; }
+
+// 整册成就
+const completedPackCount = computed(() => { albumTick.value; return READING_PACKS.filter(isPackDone).length; });
+const totalPackCount = READING_PACKS.length;
+const albumMilestone = computed(() => {
+  const n = completedPackCount.value, t = totalPackCount;
+  if (n >= t) return '🏆 全部集齐，阅读小达人！';
+  if (n >= Math.ceil(t / 2)) return '🌟 过半啦，继续加油！';
+  if (n >= 1) return `⭐ 已集齐 ${n} 个词包！`;
+  return '探索词包来集齐徽章吧～';
+});
 
 function openPack(p) {
   activePack.value = p;
@@ -295,6 +311,10 @@ onMounted(async () => {
 .album-title { margin: 0; font-size: 20px; color: var(--ink); }
 .album-sum { margin: 0; color: #9b8b7a; font-weight: 700; font-size: 14px; }
 .album-sum b { color: #54b85a; }
+.album-achieve { display: flex; align-items: center; gap: 10px; background: #fff7e0; border: 2px solid #f0d99a; border-radius: 14px; padding: 8px 16px; margin: 4px 0 2px; }
+.ach-badges { font-weight: 900; color: #cf8c25; font-size: 16px; }
+.ach-msg { font-weight: 800; color: #b67517; font-size: 13px; }
+.done-badge { font-size: 0.9em; }
 .album-body { width: 100%; display: flex; flex-direction: column; gap: 16px; margin-top: 10px; }
 .album-pack { display: flex; flex-direction: column; gap: 8px; }
 .ap-head { display: flex; justify-content: space-between; font-weight: 900; color: var(--ink); font-size: 15px; }
