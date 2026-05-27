@@ -43,6 +43,26 @@
         <span class="pe-arrow">→</span>
       </div>
 
+      <!-- 阅读乐园快捷入口（英语 / 语文显示） -->
+      <div v-if="currentSubject === 'english' || currentSubject === 'chinese'" class="reading-entry" @click="goReading">
+        <span class="pe-icon">📖</span>
+        <div class="pe-text">
+          <span class="pe-title">阅读乐园</span>
+          <span class="pe-desc">看图 · 拼词 · 读句子 · 可选挑战关</span>
+        </div>
+        <span class="pe-arrow">→</span>
+      </div>
+
+      <!-- 除法启蒙馆快捷入口（仅数学显示） -->
+      <div v-if="currentSubject === 'math'" class="division-entry" @click="go('division-hub')">
+        <span class="pe-icon">➗</span>
+        <div class="pe-text">
+          <span class="pe-title">除法启蒙馆</span>
+          <span class="pe-desc">学一学 · 试一试 · 连一连 · 翻翻乐</span>
+        </div>
+        <span class="pe-arrow">→</span>
+      </div>
+
       <!-- 浏览方式切换：按能力练 / 跟课本学 -->
       <div class="mode-switch">
         <button class="mode active" disabled>💪 按能力练</button>
@@ -201,6 +221,9 @@ function confirmJump() {
   });
 }
 function go(name) { router.push({ name }); }
+function goReading() {
+  router.push({ name: 'reading', query: { subject: currentSubject.value } });
+}
 function goTextbook() {
   router.push({ name: 'textbook', query: { subject: currentSubject.value } });
 }
@@ -259,6 +282,32 @@ onMounted(async () => {
 .pe-title { font-size: 17px; font-weight: 900; color: #2e7a3c; }
 .pe-desc  { font-size: 12px; font-weight: 700; color: #5a9068; }
 .pe-arrow { font-size: 22px; font-weight: 900; color: #54b85a; }
+
+/* 除法启蒙馆入口（沿用 .pe-* 排版，仅外壳配色不同） */
+.division-entry {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, #fff5e6, #ffe7c2);
+  border: 3px solid #ff8e3c; border-radius: 18px; padding: 14px 18px;
+  cursor: pointer; box-shadow: 0 4px 0 #f0c878; transition: transform 0.12s;
+  max-width: 920px; width: 100%; margin: 0 auto;
+}
+.division-entry:hover { transform: translateY(-3px); }
+.division-entry .pe-title { color: #b67517; }
+.division-entry .pe-desc  { color: #8a6a3a; }
+.division-entry .pe-arrow { color: #ff8e3c; }
+
+/* 阅读乐园入口（沿用 .pe-* 排版，蓝色系呼应英语） */
+.reading-entry {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, #e8f1ff, #dbeaff);
+  border: 3px solid #3a92e0; border-radius: 18px; padding: 14px 18px;
+  cursor: pointer; box-shadow: 0 4px 0 #aecdf0; transition: transform 0.12s;
+  max-width: 920px; width: 100%; margin: 0 auto;
+}
+.reading-entry:hover { transform: translateY(-3px); }
+.reading-entry .pe-title { color: #2160a8; }
+.reading-entry .pe-desc  { color: #4a7bb5; }
+.reading-entry .pe-arrow { color: #3a92e0; }
 
 /* 浏览方式切换 */
 .mode-switch { display: flex; justify-content: center; gap: 8px; margin: -4px 0 2px; }

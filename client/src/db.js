@@ -348,6 +348,18 @@ export async function submitRound(results, context = null, drops = null) {
   };
 }
 
+// 轻量发奖：不写答题历史，仅加金币 / 口粮。
+// 用于「探索式」奖励（如阅读乐园整包探索完成），与计分闯关的 submitRound 分开。
+export async function grantReward({ coins = 0, foodId = null, qty = 0 } = {}) {
+  const out = { coins: 0, points: null, food: null };
+  if (coins > 0) { out.points = await addPoints(coins); out.coins = coins; }
+  if (foodId && qty > 0) {
+    await addFood(foodId, qty);
+    out.food = { foodId, qty, name: findFood(foodId)?.name || foodId };
+  }
+  return out;
+}
+
 export async function getHistory() {
   const { data, error } = await supabase
     .from('answer_history').select('*').order('id', { ascending: false }).limit(200);

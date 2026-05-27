@@ -69,7 +69,21 @@
         <li>下方 2×2 选项网格，点中后立即揭晓正确/错误</li>
         <li>错 → 扣心 + 1.2s 后可重选；对 → 0.6s 后进下一题</li>
       </ul>
-      <h4>⑤ placeholder（占位）</h4>
+      <h4>⑤ phonics（自然拼读）<span class="tag major">v1.10 新增</span></h4>
+      <ul>
+        <li>用在：英语 <code>spell</code> 模块（自然拼读法 phonics）</li>
+        <li>题源：<code>src/lib/phonics-en-bank.js</code>，按 stage 切 5 个 tier（CVC短a 1–150 / CVC混合 151–350 / 魔法e 351–550 / 辅音组合 551–750 / 辅音连缀 751–1000）</li>
+        <li>顶部：含义 emoji + tier 标签；中部：字母槽位（按词长开槽）；底部：乱序字母池</li>
+        <li>点击字母 = <b>必播 phoneme + 尝试入位</b>：正确→自动滑入下一槽；错误→红抖并留在池里（也会播音）</li>
+        <li>"🔊 听整词" 按钮：题目载入后 700ms 自动播放一次，可随时手动重播</li>
+        <li>静默字母（魔法 e）：标 🤫，点击播放轻柔 "shh"，与发音字母同样可入位</li>
+        <li>完成 → 1.5s 后 emoji 弹跳 + 整词朗读 + 例句朗读 → 通知 QuizView 进入下一题</li>
+        <li><b>不扣红心</b>：phonics 是探索性学习，多点几次不惩罚；wrongCount 仅作埋点</li>
+        <li>音频：<code>src/composables/usePhonicsAudio.js</code>（Web Speech API，<code>lang='en-US'</code>，未来切 <code>'zh-CN'</code> 即可服务拼音）</li>
+        <li>原子组件：<code>src/components/LetterTile.vue</code>（字母积木块，按音素类型染色：元音橙/辅音蓝/辅音组合紫/静默灰）</li>
+        <li><span class="tag major">v1.11</span> <code>PhonicsGame</code> 现被「阅读乐园」探索 Hub 的拼词阶段（<code>SpellStep.vue</code>）复用；该 Hub 的"🏆 挑战关"按钮即深链到本模块（<code>/quiz?subject=english&amp;module=spell&amp;stage=…</code>），复用此处计分与口粮逻辑。详见 <a href="../curriculum/curriculum.html">课程页 · 阅读乐园</a>。</li>
+      </ul>
+      <h4>⑥ placeholder（占位）</h4>
       <ul>
         <li>用在：所有 <code>placeholder=true</code> 的模块</li>
         <li>显示 🚧 +「该模块敬请期待」+ 回首页按钮</li>

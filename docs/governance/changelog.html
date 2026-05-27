@@ -24,6 +24,86 @@
     <h1>沟通日志</h1>
     <div class="lead">只追加，不删除；按时间倒序（最新在前）。每条含用户原话、决策、影响文件。</div>
 
+    <!-- 回合 28 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #28</span><span class="date">2026-05-26</span>
+        <span class="ver">v1.11.2 · 阅读乐园三连增强（真实拼音干扰 / 中文挑战关 / 整包奖励）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"继续都加 / 继续"（承接上一回合列出的三个可选方向）</div>
+      <h4>方案</h4>
+      <p>① <b>真实拼音干扰</b>：<code>SyllableSpellStep</code> 的干扰 piece 改取自 <code>pinyin-data.js</code> 的 <code>INITIALS_TABLE</code>/<code>FINALS_TABLE</code>（声母各组 + 韵母各组扁平化），按"声母位补一个声母、韵母位补一个韵母"挑选；用去声调比较（<code>āo→ao</code>）避免把正确 piece 混入干扰。</p>
+      <p>② <b>中文挑战关</b>：<code>zh-life</code> 词包 <code>challenge</code> 深链到语文「拼音匹配」模块 <code>/quiz?subject=chinese&amp;module=pinyin</code>，复用既有计分+口粮，无需新增 QuizView 代码。</p>
+      <p>③ <b>整包探索奖励</b>：首次探索完整包发一次温和奖励（金币+口粮）。新增 <code>db.grantReward({coins,foodId,qty})</code>（仅加金币/口粮、<b>不写答题历史</b>，与 <code>submitRound</code> 分离）；奖励数据驱动（<code>pack.reward</code> + <code>packReward</code> 兜底），仅发一次（<code>mpg_reading_rewarded_v1</code> 记账）；庆祝页展示奖励 pill 并刷新金币。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        改：<code>client/src/components/reading/steps/SyllableSpellStep.vue</code>（真实声母/韵母干扰 + 去调比较）· <code>client/src/lib/reading/packs.js</code>（<code>reward</code> 字段 + <code>packReward</code> + 中文 <code>challenge</code>）· <code>client/src/lib/reading/explored.js</code>（<code>isPackRewarded</code>/<code>markPackRewarded</code>）· <code>client/src/db.js</code>（新增 <code>grantReward</code>）· <code>client/src/views/ReadingHubView.vue</code>（整包奖励发放 + 庆祝页奖励展示）· <code>docs/curriculum/curriculum.html</code> · <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
+    <!-- 回合 27 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #27</span><span class="date">2026-05-26</span>
+        <span class="ver">v1.11.1 · 中文拼字阶段（阅读引擎语言无关验证收口）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"好的，继续"（承接上一回合"下一步专门做中文 syllable 拼词阶段"的提议）</div>
+      <h4>方案</h4>
+      <p>实现中文「拼字」玩法 <code>SyllableSpellStep.vue</code>：把一个字的拼音 piece（声母/韵母，含 1 个干扰项）按序点回卡槽拼成整字读音，错则红抖留池、无失败；触碰与完成都以 <b>zh-CN 整字读音</b>作锚点（孤立拼音 piece 不单独 TTS，沿用拼音专区"用汉字代替孤立音素发音"的做法）。</p>
+      <p>仅靠"新增一个 step 组件 + 注册分发"即接入，<b>未改引擎</b>：<code>SpellStep.vue</code> 按 <code>pack.spell</code> 分发（<code>phonics</code>→PhonicsGame / <code>syllable</code>→SyllableSpellStep / 未知→兜底）；<code>zh-life</code> 词包管线由三步恢复为完整四段式 <code>['reveal','spell','say','sentence']</code>。至此中文与英语并列跑通，坐实"加阶段=加组件、加语言=加词包"的扩展承诺。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/components/reading/steps/SyllableSpellStep.vue</code><br>
+        改：<code>client/src/components/reading/steps/SpellStep.vue</code>（导入 + <code>syllable</code> 分支）· <code>client/src/lib/reading/packs.js</code>（<code>zh-life</code> 管线加回 <code>spell</code>）· <code>docs/curriculum/curriculum.html</code> · <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
+    <!-- 回合 26 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #26</span><span class="date">2026-05-26</span>
+        <span class="ver">v1.11.0 · 阅读乐园（Endless Reader 式探索 Hub + 可插拔阅读引擎）</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"你可以分析 endless reader 软件的交互，继续在当前项目里做功能设计和开发，至于资源或者音频可以先预留，另外注意整体设计，要对未来新增功能友好，不要后面因为新增某一个功能而大改整个项目。"</div>
+      <h4>方案</h4>
+      <p>拆解 Endless Reader 的四段式交互（<b>亮相 → 拼词 → 读词 → 入句</b>）与三条铁律（<b>无计时、无评分、无失败；每次触碰都有反馈；同一内容多种表征</b>），落地为一套<b>语言无关、数据驱动、可插拔阶段</b>的阅读引擎，新增"阅读乐园"探索 Hub。</p>
+      <p>方向取舍（经用户确认）：① 引擎语言无关，<b>英语首发</b>，中文/拼音词包可后续接入；② 体验为<b>探索优先 + 可选挑战关</b>——探索零压力、不计分；挑战关深链到既有 <code>QuizView</code>（英语自然拼读模块）复用计分与口粮经济。</p>
+      <p>三条扩展接缝独立可扩展，规避"加一个功能改全项目"：<b>加词</b>只动 <code>packs.js</code>（英语词包按 phonics tier 自动生成）；<b>加玩法阶段</b>只新增一个 step 组件并在 <code>ReadingPlayer</code> 注册表登记；<b>换资源</b>只动 <code>resources.js</code>（今日 emoji + Web Speech TTS 兜底，未来换真人录音/插画零改业务）。中文体验包先走"亮相→读词→入句"三步管线（跳过拼词），证明引擎语言无关。</p>
+      <p>拼词阶段<b>复用</b>既有 <code>PhonicsGame</code>（点字母→发 phoneme→入槽，无失败），仅做一处安全微调（无 tier 时隐藏分层标签）。探索进度用独立命名空间 <code>mpg_reading_explored_v1</code>，与闯关进度 <code>mpg_progress_v3</code> 完全隔离，营造"集字册"收集感。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/lib/reading/resources.js</code>（资源解析器 seam）· <code>client/src/lib/reading/packs.js</code>（词包注册表 + 语言无关 ReadingWord schema + 英语自动生成 + 中文体验包）· <code>client/src/lib/reading/pipeline.js</code>（阶段声明与管线覆盖）· <code>client/src/lib/reading/explored.js</code>（探索进度）· <code>client/src/components/reading/ReadingPlayer.vue</code>（管线编排器 + 阶段注册表）· <code>client/src/components/reading/steps/RevealStep.vue · SpellStep.vue · SayStep.vue · SentenceStep.vue</code> · <code>client/src/views/ReadingHubView.vue</code><br>
+        改：<code>client/src/router/index.js</code>（<code>/reading</code> 路由）· <code>client/src/views/HomeView.vue</code>（英语/语文显示"阅读乐园"入口卡 + <code>goReading</code>）· <code>client/src/components/PhonicsGame.vue</code>（tier 标签 <code>v-if</code> 保护）· <code>docs/curriculum/curriculum.html</code> · <code>docs/modules/module-quiz.html</code> · <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
+    <!-- 回合 25 -->
+    <article class="entry">
+      <header>
+        <span class="turn">回合 #25</span><span class="date">2026-05-26</span>
+        <span class="ver">v1.10.0 · 英语自然拼读 (phonics) 模块</span>
+        <span class="tag feat">feat</span>
+      </header>
+      <h4>用户原话</h4>
+      <div class="quote">"我想把这个玩法融入到 math-pet-game 这个项目中，比如当前先做英文版的复刻，后面再考虑在拼音上做同样的事情。先搭通用框架，两种学习模式同步。"</div>
+      <h4>方案</h4>
+      <p>受自然拼读法（phonics）启发，新增<b>语言中立的"拆解—发音—合成—朗读"教学引擎</b>，先接入英语 <code>spell</code> 模块（原占位）；引擎设计上为未来拼音版预留接口，<code>PhonicsGame</code> 组件本身不挑语言。</p>
+      <p>核心数据模式（与语言无关）：<code>{word, parts:[{letter, phoneme, silent?}], emoji, sentence, lang}</code>。英语词库分 5 个 tier（CVC短a / CVC混合 / 魔法e / 辅音组合 / 辅音连缀），按 stage 1–1000 切层，<code>(stage*31 + qIdx*7) % 池长</code> 确定性选词。</p>
+      <p>UI 流程：含义 emoji + tier 标签 → 字母槽（虚线提示当前要填的槽）→ 乱序字母池。点击字母 = 播 phoneme + 试着入位（对则滑入，错则红抖留在池里且依然播音）；全部入位 → emoji 弹跳 + 整词 + 例句朗读 → 1.5s 后进入下一题。</p>
+      <p><b>不扣红心策略</b>：phonics 是探索性学习，多次试错不惩罚，wrongCount 仅作埋点。音频走 Web Speech API（<code>lang='en-US'</code>，未来切 <code>'zh-CN'</code> 即可服务拼音）。</p>
+      <h4>影响文件</h4>
+      <p class="files">
+        新增：<code>client/src/lib/phonics-en-bank.js</code>（5 tier × 60+ 词 + 选词函数）· <code>client/src/composables/usePhonicsAudio.js</code>（语言中立 TTS 封装）· <code>client/src/components/LetterTile.vue</code>（按音素类型染色：元音橙/辅音蓝/辅音组合紫/静默灰）· <code>client/src/components/PhonicsGame.vue</code>（教学引擎主体）<br>
+        改：<code>client/src/catalog.js</code>（<code>english.spell</code> 去掉 <code>placeholder</code>，改名"自然拼读"）· <code>client/src/composables/useQuizGen.js</code>（新增 <code>genEnglishSpell</code> + dispatch，注释加 <code>'phonics'</code> mode）· <code>client/src/views/QuizView.vue</code>（导入 <code>PhonicsGame</code> + 新模板分支 + <code>onPhonicsCorrect</code> 桥接 + hint 文案 + <code>qLabel</code> 加 phonics 分支）· <code>docs/curriculum/curriculum.html</code>（spell 状态 ✅ + 题型 mode 表增加 phonics 行）· <code>docs/modules/module-quiz.html</code>（题目模式列表加 ⑤ phonics）· <code>docs/governance/changelog.html</code>（本条）
+      </p>
+    </article>
+
     <!-- 回合 24 -->
     <article class="entry">
       <header>

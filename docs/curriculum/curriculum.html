@@ -57,17 +57,17 @@
         <tr><td><code>idiom</code></td><td>🏮 成语接龙</td><td>🚧 占位</td><td>首尾相接（待二年级及以上）</td></tr>
       </tbody>
     </table>
-    <h2>🔤 英语（1 模块 MVP + 3 占位，保留 1000 关）</h2>
+    <h2>🔤 英语（2 模块 MVP + 2 占位，保留 1000 关）</h2>
     <table>
       <thead><tr><th>moduleId</th><th>名称</th><th>状态</th><th>题型</th></tr></thead>
       <tbody>
         <tr><td><code>alphabet</code></td><td>🅰️ 字母认知</td><td>✅ 已实现</td><td>大写↔小写匹配（4 选 1，奇偶关交替）</td></tr>
         <tr><td><code>vocab</code></td><td>📚 看图选词</td><td>🚧 占位</td><td>图片对单词（计划：4 选 1）</td></tr>
-        <tr><td><code>spell</code></td><td>✍️ 拼写组词</td><td>🚧 占位</td><td>拖字母拼单词</td></tr>
+        <tr><td><code>spell</code></td><td>✍️ 自然拼读</td><td>✅ 已实现 <span class="tag major">v1.10</span></td><td>听音 → 按顺序拼字母 → 整词朗读（5 个 tier：CVC短a / CVC混合 / 魔法e / 辅音组合 / 辅音连缀）</td></tr>
         <tr><td><code>sentence</code></td><td>💬 看图选句</td><td>🚧 占位</td><td>看图选完整句</td></tr>
       </tbody>
     </table>
-    <h2>题目模式（4 种，含 layout 子类）</h2>
+    <h2>题目模式（5 种，含 layout 子类）</h2>
     <table>
       <thead><tr><th>mode</th><th>layout</th><th>用在哪里</th><th>UI</th></tr></thead>
       <tbody>
@@ -75,9 +75,25 @@
         <tr><td><code>tile-fill</code></td><td><code>place</code> <span class="tag major">v1.4</span></td><td>数学 place 模块</td><td>大数字 + 个/十/百/千… 数位格子</td></tr>
         <tr><td><code>multi-step</code></td><td>—</td><td>数学减法 within100（凑十法已转教学卡）</td><td>分步引导填空 + 数字键盘</td></tr>
         <tr><td><code>choice</code></td><td>—</td><td>语文识字 + 英语字母</td><td>四选一大按钮</td></tr>
+        <tr><td><code>phonics</code> <span class="tag major">v1.10</span></td><td>—</td><td>英语 spell 自然拼读</td><td>含义图 + 字母槽 + 字母池，点对字母依次入位，整词朗读</td></tr>
         <tr><td><code>placeholder</code></td><td>—</td><td>所有占位模块</td><td>🚧 敬请期待页</td></tr>
       </tbody>
     </table>
+
+    <h2>📖 阅读乐园（Endless Reader 式探索 Hub）<span class="tag major">v1.11</span></h2>
+    <p>独立于闯关体系的<b>探索优先</b>入口（路由 <code>/reading</code>，首页英语/语文显示入口卡）。借鉴 Endless Reader 四段式与"无计时·无评分·无失败"铁律，按词驱动一条<b>可插拔阶段管线</b>。</p>
+    <table>
+      <thead><tr><th>阶段</th><th>交互</th><th>组件</th></tr></thead>
+      <tbody>
+        <tr><td>✨ 亮相 reveal</td><td>含义图 + 单元卡飞入，点哪个发哪个音</td><td><code>RevealStep.vue</code></td></tr>
+        <tr><td>🧩 拼词 spell</td><td>英语：点字母→发 phoneme→入槽（复用 <code>PhonicsGame</code>）；中文：拼拼音 piece 成字（<code>SyllableSpellStep</code>）。均无失败</td><td><code>SpellStep.vue</code></td></tr>
+        <tr><td>🔊 读词 say</td><td>整词放大 + 自动朗读 + 点击复读，音义绑定</td><td><code>SayStep.vue</code></td></tr>
+        <tr><td>💬 入句 sentence</td><td>把目标词送回句子（挖空 + 词卡，点错只弹回）</td><td><code>SentenceStep.vue</code></td></tr>
+      </tbody>
+    </table>
+    <p><b>三条扩展接缝</b>（对未来友好，规避"加功能改全项目"）：加词只动 <code>lib/reading/packs.js</code>（英语词包按 phonics tier 自动生成）；加玩法只新增 step 组件并在 <code>ReadingPlayer</code> 注册表登记；换资源只动 <code>lib/reading/resources.js</code>（今日 emoji + Web Speech 兜底，未来换真人录音/插画零改业务）。</p>
+    <p><b>双模式</b>：探索零压力、进度独立存 <code>mpg_reading_explored_v1</code>（集字册）；每个词包另有"🏆 挑战关"深链到 <code>QuizView</code>（英语→自然拼读 <code>spell</code>，中文→拼音匹配 <code>pinyin</code>），复用计分与口粮经济。中文体验包 <code>zh-life</code> 走完整四段式：拼词阶段用 <code>syllable</code> 变体（<code>SyllableSpellStep</code>，拼拼音 piece 成字、zh-CN 整字读音作锚点，<b>干扰项取自真实声母/韵母库 <code>pinyin-data.js</code></b>），与英语并列坐实"加阶段=新增组件、不改引擎"。</p>
+    <p><b>整包奖励</b>：首次探索完一个词包，发一次温和奖励（金币 + 口粮，数据驱动 <code>pack.reward</code>，缺省兜底）。走 <code>db.grantReward</code>（不写答题历史，与计分 <code>submitRound</code> 分离），只发一次（<code>mpg_reading_rewarded_v1</code> 记账），轻度连到宠物经济而不施压。</p>
   </main>
 </div>
 <footer class="page-foot">

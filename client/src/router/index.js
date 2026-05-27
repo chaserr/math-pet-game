@@ -11,6 +11,9 @@ const routes = [
   { path: '/textbook', name: 'textbook', component: () => import('../views/TextbookView.vue') },
   { path: '/lesson', name: 'lesson', component: () => import('../views/LessonView.vue') },
   { path: '/pinyin', name: 'pinyin', component: () => import('../views/PinyinHubView.vue') },
+  { path: '/reading', name: 'reading', component: () => import('../views/ReadingHubView.vue') },
+  { path: '/division-hub',  name: 'division-hub',   component: () => import('../views/DivisionHubView.vue') },
+  { path: '/intro/division', name: 'division-intro', component: () => import('../views/DivisionIntroView.vue') },
 ];
 
 const router = createRouter({
