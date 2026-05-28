@@ -3,44 +3,18 @@
   "pet_name": "熊猫",
   "runtime_pet_id": "panda",
   "food": "竹笋",
-  "resource_version": "panda-growth-v1-2026-05-23",
-  "style_reference": "cute polished 3D mobile game pet, children arithmetic companion, clean centered full-body asset",
-  "stage_min_level": [
-    1,
-    3,
-    6,
-    9
-  ],
-  "asset_groups": [
-    "portrait",
-    "model",
-    "icon",
-    "badge",
-    "label",
-    "effect"
-  ],
+  "favorite_food": "竹笋",
   "growth_stages": [
     {
       "stage": 0,
       "name": "幼年",
-      "display_name": "团团幼熊",
+      "display_name": "小团团",
       "model": "panda_baby",
       "icon": "icon_panda_baby",
-      "animation": [
-        "idle_baby",
-        "sleep_baby",
-        "eat_baby"
-      ],
+      "animation": ["idle_baby", "sleep_baby", "eat_baby"],
       "unlock_condition": "default",
-      "min_level": 1,
-      "description": "刚被领养的熊猫，黑白圆脸和竹纹护甲还处在幼态阶段，体型小、眼睛圆，动作笨拙但非常依赖玩家。",
-      "appearance_keywords": [
-        "小体型",
-        "圆眼睛",
-        "幼态特征",
-        "动作笨拙",
-        "黑白圆脸和竹纹护甲"
-      ],
+      "description": "刚被领养的小熊猫，圆滚滚的身体和大眼睛让它看起来非常依赖玩家，走路还有些摇晃。",
+      "appearance_keywords": ["小体型", "圆眼睛", "幼态特征", "动作笨拙", "短小四肢"],
       "status_role": "可爱、弱小、依赖玩家",
       "assets": {
         "portrait": "/pets/panda/0.png",
@@ -54,24 +28,13 @@
     {
       "stage": 1,
       "name": "成长",
-      "display_name": "竹林伙伴",
+      "display_name": "竹林探探",
       "model": "panda_growing",
       "icon": "icon_panda_growing",
-      "animation": [
-        "idle_growing",
-        "walk_growing",
-        "play_growing"
-      ],
-      "unlock_condition": "level >= 3",
-      "min_level": 3,
-      "description": "开始熟悉主人后变得活跃好奇，体型变大，加入轻量探索装饰，能主动陪玩家完成算术练习。",
-      "appearance_keywords": [
-        "体型变大",
-        "主动姿态",
-        "探索装饰",
-        "行动力提升",
-        "黑白圆脸和竹纹护甲"
-      ],
+      "animation": ["idle_growing", "walk_growing", "eat_growing"],
+      "unlock_condition": "level >= 5",
+      "description": "开始熟悉主人的熊猫伙伴，背上小竹筐、举着竹枝，姿态更主动，随时准备陪孩子完成练习。",
+      "appearance_keywords": ["体型变大", "主动站姿", "竹筐装饰", "探索元素", "抬手互动"],
       "status_role": "活跃、好奇、可以互动",
       "assets": {
         "portrait": "/pets/panda/1.png",
@@ -85,24 +48,13 @@
     {
       "stage": 2,
       "name": "强壮",
-      "display_name": "竹甲熊猫",
+      "display_name": "竹甲守守",
       "model": "panda_strong",
       "icon": "icon_panda_strong",
-      "animation": [
-        "idle_strong",
-        "guard_strong",
-        "skill_strong"
-      ],
-      "unlock_condition": "level >= 6",
-      "min_level": 6,
-      "description": "进入强壮阶段后站姿更稳，护甲、盾牌和黑白圆脸和竹纹护甲强化了能力感，能可靠协助任务。",
-      "appearance_keywords": [
-        "厚实体型",
-        "稳固站姿",
-        "护甲感",
-        "守护感",
-        "黑白圆脸和竹纹护甲"
-      ],
+      "animation": ["idle_strong", "guard_strong", "skill_strong"],
+      "unlock_condition": "level >= 12",
+      "description": "可靠的守护型熊猫，身体更厚重，穿上竹甲护肩并稳稳站立，能协助玩家完成更难的算术挑战。",
+      "appearance_keywords": ["厚实体型", "稳定站姿", "竹甲护肩", "守护感", "力量特效"],
       "status_role": "可靠、强壮、能协助完成任务",
       "assets": {
         "portrait": "/pets/panda/2.png",
@@ -116,25 +68,14 @@
     {
       "stage": 3,
       "name": "完全体",
-      "display_name": "墨竹灵熊",
+      "display_name": "玄竹灵熊",
       "model": "panda_final",
       "icon": "icon_panda_final",
-      "animation": [
-        "idle_final",
-        "aura_final",
-        "special_final"
-      ],
-      "unlock_condition": "level >= 9",
-      "min_level": 9,
-      "description": "最终进化后的墨竹灵熊拥有成熟体型、专属饰品、光效与符文灵气，呈现稀有最终形态。",
-      "appearance_keywords": [
-        "成熟体型",
-        "专属饰品",
-        "光效符文",
-        "最终进化特征",
-        "黑白圆脸和竹纹护甲"
-      ],
-      "status_role": "成熟、稀有、有特殊能力的最终形态",
+      "animation": ["idle_final", "aura_final", "ultimate_final"],
+      "unlock_condition": "level >= 20",
+      "description": "最终进化的稀有灵熊，佩戴玉竹冠和金色披肩，身后漂浮符文竹环，拥有鼓励孩子继续挑战的特殊灵气。",
+      "appearance_keywords": ["最终形态", "玉竹冠", "金色披肩", "符文竹环", "灵气光效", "成熟姿态"],
+      "status_role": "稀有、成熟、有特殊能力",
       "assets": {
         "portrait": "/pets/panda/3.png",
         "model": "/pets/panda/models/panda_final.png",
