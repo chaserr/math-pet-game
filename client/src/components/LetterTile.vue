@@ -5,7 +5,14 @@
     :disabled="state === 'placed'"
     @click="onTap"
   >
-    <span class="letter-text">{{ letter }}</span>
+    <AlphabetCharacter
+      v-if="showCharacter"
+      :letter="letter"
+      :state="characterState"
+      :size="characterSize"
+      class="letter-character"
+    />
+    <span v-else class="letter-text">{{ letter }}</span>
     <span v-if="silent" class="silent-mark" title="魔法 e：不发音">🤫</span>
     <span class="speech-ring"></span>
   </button>
@@ -17,6 +24,8 @@
 // letter 字段语言中立：'c' / 'sh' 都行，将来塞拼音的 'zh' / 'ang' 也行。
 // state：normal(空闲微抖) | active(发光) | placed(灰&不可点) | wrong(红抖)
 import { computed } from 'vue';
+import AlphabetCharacter from './AlphabetCharacter.vue';
+import { isSingleAlphabetLetter } from '../lib/alphabetCharacters.js';
 
 const props = defineProps({
   letter:  { type: String, required: true },
@@ -25,6 +34,7 @@ const props = defineProps({
   silent:  { type: Boolean, default: false },
   // 颜色按字母类型分（元音 / 辅音 / 辅音组合），让小朋友视觉上能区分
   kind:    { type: String, default: 'auto' },   // 'vowel' | 'consonant' | 'digraph' | 'auto'
+  character: { type: Boolean, default: true },
 });
 
 const emit = defineEmits(['tap']);
@@ -42,6 +52,19 @@ const colorClass = computed(() => {
   return `tile-${kind}`;
 });
 
+const showCharacter = computed(() =>
+  props.character && !props.silent && isSingleAlphabetLetter(props.letter)
+);
+
+const characterState = computed(() => {
+  if (props.state === 'active') return 'active';
+  if (props.state === 'wrong') return 'wrong';
+  if (props.state === 'placed') return 'placed';
+  return 'normal';
+});
+
+const characterSize = computed(() => props.state === 'active' ? 78 : 70);
+
 function onTap() {
   if (props.state === 'placed') return;
   emit('tap', { letter: props.letter, phoneme: props.phoneme, silent: props.silent });
@@ -52,10 +75,10 @@ function onTap() {
 .letter-tile {
   position: relative;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 72px; height: 72px;
-  border: 4px solid;
-  border-radius: 18px;
-  background: #fff;
+  width: 88px; height: 88px;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
   font-family: inherit; font-weight: 900; font-size: 38px;
   cursor: pointer;
   transition: transform 0.15s cubic-bezier(.3,.7,.4,1), box-shadow 0.15s, filter 0.15s;
@@ -65,13 +88,20 @@ function onTap() {
 }
 
 /* 元音：橙黄 */
-.tile-vowel    { color: #c66a00; border-color: #f0a93a; background: #fff7e3; box-shadow: 0 5px 0 #b88420, 0 8px 16px rgba(240,169,58,0.22); }
+.tile-vowel    { color: #c66a00; }
 /* 辅音：蓝 */
-.tile-consonant{ color: #2566a8; border-color: #3a92e0; background: #e8f3ff; box-shadow: 0 5px 0 #2a6db0, 0 8px 16px rgba(58,146,224,0.22); }
+.tile-consonant{ color: #2566a8; }
 /* 辅音组合（sh/ch/th/wh）：紫 */
-.tile-digraph  { color: #5e3a9e; border-color: #9b5cd6; background: #f3e9ff; box-shadow: 0 5px 0 #6a3fa0, 0 8px 16px rgba(155,92,214,0.25); font-size: 30px; }
+.tile-digraph  {
+  color: #5e3a9e; border: 4px solid #9b5cd6; background: #f3e9ff;
+  box-shadow: 0 5px 0 #6a3fa0, 0 8px 16px rgba(155,92,214,0.25);
+  font-size: 30px;
+}
 /* 静默：灰 */
-.tile-silent   { color: #b9aa97; border-color: #d8c9b3; background: #f5efe4; box-shadow: 0 4px 0 #c4b094; opacity: 0.78; animation: none; }
+.tile-silent   {
+  color: #b9aa97; border: 4px solid #d8c9b3; background: #f5efe4;
+  box-shadow: 0 4px 0 #c4b094; opacity: 0.78; animation: none;
+}
 
 .letter-tile:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.04); }
 .letter-tile:active:not(:disabled){ transform: translateY(2px); filter: brightness(0.96); }
@@ -89,6 +119,11 @@ function onTap() {
 .letter-tile.wrong { animation: shake 0.5s; border-color: #e85b5b; }
 
 .letter-text { line-height: 1; }
+.letter-character {
+  width: 84px;
+  height: 84px;
+  pointer-events: none;
+}
 .silent-mark {
   position: absolute; top: -8px; right: -8px;
   font-size: 16px; background: #fff;
@@ -100,7 +135,7 @@ function onTap() {
 /* 朗读时的"声波"动画 */
 .speech-ring {
   position: absolute; inset: -8px;
-  border-radius: 22px;
+  border-radius: 28px;
   border: 3px solid currentColor;
   opacity: 0; pointer-events: none;
 }
